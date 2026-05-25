@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/nextdev/Projects/reppit-web/components/**)",
+      "Read(//Users/nextdev/Projects/reppit-web/**)",
+      "Bash(cat /Users/nextdev/Projects/reppit/apps/web/package.json | grep -E \"\\(jsx-a11y|better-tailwind|eslint\\)\" 2>&1)",
+      "Read(//Users/nextdev/Projects/reppit/apps/web/**)",
+      "Bash(node -e \"console.log\\(require\\('./package.json'\\).packageManager || '\\(not set\\)'\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(Object.entries\\(p.devDependencies\\).filter\\(\\([k]\\)=>k.includes\\('eslint'\\)||k.includes\\('tailwind'\\)\\).map\\(\\([k,v]\\)=>k+' '+v\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(pnpm -v)",
+      "Bash(node -e \"console.log\\(require\\('/Users/nextdev/Projects/reppit/package.json'\\).packageManager || '\\(not set\\)'\\)\")",
+      "Bash(node -e \"console.log\\(require\\('/Users/nextdev/Projects/reppit-web/package.json'\\).packageManager || '\\(not set\\)'\\)\")",
+      "Read(//Users/nextdev/Projects/reppit/**)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm lint *)",
+      "Bash(ls /Users/nextdev/Projects/)",
+      "Read(//Users/nextdev/Projects/**)"
+    ]
+  }
+}
