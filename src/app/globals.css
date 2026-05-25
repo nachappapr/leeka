@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* shadcn semantic tokens — remapped to Bahi */
+  /* shadcn semantic tokens — remapped to Lekka */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -38,13 +38,13 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Bahi brand */
+  /* Lekka brand */
   --color-coral: #f46a39;
   --color-coral-press: #d9531f;
   --color-coral-soft: #ffe7da;
   --color-coral-ink: #5a1e08;
 
-  /* Bahi warm neutrals */
+  /* Lekka warm neutrals */
   --color-cream: #fbf6ef;
   --color-surface: #ffffff;
   --color-surface-2: #f5efe6;
@@ -54,7 +54,7 @@
   --color-ink-2: #5b5042;
   --color-ink-3: #6f6253;
 
-  /* Bahi semantic — invoice status */
+  /* Lekka semantic — invoice status */
   --color-paid: #1f9d55;
   --color-paid-soft: #e2f4e9;
   --color-paid-ink: #0f5e32;
@@ -72,7 +72,7 @@
   --color-whatsapp: #25d366;
   --color-whatsapp-press: #1fae54;
 
-  /* radii — Bahi: soft, friendly */
+  /* radii — Lekka: soft, friendly */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 14px;
