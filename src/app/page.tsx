@@ -1,400 +1,375 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/primitives/card";
+import { Separator } from "@/components/ui/primitives/separator";
+import { FieldLabel } from "@/components/ui/custom/field-label";
+import { InputField } from "@/components/ui/custom/input-field";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import {
+  StatusPill,
+  type StatusPillStatus,
+} from "@/components/ui/custom/status-pill";
 
-const features = [
+const STATUSES: StatusPillStatus[] = [
+  "draft",
+  "sent",
+  "viewed",
+  "partial",
+  "pending",
+  "overdue",
+  "paid",
+];
+
+const SWATCHES: { label: string; token: string; hex: string; cls: string }[] = [
+  { label: "Coral", token: "--color-coral", hex: "#F46A39", cls: "bg-coral" },
   {
-    num: "01",
-    title: "Smart Invoices",
-    desc: "Auto-populate client details, tax rates, and line items. Send a polished invoice in under 60 seconds.",
+    label: "Coral · press",
+    token: "--color-coral-press",
+    hex: "#D9531F",
+    cls: "bg-coral-press",
   },
   {
-    num: "02",
-    title: "Instant Reminders",
-    desc: "Set it and forget it. Automated follow-ups nudge clients without you lifting a finger.",
+    label: "Coral · soft",
+    token: "--color-coral-soft",
+    hex: "#FFE7DA",
+    cls: "bg-coral-soft",
+  },
+  { label: "Cream", token: "--color-cream", hex: "#FBF6EF", cls: "bg-cream" },
+  {
+    label: "Surface 2",
+    token: "--color-surface-2",
+    hex: "#F5EFE6",
+    cls: "bg-surface-2",
+  },
+  { label: "Ink", token: "--color-ink", hex: "#1F1A14", cls: "bg-ink" },
+  {
+    label: "Line · strong",
+    token: "--color-line-strong",
+    hex: "#D9CDB8",
+    cls: "bg-line-strong",
+  },
+  { label: "Paid", token: "--color-paid", hex: "#1F9D55", cls: "bg-paid" },
+  {
+    label: "Pending",
+    token: "--color-pending",
+    hex: "#C98000",
+    cls: "bg-pending",
   },
   {
-    num: "03",
-    title: "Multi-currency",
-    desc: "Bill in any currency. Real-time exchange rates, zero surprises. International clients, welcome.",
+    label: "Overdue",
+    token: "--color-overdue",
+    hex: "#C5392B",
+    cls: "bg-overdue",
   },
+  { label: "Info", token: "--color-info", hex: "#1B6FA8", cls: "bg-info" },
   {
-    num: "04",
-    title: "Live Dashboard",
-    desc: "Track outstanding, overdue, and paid in one clean view. Know your cash position at a glance.",
-  },
-  {
-    num: "05",
-    title: "One-click Pay",
-    desc: "Stripe, PayPal, bank transfer — clients pay how they want. You get notified the moment funds land.",
-  },
-  {
-    num: "06",
-    title: "Tax Ready",
-    desc: "Auto-calculate VAT, GST, and sales tax. Export clean reports when EOFY comes around.",
+    label: "WhatsApp",
+    token: "--color-whatsapp",
+    hex: "#25D366",
+    cls: "bg-whatsapp",
   },
 ];
 
-const testimonials = [
-  {
-    quote: "I used to dread invoicing. Lekka made it the easiest part of my month.",
-    name: "Amara K.",
-    role: "Brand Designer",
-    initials: "AK",
-  },
-  {
-    quote: "Cut my time on admin by 80%. The automatic reminders alone paid for itself.",
-    name: "Deon V.",
-    role: "Freelance Dev",
-    initials: "DV",
-  },
-  {
-    quote: "Finally an invoicing tool that doesn't look like it's from 2009.",
-    name: "Siya M.",
-    role: "Creative Director",
-    initials: "SM",
-  },
-];
-
-const tickers = [
-  "Send faster", "Get paid sooner", "Zero friction", "Built for freelancers",
-  "Multi-currency", "Tax ready", "Send faster", "Get paid sooner",
-  "Zero friction", "Built for freelancers", "Multi-currency", "Tax ready",
-];
-
-const stats = [
-  { value: "12s", label: "avg. invoice creation time" },
-  { value: "3×", label: "faster payment turnaround" },
-  { value: "98%", label: "client satisfaction rate" },
-  { value: "40+", label: "currencies supported" },
-];
-
-export default function Home() {
+function Section({
+  id,
+  title,
+  intro,
+  children,
+}: {
+  id: string;
+  title: string;
+  intro?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <main className="flex-1 overflow-x-hidden">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 border-b border-white/5 backdrop-blur-md bg-[#0e0e0e]/80">
-        <span className="font-mono text-xl font-bold tracking-tight text-[#c8f135]">
-          lekka
-        </span>
-        <div className="hidden md:flex items-center gap-8 text-sm text-white/50 font-medium">
-          <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#how" className="hover:text-white transition-colors">How it works</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="text-white/60 hover:text-white text-sm hidden md:inline-flex">
-            Sign in
-          </Button>
-          <Button
-            size="sm"
-            className="bg-[#c8f135] text-[#0e0e0e] hover:bg-[#d6f755] font-bold text-sm px-5 rounded-full"
-          >
-            Start free
-          </Button>
-        </div>
-      </nav>
+    <section id={id} className="mb-14">
+      <h2 className="mb-1 text-2xl font-extrabold tracking-tight text-ink">
+        {title}
+      </h2>
+      {intro ? (
+        <p className="mb-6 max-w-2xl text-base text-ink-2">{intro}</p>
+      ) : (
+        <div className="mb-6" />
+      )}
+      {children}
+    </section>
+  );
+}
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-16 px-6 md:px-12 overflow-hidden">
-        {/* Grid background */}
+function ColorSwatches() {
+  return (
+    <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4">
+      {SWATCHES.map((s) => (
         <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(245,242,235,1) 1px, transparent 1px), linear-gradient(90deg, rgba(245,242,235,1) 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
-
-        {/* Large BG symbol */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 text-[30vw] font-bold text-white/[0.02] select-none leading-none font-mono pr-8">
-          ₊
-        </div>
-
-        <div className="relative max-w-7xl mx-auto w-full">
-          <div className="animate-fade-up delay-100">
-            <Badge className="bg-[#c8f135]/10 text-[#c8f135] border border-[#c8f135]/20 font-mono text-xs px-3 py-1 rounded-full mb-8 inline-flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#c8f135] animate-pulse-lime inline-block" />
-              Now in public beta
-            </Badge>
-          </div>
-
-          <h1 className="animate-fade-up delay-200 text-[13vw] md:text-[9vw] lg:text-[8vw] font-extrabold leading-[0.9] tracking-tight mb-6">
-            <span className="block text-[#f5f2eb]">Invoicing</span>
-            <span className="block text-[#c8f135] lime-glow">made light.</span>
-          </h1>
-
-          <div className="animate-fade-up delay-300 flex flex-col md:flex-row md:items-end gap-8 mt-10">
-            <p className="text-white/50 text-lg md:text-xl max-w-md leading-relaxed">
-              Create, send, and track invoices without the admin nightmare.
-              Built for freelancers who&apos;d rather be doing the work.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 md:ml-auto md:pb-1 shrink-0">
-              <Button
-                size="lg"
-                className="bg-[#c8f135] text-[#0e0e0e] hover:bg-[#d6f755] font-bold text-base px-8 rounded-full h-12"
-              >
-                Get started free
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white/10 text-white/70 hover:text-white hover:border-white/20 text-base px-8 rounded-full h-12 bg-transparent"
-              >
-                See a demo →
-              </Button>
+          key={s.token}
+          className="overflow-hidden rounded-lg bg-card shadow-card"
+        >
+          <div className={`h-20 ${s.cls}`} aria-hidden />
+          <div className="px-3.5 py-3">
+            <div className="text-sm font-extrabold text-ink">{s.label}</div>
+            <div className="mt-0.5 font-mono text-xs text-ink-3">
+              {s.token}
             </div>
-          </div>
-
-          {/* Stats row */}
-          <div className="animate-fade-up delay-500 mt-20 grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5">
-            {stats.map((s) => (
-              <div key={s.label} className="bg-[#0e0e0e] px-6 py-6 md:py-8">
-                <div className="font-mono text-3xl md:text-4xl font-bold text-[#c8f135] mb-1">
-                  {s.value}
-                </div>
-                <div className="text-white/40 text-xs md:text-sm">{s.label}</div>
-              </div>
-            ))}
+            <div className="mt-0.5 font-mono text-xs text-ink-2">{s.hex}</div>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  );
+}
 
-      {/* Ticker */}
-      <div className="relative overflow-hidden border-y border-white/5 bg-[#111] py-4">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {tickers.map((t, i) => (
-            <span key={i} className="inline-flex items-center gap-4 mx-6 font-mono text-sm text-white/30 uppercase tracking-widest">
-              {t}
-              <span className="text-[#c8f135]">✦</span>
-            </span>
-          ))}
+function ButtonShowcase() {
+  return (
+    <div className="space-y-5">
+      <div>
+        <h3 className="mb-2.5 text-base font-extrabold text-ink">Tones</h3>
+        <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
+          <PillButton tone="primary">Primary action</PillButton>
+          <PillButton tone="secondary">Secondary</PillButton>
+          <PillButton tone="outline">Outline</PillButton>
+          <PillButton tone="ghost">Ghost</PillButton>
+          <PillButton tone="paid">Mark paid</PillButton>
+          <PillButton tone="whatsapp">Send on WhatsApp</PillButton>
+          <PillButton tone="destructive">Delete</PillButton>
         </div>
       </div>
-
-      {/* Features */}
-      <section id="features" className="px-6 md:px-12 py-28 max-w-7xl mx-auto">
-        <div className="mb-16">
-          <p className="font-mono text-xs text-[#c8f135] uppercase tracking-widest mb-4 animate-fade-up">
-            / Features
-          </p>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#f5f2eb] animate-fade-up delay-100">
-            Everything you need.<br />
-            <span className="text-white/25">Nothing you don&apos;t.</span>
-          </h2>
+      <div>
+        <h3 className="mb-2.5 text-base font-extrabold text-ink">Sizes</h3>
+        <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
+          <PillButton size="sm">Small · 36</PillButton>
+          <PillButton size="md">Default · 44</PillButton>
+          <PillButton size="lg">Large · 52</PillButton>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5">
-          {features.map((f, i) => (
-            <div
-              key={f.num}
-              className="card-hover bg-[#0e0e0e] p-8 border border-transparent animate-fade-up"
-              style={{ animationDelay: `${0.1 + i * 0.07}s` }}
-            >
-              <div className="font-mono text-xs text-[#c8f135]/60 mb-6 uppercase tracking-widest">
-                {f.num}
-              </div>
-              <h3 className="text-xl font-bold text-[#f5f2eb] mb-3">{f.title}</h3>
-              <p className="text-white/40 text-sm leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
+      </div>
+      <div>
+        <h3 className="mb-2.5 text-base font-extrabold text-ink">States</h3>
+        <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
+          <PillButton>Default</PillButton>
+          <PillButton className="bg-coral-press">Pressed</PillButton>
+          <PillButton disabled>Disabled</PillButton>
         </div>
-      </section>
+      </div>
+    </div>
+  );
+}
 
-      {/* How it works */}
-      <section id="how" className="px-6 md:px-12 py-28 bg-[#111] border-y border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <p className="font-mono text-xs text-[#c8f135] uppercase tracking-widest mb-4">
-            / How it works
-          </p>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#f5f2eb] mb-20">
-            Three steps.<br />
-            <span className="text-white/25">That&apos;s actually it.</span>
-          </h2>
+function StatusPillShowcase() {
+  return (
+    <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
+      {STATUSES.map((s) => (
+        <StatusPill key={s} status={s} />
+      ))}
+    </div>
+  );
+}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              {
-                step: "1",
-                title: "Connect your clients",
-                desc: "Import from your contacts or add manually. Lekka remembers everything for next time.",
-              },
-              {
-                step: "2",
-                title: "Build your invoice",
-                desc: "Choose a template, add your line items. Done in under a minute, guaranteed.",
-              },
-              {
-                step: "3",
-                title: "Send & get paid",
-                desc: "Your client clicks one button. Money moves. You get a notification. Simple.",
-              },
-            ].map((item) => (
-              <div key={item.step} className="relative">
-                <div className="font-mono text-8xl font-bold text-[#c8f135]/10 mb-4 leading-none select-none">
-                  {item.step}
-                </div>
-                <Separator className="bg-[#c8f135]/30 w-12 h-px mb-6" />
-                <h3 className="text-2xl font-bold text-[#f5f2eb] mb-3">{item.title}</h3>
-                <p className="text-white/40 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+function InputShowcase() {
+  return (
+    <div className="grid max-w-xl gap-4 rounded-xl bg-card p-7 shadow-card">
+      <div>
+        <FieldLabel htmlFor="biz">Business name</FieldLabel>
+        <InputField id="biz" defaultValue="Raj Kumar Trading" />
+      </div>
+      <div>
+        <FieldLabel htmlFor="phone">Phone</FieldLabel>
+        <InputField id="phone" defaultValue="+91 98765 43210" />
+      </div>
+      <div>
+        <FieldLabel htmlFor="gstin">GSTIN · optional</FieldLabel>
+        <InputField
+          id="gstin"
+          size="mobile"
+          placeholder="22AAAAA0000A1Z5"
+        />
+      </div>
+    </div>
+  );
+}
+
+function CardShowcase() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <div className="text-xs font-extrabold tracking-wide text-ink-3 uppercase">
+            Received this month
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="px-6 md:px-12 py-28 max-w-7xl mx-auto">
-        <p className="font-mono text-xs text-[#c8f135] uppercase tracking-widest mb-4">
-          / From the field
-        </p>
-        <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#f5f2eb] mb-16">
-          Freelancers love it.
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <Card
-              key={t.name}
-              className="card-hover bg-[#161616] border-white/5 p-8 rounded-2xl animate-fade-up"
-              style={{ animationDelay: `${0.1 + i * 0.12}s` }}
-            >
-              <p className="text-[#f5f2eb]/80 text-lg leading-relaxed mb-8">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <Avatar className="w-9 h-9 bg-[#c8f135]/10 border border-[#c8f135]/20">
-                  <AvatarFallback className="text-[#c8f135] text-xs font-bold bg-transparent">
-                    {t.initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="text-sm font-semibold text-[#f5f2eb]">{t.name}</div>
-                  <div className="text-xs text-white/40 font-mono">{t.role}</div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="px-6 md:px-12 py-28 bg-[#111] border-y border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <p className="font-mono text-xs text-[#c8f135] uppercase tracking-widest mb-4">
-            / Pricing
-          </p>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#f5f2eb] mb-16">
-            Honest pricing.<br />
-            <span className="text-white/25">No surprises.</span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                plan: "Free",
-                price: "$0",
-                period: "/mo",
-                desc: "For solo freelancers just getting started.",
-                features: ["5 invoices/month", "2 clients", "PDF export", "Basic templates"],
-                cta: "Start free",
-                highlight: false,
-              },
-              {
-                plan: "Solo",
-                price: "$12",
-                period: "/mo",
-                desc: "Everything you need as a full-time freelancer.",
-                features: ["Unlimited invoices", "Unlimited clients", "Auto reminders", "Multi-currency", "Stripe & PayPal"],
-                cta: "Get started",
-                highlight: true,
-              },
-              {
-                plan: "Studio",
-                price: "$29",
-                period: "/mo",
-                desc: "For small teams and agencies with multiple members.",
-                features: ["Everything in Solo", "5 team members", "Client portal", "Custom branding", "Priority support"],
-                cta: "Contact us",
-                highlight: false,
-              },
-            ].map((p) => (
-              <div
-                key={p.plan}
-                className={`rounded-2xl p-8 border transition-all ${
-                  p.highlight
-                    ? "bg-[#c8f135] border-[#c8f135] text-[#0e0e0e]"
-                    : "bg-[#161616] border-white/5 text-[#f5f2eb] card-hover"
-                }`}
-              >
-                <div className={`font-mono text-xs uppercase tracking-widest mb-6 ${p.highlight ? "text-[#0e0e0e]/60" : "text-[#c8f135]/60"}`}>
-                  {p.plan}
-                </div>
-                <div className="flex items-end gap-1 mb-3">
-                  <span className="text-5xl font-extrabold">{p.price}</span>
-                  <span className={`mb-2 text-sm ${p.highlight ? "text-[#0e0e0e]/50" : "text-white/40"}`}>{p.period}</span>
-                </div>
-                <p className={`text-sm mb-8 ${p.highlight ? "text-[#0e0e0e]/60" : "text-white/40"}`}>{p.desc}</p>
-                <ul className="space-y-3 mb-10">
-                  {p.features.map((f) => (
-                    <li key={f} className={`text-sm flex items-center gap-2 ${p.highlight ? "text-[#0e0e0e]/80" : "text-white/60"}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${p.highlight ? "bg-[#0e0e0e]/40" : "bg-[#c8f135]/50"}`} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className={`w-full rounded-full font-bold ${
-                    p.highlight
-                      ? "bg-[#0e0e0e] text-[#c8f135] hover:bg-[#0e0e0e]/90"
-                      : "bg-[#c8f135] text-[#0e0e0e] hover:bg-[#d6f755]"
-                  }`}
-                >
-                  {p.cta}
-                </Button>
-              </div>
-            ))}
+          <CardTitle className="tabular mt-2 font-sans text-3xl font-extrabold tracking-tight text-paid-ink">
+            ₹68,200
+          </CardTitle>
+          <CardDescription className="mt-1.5 text-sm text-ink-2">
+            ↗ 12% vs last month
+          </CardDescription>
+        </CardHeader>
+      </Card>
+      <Card className="bg-primary text-primary-foreground">
+        <CardHeader>
+          <div className="text-xs font-extrabold tracking-wide opacity-90 uppercase">
+            Total outstanding
           </div>
-        </div>
-      </section>
+          <CardTitle className="tabular mt-2 font-sans text-4xl font-extrabold tracking-tight">
+            ₹26,400
+          </CardTitle>
+          <CardDescription className="mt-1.5 text-sm text-primary-foreground/90">
+            4 unpaid invoices
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    </div>
+  );
+}
 
-      {/* CTA */}
-      <section className="px-6 md:px-12 py-32 max-w-7xl mx-auto text-center">
-        <p className="font-mono text-xs text-[#c8f135] uppercase tracking-widest mb-6">
-          / Ready?
-        </p>
-        <h2 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-[#f5f2eb] mb-8 leading-[0.9]">
-          Start billing<br />
-          <span className="text-[#c8f135] lime-glow">smarter today.</span>
-        </h2>
-        <p className="text-white/40 text-lg max-w-md mx-auto mb-10">
-          No credit card. No setup fee. Just cleaner invoicing from day one.
-        </p>
-        <Button
-          size="lg"
-          className="bg-[#c8f135] text-[#0e0e0e] hover:bg-[#d6f755] font-bold text-lg px-12 rounded-full h-14"
-        >
-          Create your first invoice free
-        </Button>
-      </section>
+function AvatarShowcase() {
+  return (
+    <div className="flex flex-wrap items-center gap-4 rounded-xl bg-card p-7 shadow-card">
+      <Avatar size="sm">
+        <AvatarFallback>RK</AvatarFallback>
+      </Avatar>
+      <Avatar>
+        <AvatarFallback>AS</AvatarFallback>
+      </Avatar>
+      <Avatar size="lg">
+        <AvatarFallback>PM</AvatarFallback>
+      </Avatar>
+      <Avatar size="lg" className="bg-primary">
+        <AvatarFallback className="bg-primary text-primary-foreground">
+          B
+        </AvatarFallback>
+      </Avatar>
+    </div>
+  );
+}
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 px-6 md:px-12 py-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <span className="font-mono text-lg font-bold text-[#c8f135]">lekka</span>
-          <div className="flex items-center gap-6 text-sm text-white/30 font-mono">
-            <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
-            <a href="#" className="hover:text-white/60 transition-colors">Status</a>
+function TypographyShowcase() {
+  return (
+    <div className="rounded-xl bg-card p-7 shadow-card">
+      <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
+        <div className="text-xs text-ink-3">
+          <div className="mb-1 text-sm font-extrabold text-ink">
+            Display · money
           </div>
-          <p className="text-white/20 text-xs font-mono">
-            © 2026 Lekka. All rights reserved.
-          </p>
+          <div>Plus Jakarta · 800</div>
+          <div className="font-mono">48 / 1 · tnum lnum</div>
         </div>
-      </footer>
+        <div className="tabular text-5xl font-extrabold tracking-tight text-primary">
+          ₹68,200
+        </div>
+      </div>
+      <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
+        <div className="text-xs text-ink-3">
+          <div className="mb-1 text-sm font-extrabold text-ink">
+            Heading · h1
+          </div>
+          <div>Plus Jakarta · 800</div>
+          <div className="font-mono">28 / 1.1</div>
+        </div>
+        <div className="text-3xl font-extrabold tracking-tight text-ink">
+          Let&apos;s send your first invoice
+        </div>
+      </div>
+      <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
+        <div className="text-xs text-ink-3">
+          <div className="mb-1 text-sm font-extrabold text-ink">Body</div>
+          <div>Plus Jakarta · 500</div>
+          <div className="font-mono">16 / 1.5</div>
+        </div>
+        <div className="text-base font-medium text-ink-2">
+          Pick a customer or add a new one — your saved customers show up first.
+        </div>
+      </div>
+      <div className="grid items-baseline gap-6 py-5 md:grid-cols-[200px_1fr]">
+        <div className="text-xs text-ink-3">
+          <div className="mb-1 text-sm font-extrabold text-ink">Devanagari</div>
+          <div>Noto Sans Devanagari · 700</div>
+        </div>
+        <div className="text-2xl font-bold text-ink">
+          नमस्ते, राज · कुल बकाया ₹26,400
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function DesignSystemPage() {
+  return (
+    <main className="mx-auto max-w-5xl px-6 py-12 md:py-16">
+      <header className="mb-12">
+        <div className="inline-block rounded-full bg-coral-soft px-3 py-1 text-xs font-extrabold tracking-widest text-coral-ink uppercase">
+          Design system · v0.1
+        </div>
+        <h1 className="mt-4 max-w-3xl text-5xl font-extrabold tracking-tight text-ink">
+          Lekka — a warm, chat-app-simple invoicing tool.
+        </h1>
+        <p className="mt-4 max-w-2xl text-lg text-ink-2">
+          Warm coral on cream. Soft, friendly, the opposite of cold corporate
+          fintech. This page exercises every token and reusable primitive
+          currently in the design system.
+        </p>
+      </header>
+
+      <Section
+        id="colors"
+        title="Colour"
+        intro="One vivid coral primary, warm neutrals, semantic colours for invoice status, and dedicated brand tones for WhatsApp."
+      >
+        <ColorSwatches />
+      </Section>
+
+      <Separator className="my-12" />
+
+      <Section
+        id="type"
+        title="Typography"
+        intro="Plus Jakarta Sans paired with Noto Sans Devanagari for full Hindi support. 16 px body minimum — the audience skews older."
+      >
+        <TypographyShowcase />
+      </Section>
+
+      <Separator className="my-12" />
+
+      <Section
+        id="buttons"
+        title="Buttons"
+        intro="Pill-shaped, friendly. One primary per screen — never two. WhatsApp gets its own brand colour for the send action."
+      >
+        <ButtonShowcase />
+      </Section>
+
+      <Section
+        id="pills"
+        title="Status pills"
+        intro="The full invoice lifecycle has a colour: draft → sent → viewed → partial → paid, plus overdue."
+      >
+        <StatusPillShowcase />
+      </Section>
+
+      <Section
+        id="inputs"
+        title="Inputs"
+        intro="Generous height, big text, clear focus state. Labels are uppercase. Web 44 px, mobile 56 px."
+      >
+        <InputShowcase />
+      </Section>
+
+      <Section
+        id="cards"
+        title="Cards"
+        intro="White surface, 18 px radius, warm shadow. Everything that contains information lives in a card."
+      >
+        <CardShowcase />
+      </Section>
+
+      <Section
+        id="avatars"
+        title="Avatars"
+        intro="Circular initials avatar. Coral tint is the default for the customer-list density. Three sizes."
+      >
+        <AvatarShowcase />
+      </Section>
     </main>
   );
 }

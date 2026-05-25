@@ -1,22 +1,33 @@
 import type { Metadata } from "next";
-import { Syne, Space_Mono } from "next/font/google";
+import {
+  Plus_Jakarta_Sans,
+  Noto_Sans_Devanagari,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
 });
 
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
+const devanagari = Noto_Sans_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const jetMono = JetBrains_Mono({
+  variable: "--font-jet-mono",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Lekka — Invoicing made light",
-  description: "Send invoices, get paid faster. Lekka keeps billing effortless.",
+  title: "Lekka — chat-app-simple invoicing",
+  description:
+    "Warm, friendly invoicing for India's small vendors. Send, get paid, repeat.",
 };
 
 export default function RootLayout({
@@ -27,9 +38,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${devanagari.variable} ${jetMono.variable} h-full antialiased`}
     >
-      <body className="noise min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }
