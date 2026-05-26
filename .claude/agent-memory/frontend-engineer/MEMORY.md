@@ -1,0 +1,1 @@
+- [Dashboard Patterns](project-dashboard-patterns.md) — ESLint rules, token mappings, JSX depth strategy from first dashboard build

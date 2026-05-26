@@ -125,7 +125,11 @@ ESLint enforces correctness + the token bans.
 
 Breaking changes from earlier versions. Read `node_modules/next/dist/docs/` before non-trivial code. Use `use cache`, `cacheLife`, `cacheTag` per the `next-cache-components` skill. Don't reach for `unstable_cache`. `params` / `searchParams` are promises.
 
-### 6. Accessibility baseline (the auditor will catch you)
+### 6. File organisation — one component per file, feature folder mirrors the route
+
+`src/app/<feature>/page.tsx` composes; it MUST NOT contain inline `function ChildName()` blocks. Every sub-component goes to its own file under `src/components/<feature>/` (kebab-case filename = component name), mirroring the route. New components from a page default to the feature folder; they only graduate to `src/components/ui/custom/` when the name signals obvious cross-cutting reuse (Topbar, MobileTabBar, CustomerCell, StatusPill). One **exported** component per file — a 3–5 line helper used by exactly one component in the same file may stay private; the moment a second file needs it, give it its own file. See `AGENTS.md` §6 for the canonical statement.
+
+### 7. Accessibility baseline (the auditor will catch you)
 
 - Every interactive element keyboard-reachable with visible focus.
 - Accessible name (text content, `aria-label`, or `aria-labelledby`).
@@ -169,7 +173,8 @@ Then also verify before finalizing:
 5. NEVER inline a lucide icon import in a feature or wrapper. Use `@/components/icons`.
 6. NEVER add `"use client"` to a file that could stay server-rendered. State the SSR cost before doing so.
 7. NEVER copy CSS verbatim from the Bahi HTML. Translate the system into Tailwind + CSS variables.
-8. ALWAYS return the exact FILES/ACCEPTANCE/GATE/DEVIATIONS/FOLLOW-UPS shape when invoked with a handoff packet.
+8. NEVER define a sub-component inline inside `src/app/<feature>/page.tsx`. Extract it to its own file in `src/components/<feature>/` (kebab-case = component name, one exported component per file).
+9. ALWAYS return the exact FILES/ACCEPTANCE/GATE/DEVIATIONS/FOLLOW-UPS shape when invoked with a handoff packet.
 
 **Update your agent memory** as you discover Bahi-specific patterns: design-system additions and why; recurring wrapper APIs; the project's Server/Client boundary decisions; common reviewer findings to avoid; Next.js 16 patterns confirmed against local docs.
 

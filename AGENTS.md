@@ -54,6 +54,33 @@ The shared UI directory is the first place to look, not the last.
 - **If a new reusable component appears in app/page code, stop and ask the user** whether it should be promoted to `src/components/ui/`. Don't move it silently, and don't leave a clearly-shared component stranded without flagging it.
 - Never edit pristine shadcn primitives in `src/components/ui/` directly — brand variants go in sibling wrappers via `cn()`.
 
+### 6. File organisation — one component per file, mirror under `src/components/<feature>/`
+
+A page in `src/app/<feature>/page.tsx` is for composition only. It MUST NOT define multiple sub-components inline. Pull every sub-component out into its own file under `src/components/<feature>/`, mirroring the route. `src/app/` stays pure routing; all React lives under `src/components/`.
+
+```
+src/app/dashboard/
+  page.tsx              ← composes; no inline sub-components
+  layout.tsx
+src/components/
+  dashboard/            ← feature folder, mirrors the route
+    topbar.tsx          ← one exported component per file
+    hero-grid.tsx
+    invoices-card.tsx
+    filter-chips.tsx
+    invoices-table.tsx
+  ui/
+    primitives/         ← pristine shadcn / Base UI
+    custom/             ← brand wrappers + cross-cutting custom components
+```
+
+Rules:
+
+- **One exported component per file.** A tiny private helper used by exactly one component in the same file may stay private (not exported); the moment a second file needs it, give it its own file.
+- **Filename = kebab-case of the component name.** `InvoicesTable` → `invoices-table.tsx`. No `index.tsx` files for components; the file's name carries the symbol.
+- **Feature folder by default.** New components from a page go to `src/components/<feature>/` named after the route. Don't reach for `src/components/ui/custom/` until the component is **obviously cross-cutting** — meaning the name signals app-wide use (Topbar, MobileTabBar, CustomerCell, StatusPill, PillButton). When in doubt, start in the feature folder and ask before promoting.
+- **Page composes, page doesn't define.** If `page.tsx` grows a `function ChildName()` block, that block belongs in its own file in the feature folder. The only exceptions are the default-exported page component itself and trivial 3–5 line layout fragments that have no name worth giving.
+
 ---
 
 ## Agent dispatch (mandatory routing rule)
@@ -61,7 +88,13 @@ The shared UI directory is the first place to look, not the last.
 There is no top-level router agent **by design** — a subagent runs once and returns, so it cannot own the per-unit human-review gate. **The main conversation is the router.** Apply this deterministic rule before delegating any build/feature work; do not improvise routing.
 
 ```
-Is a design artifact present? (HTML/CSS file, screenshot, Figma link, "match this design", "pixel-perfect")
+Is a design artifact present OR referenced? — ANY of these counts, route on intent not exact phrasing:
+  • HTML/CSS pasted, attached, or referenced ("the html below", "this html", "from the html", "use the html")
+  • Screenshot, image, or Figma link provided
+  • A `.html` filename mentioned (Bahi.html, Invoice App.html, Bahi Breakpoints.html, etc.)
+  • Phrasings: "use the below html", "use this html to …", "create/build/make … from this html",
+    "convert this html", "turn this html into …", "match this design", "pixel-perfect",
+    "design audit", "fix design mismatches", "here's the html for X", "build X from the design"
   └─ YES → design-fidelity-orchestrator → frontend-engineer → reviewer → accessibility-auditor
   └─ NO ↓
 Is it a PRD feature build / "start Story N" / "wire live data" / "next section"?
@@ -75,6 +108,8 @@ Standalone a11y check of an existing component/page?                  → access
 Standalone non-negotiables review of a diff/branch?                   → reviewer (direct)
 Ambiguous which lane?                                                 → ask one routing question, then dispatch
 ```
+
+**Routing tiebreaker:** if the prompt mentions HTML / a design artifact AT ALL — even alongside words like "create", "build", "make", "add" that sound like a feature build — route to `design-fidelity-orchestrator`. The design lane wins over the PRD lane whenever a design source is present. Never strip the design context and hand a raw "create dashboard page" task to `frontend-engineer` when HTML was provided.
 
 **Implementer routing (inside `prd-build-orchestrator`, and for direct delegation):**
 

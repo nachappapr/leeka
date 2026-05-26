@@ -40,6 +40,7 @@
 
   /* Lekka brand */
   --color-coral: #f46a39;
+  --color-coral-deep: #e94a1f;
   --color-coral-press: #d9531f;
   --color-coral-soft: #ffe7da;
   --color-coral-ink: #5a1e08;
@@ -59,6 +60,8 @@
   --color-paid-soft: #e2f4e9;
   --color-paid-ink: #0f5e32;
   --color-pending: #c98000;
+  --color-pending-bar: #8a5700;
+  --color-pending-bright: #ffd66b;
   --color-pending-soft: #fff1d1;
   --color-pending-ink: #6e4500;
   --color-overdue: #c5392b;
@@ -70,10 +73,13 @@
   --color-info: #1b6fa8;
   --color-info-soft: #deeef9;
   --color-whatsapp: #25d366;
+  --color-whatsapp-soft: #e1f9ea;
   --color-whatsapp-press: #1fae54;
+  --color-whatsapp-icon: #178040;
 
   /* radii — Lekka: soft, friendly */
   --radius-sm: 8px;
+  --radius-nav-item: 10px;
   --radius-md: 12px;
   --radius-lg: 14px;
   --radius-xl: 18px;
@@ -87,6 +93,7 @@
   --shadow-press: 0 1px 0 rgba(63, 40, 16, 0.08);
   --shadow-sheet: 0 -8px 32px rgba(63, 40, 16, 0.18);
   --shadow-coral: 0 4px 14px rgba(244, 106, 57, 0.35);
+  --shadow-coral-hero: 0 14px 30px rgba(244, 106, 57, 0.22);
 
   /* fonts */
   --font-sans:
@@ -94,6 +101,93 @@
   --font-heading:
     var(--font-jakarta), var(--font-devanagari), system-ui, sans-serif;
   --font-mono: var(--font-jet-mono), ui-monospace, monospace;
+
+  /* type — numeric font sizes (1:1 with Lekka --fs-* scale) */
+  --text-9: 9px;
+  --text-10: 10px;
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-16: 16px;
+  --text-17: 17px;
+  --text-18: 18px;
+  --text-19: 19px;
+  --text-20: 20px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-26: 26px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-36: 36px;
+  --text-40: 40px;
+  --text-44: 44px;
+  --text-48: 48px;
+  --text-56: 56px;
+  --text-64: 64px;
+
+  /* type — semantic aliases with paired line-height + tracking */
+  --text-kicker: 11px;
+  --text-kicker--line-height: 1;
+  --text-kicker--letter-spacing: 0.06em;
+  --text-kicker--font-weight: 800;
+
+  --text-label: 12px;
+  --text-label--line-height: 1.4;
+
+  --text-caption: 13px;
+  --text-caption--line-height: 1.4;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.5;
+
+  --text-body: 16px;
+  --text-body--line-height: 1.5;
+
+  --text-title-sm: 18px;
+  --text-title-sm--line-height: 1.3;
+  --text-title-sm--letter-spacing: -0.01em;
+
+  --text-title: 22px;
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.01em;
+
+  --text-h2: 28px;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-h1: 48px;
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.02em;
+
+  --text-money: 44px;
+  --text-money--line-height: 1;
+  --text-money--letter-spacing: -0.01em;
+
+  --text-display: 64px;
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.02em;
+
+  /* type — font weights (Lekka --fw-*); overrides Tailwind font-black 900 → 800 */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 800;
+
+  /* type — line-heights (Lekka --lh-*); overrides Tailwind defaults */
+  --leading-tight: 1;
+  --leading-snug: 1.15;
+  --leading-normal: 1.4;
+  --leading-relaxed: 1.5;
+
+  /* type — letter-spacing (Lekka --ls-*); overrides Tailwind defaults */
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.06em;
 
   /* tap target floor */
   --spacing-tap: 48px;
@@ -139,7 +233,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground text-body;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
