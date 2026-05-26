@@ -1,4 +1,5 @@
 export * from "./activity"
 export * from "./aging"
+export * from "./customers"
 export * from "./invoices"
 export * from "./navigation"

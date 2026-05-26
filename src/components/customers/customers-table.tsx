@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -17,6 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsUpDown,
+  Search,
 } from "@/components/icons";
 import {
   DataBody,
@@ -26,67 +28,87 @@ import {
   DataRow,
   DataTable,
 } from "@/components/ui/custom/data-table";
+import { InputField } from "@/components/ui/custom/input-field";
 import { cn } from "@/lib/utils";
-import type { Invoice } from "@/lib/types";
-import { invoiceColumns } from "./invoices-columns";
+import type { Customer } from "@/lib/types";
+import { customerColumns } from "./customers-columns";
+import { customerFilter } from "./customers-filter";
 
 const PAGE_SIZE = 5;
 
-interface InvoicesTableProps {
-  invoices: ReadonlyArray<Invoice>;
+interface CustomersTableProps {
+  customers: ReadonlyArray<Customer>;
 }
 
-export function InvoicesTable({ invoices }: InvoicesTableProps) {
+export function CustomersTable({ customers }: CustomersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: PAGE_SIZE,
   });
 
-  // Reset to page 0 when the status filter upstream changes the invoices prop
-  useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  }, [invoices]);
-
-  // eslint-disable-next-line react-hooks/incompatible-library -- useReactTable mutates during render; component skips React Compiler memoization
+  // eslint-disable-next-line react-hooks/incompatible-library -- useReactTable mutates during render; "use no memo" opts out but the ESLint rule fires regardless
   const table = useReactTable({
-    data: invoices as Invoice[],
-    columns: invoiceColumns,
-    state: { sorting, pagination },
+    data: customers as Customer[],
+    columns: customerColumns,
+    state: { sorting, pagination, globalFilter },
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
+    onGlobalFilterChange: (value: string) => {
+      setGlobalFilter(value);
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    },
+    globalFilterFn: customerFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   const { pageIndex, pageSize } = table.getState().pagination;
-  const totalRows = invoices.length;
+  const totalRows = table.getFilteredRowModel().rows.length;
   const from = pageIndex * pageSize + 1;
   const to = Math.min((pageIndex + 1) * pageSize, totalRows);
 
   return (
     <div className="max-mobile:hidden">
-      <DataTable aria-label="Invoices" className="table-fixed">
+      <div className="flex items-center border-b border-border px-6 py-4">
+        <div className="relative flex-1 max-w-xs">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-ink-3"
+            aria-hidden
+          />
+          <InputField
+            placeholder="Search customers…"
+            value={globalFilter}
+            onChange={(e) => table.setGlobalFilter(e.target.value)}
+            className="pl-9"
+            aria-label="Search customers"
+          />
+        </div>
+      </div>
+
+      <DataTable aria-label="Customers" className="table-fixed">
         <DataHeader>
           {table.getHeaderGroups().map((hg) => (
             <DataRow key={hg.id} className="cursor-default hover:bg-background">
               {hg.headers.map((header, i) => {
                 const canSort = header.column.getCanSort();
                 const sorted = header.column.getIsSorted();
+                const isFirst = i === 0;
                 const isLast = i === hg.headers.length - 1;
 
                 return (
                   <DataHead
                     key={header.id}
                     className={cn(
-                      i === 0 && "w-2/6 pl-6",
-                      i > 0 && !isLast && "w-1/6",
-                      i === 4 && "text-right",
-                      isLast && "w-15 pr-6",
+                      isFirst && "w-2/6 pl-6",
+                      !isFirst && !isLast && "w-1/6",
+                      isLast && "w-1/6 pr-6 text-right",
+                      i === 3 && "text-right",
                       canSort && "cursor-pointer select-none",
                     )}
-                    aria-hidden={isLast || undefined}
                     onClick={
                       canSort
                         ? header.column.getToggleSortingHandler()
@@ -102,25 +124,23 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                             : undefined
                     }
                   >
-                    {!isLast && (
-                      <span className="inline-flex items-center gap-1">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                        {canSort && (
-                          <span aria-hidden className="text-ink-3">
-                            {sorted === "asc" ? (
-                              <ArrowUp className="size-3" />
-                            ) : sorted === "desc" ? (
-                              <ArrowDown className="size-3" />
-                            ) : (
-                              <ChevronsUpDown className="size-3" />
-                            )}
-                          </span>
-                        )}
-                      </span>
-                    )}
+                    <span className="inline-flex items-center gap-1">
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                      {canSort && (
+                        <span aria-hidden className="text-ink-3">
+                          {sorted === "asc" ? (
+                            <ArrowUp className="size-3" />
+                          ) : sorted === "desc" ? (
+                            <ArrowDown className="size-3" />
+                          ) : (
+                            <ChevronsUpDown className="size-3" />
+                          )}
+                        </span>
+                      )}
+                    </span>
                   </DataHead>
                 );
               })}
@@ -131,14 +151,15 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
           {table.getRowModel().rows.map((row) => (
             <DataRow key={row.id}>
               {row.getVisibleCells().map((cell, i) => {
+                const isFirst = i === 0;
                 const isLast = i === row.getVisibleCells().length - 1;
                 return (
                   <DataCell
                     key={cell.id}
                     className={cn(
-                      i === 0 && "pl-6",
-                      i === 4 && "text-right",
-                      isLast && "pr-6 text-center",
+                      isFirst && "pl-6",
+                      isLast && "pr-6 text-right",
+                      i === 3 && "text-right",
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -149,6 +170,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
           ))}
         </DataBody>
       </DataTable>
+
+      {totalRows === 0 && (
+        <p className="py-12 text-center text-body-sm text-ink-3">
+          No customers match &ldquo;{globalFilter}&rdquo;
+        </p>
+      )}
 
       {totalRows > pageSize && (
         <div className="flex items-center justify-between border-t border-border px-6 py-3">

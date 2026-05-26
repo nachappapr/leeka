@@ -1,10 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type PaginationState,
+  type SortingState,
+} from "@tanstack/react-table";
 
-import { ChevronRight } from "@/components/icons";
-import { CustomerCell } from "@/components/ui/custom/customer-cell";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsUpDown,
+} from "@/components/icons";
 import {
   DataBody,
   DataCell,
@@ -18,10 +31,12 @@ import {
   FilterChips,
   type FilterChipsItem,
 } from "@/components/ui/custom/filter-chips";
-import { StatusPill } from "@/components/ui/custom/status-pill";
+import { dashboardColumns } from "./dashboard-columns";
 import { INVOICES_FILTER_CHIPS } from "@/lib/constants";
 import type { Invoice, InvoiceStatusFilter } from "@/lib/types";
-import { formatInvoiceDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+const PAGE_SIZE = 5;
 
 interface DashboardInvoicesShellProps {
   invoices: ReadonlyArray<Invoice>;
@@ -31,6 +46,11 @@ export function DashboardInvoicesShell({
   invoices,
 }: DashboardInvoicesShellProps) {
   const [filter, setFilter] = useState<InvoiceStatusFilter>("all");
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: PAGE_SIZE,
+  });
 
   const chipItems = useMemo<ReadonlyArray<FilterChipsItem>>(
     () =>
@@ -53,6 +73,28 @@ export function DashboardInvoicesShell({
     [invoices, filter],
   );
 
+  // Reset to page 0 when status filter changes
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  }, [filter]);
+
+  // eslint-disable-next-line react-hooks/incompatible-library -- useReactTable mutates during render; component skips React Compiler memoization
+  const table = useReactTable({
+    data: filteredInvoices as Invoice[],
+    columns: dashboardColumns,
+    state: { sorting, pagination },
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const totalRows = filteredInvoices.length;
+  const from = pageIndex * pageSize + 1;
+  const to = Math.min((pageIndex + 1) * pageSize, totalRows);
+
   return (
     <>
       <FilterChips
@@ -65,51 +107,124 @@ export function DashboardInvoicesShell({
         Showing {filteredInvoices.length} invoice
         {filteredInvoices.length === 1 ? "" : "s"}
       </p>
-      <DataTable
-        className="table-fixed max-mobile:hidden"
-        aria-label="Recent invoices"
-      >
-        <DataHeader>
-          <DataRow className="cursor-default hover:bg-background">
-            <DataHead className="w-2/6 pl-6">Customer</DataHead>
-            <DataHead className="w-1/6">Invoice #</DataHead>
-            <DataHead className="w-1/6">Date</DataHead>
-            <DataHead className="w-1/6">Status</DataHead>
-            <DataHead className="w-1/6 text-right">Amount</DataHead>
-            <DataHead className="w-15 pr-6" aria-hidden />
-          </DataRow>
-        </DataHeader>
-        <DataBody>
-          {filteredInvoices.map((inv) => (
-            <DataRow key={inv.id}>
-              <DataCell className="pl-6">
-                <CustomerCell customer={inv.customer} city={inv.city} />
-              </DataCell>
-              <DataCell className="text-body-sm font-medium text-ink-2">
-                {inv.id}
-              </DataCell>
-              <DataCell className="text-body-sm text-ink-2">
-                <time dateTime={inv.isoDate}>{formatInvoiceDate(inv.isoDate)}</time>
-              </DataCell>
-              <DataCell>
-                <StatusPill status={inv.status} />
-              </DataCell>
-              <DataCell className="tabular text-right text-body-sm font-bold text-ink">
-                {inv.amount}
-              </DataCell>
-              <DataCell className="pr-6 text-center">
-                <Link
-                  href={`/invoices/${inv.id.replace("#", "")}`}
-                  aria-label={`View invoice ${inv.id}`}
-                  className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-                >
-                  <ChevronRight className="size-4.5" aria-hidden />
-                </Link>
-              </DataCell>
-            </DataRow>
-          ))}
-        </DataBody>
-      </DataTable>
+
+      <div className="max-mobile:hidden">
+        <DataTable aria-label="Recent invoices" className="table-fixed">
+          <DataHeader>
+            {table.getHeaderGroups().map((hg) => (
+              <DataRow
+                key={hg.id}
+                className="cursor-default hover:bg-background"
+              >
+                {hg.headers.map((header, i) => {
+                  const canSort = header.column.getCanSort();
+                  const sorted = header.column.getIsSorted();
+                  const isLast = i === hg.headers.length - 1;
+
+                  return (
+                    <DataHead
+                      key={header.id}
+                      className={cn(
+                        i === 0 && "w-2/6 pl-6",
+                        i > 0 && !isLast && "w-1/6",
+                        i === 4 && "text-right",
+                        isLast && "w-15 pr-6",
+                        canSort && "cursor-pointer select-none",
+                      )}
+                      aria-hidden={isLast || undefined}
+                      onClick={
+                        canSort
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
+                      aria-sort={
+                        sorted === "asc"
+                          ? "ascending"
+                          : sorted === "desc"
+                            ? "descending"
+                            : canSort
+                              ? "none"
+                              : undefined
+                      }
+                    >
+                      {!isLast && (
+                        <span className="inline-flex items-center gap-1">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                          {canSort && (
+                            <span aria-hidden className="text-ink-3">
+                              {sorted === "asc" ? (
+                                <ArrowUp className="size-3" />
+                              ) : sorted === "desc" ? (
+                                <ArrowDown className="size-3" />
+                              ) : (
+                                <ChevronsUpDown className="size-3" />
+                              )}
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </DataHead>
+                  );
+                })}
+              </DataRow>
+            ))}
+          </DataHeader>
+          <DataBody>
+            {table.getRowModel().rows.map((row) => (
+              <DataRow key={row.id}>
+                {row.getVisibleCells().map((cell, i) => {
+                  const isLast = i === row.getVisibleCells().length - 1;
+                  return (
+                    <DataCell
+                      key={cell.id}
+                      className={cn(
+                        i === 0 && "pl-6",
+                        i === 4 && "text-right",
+                        isLast && "pr-6 text-center",
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </DataCell>
+                  );
+                })}
+              </DataRow>
+            ))}
+          </DataBody>
+        </DataTable>
+
+        {totalRows > pageSize && (
+          <div className="flex items-center justify-between border-t border-border px-6 py-3">
+            <p className="text-body-sm text-ink-3">
+              {from}–{to} of {totalRows}
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                aria-label="Previous page"
+                className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+              >
+                <ChevronLeft className="size-4" aria-hidden />
+              </button>
+              <button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                aria-label="Next page"
+                className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+              >
+                <ChevronRight className="size-4" aria-hidden />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <ul
         aria-label="Recent invoices"
         className="flex flex-col gap-3 p-4 min-mobile:hidden"

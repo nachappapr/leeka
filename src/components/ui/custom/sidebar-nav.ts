@@ -23,19 +23,19 @@ export const NAV_MAIN = [
   },
   {
     label: "New invoice",
-    href: "/dashboard/new",
+    href: "/invoices/new",
     icon: Plus,
     badge: undefined as number | undefined,
   },
   {
     label: "Customers",
-    href: "/dashboard/customers",
+    href: "/customers",
     icon: Users,
     badge: undefined as number | undefined,
   },
   {
     label: "Reports",
-    href: "/dashboard/reports",
+    href: "/reports",
     icon: Asterisk,
     badge: undefined as number | undefined,
   },

@@ -32,6 +32,10 @@ export {
   CheckCheck,
   Eye,
   Menu,
+  ArrowUp,
+  ArrowDown,
+  ChevronsUpDown,
+  ChevronLeft,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source

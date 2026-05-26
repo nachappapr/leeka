@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
 
 export interface CustomerCellProps {
   customer: string
-  city: string
+  city?: string
   className?: string
 }
 
@@ -23,7 +23,7 @@ export function CustomerCell({ customer, city, className }: CustomerCellProps) {
       </Avatar>
       <div>
         <div className="text-body-sm font-semibold text-ink">{customer}</div>
-        <div className="text-label text-ink-3">{city}</div>
+        {city && <div className="text-label text-ink-3">{city}</div>}
       </div>
     </div>
   )
