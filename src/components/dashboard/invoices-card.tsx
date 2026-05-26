@@ -45,14 +45,14 @@ export function InvoicesCard() {
               <DataCell className="pl-6">
                 <CustomerCell customer={inv.customer} city={inv.city} />
               </DataCell>
-              <DataCell className="text-sm font-medium text-ink-2">
+              <DataCell className="text-body-sm font-medium text-ink-2">
                 {inv.id}
               </DataCell>
-              <DataCell className="text-sm text-ink-2">{inv.date}</DataCell>
+              <DataCell className="text-body-sm text-ink-2">{inv.date}</DataCell>
               <DataCell>
                 <StatusPill status={inv.status} />
               </DataCell>
-              <DataCell className="tabular pr-6 text-right text-sm font-bold text-ink">
+              <DataCell className="tabular pr-6 text-right text-body-sm font-bold text-ink">
                 {inv.amount}
               </DataCell>
             </DataRow>

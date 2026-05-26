@@ -28,8 +28,8 @@ function ActivityRow({
         <Icon className="h-4 w-4" aria-hidden />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-sm font-bold text-ink">{item.title}</div>
-        <div className="mt-0.5 text-xs text-ink-3">{item.meta}</div>
+        <div className="text-body-sm font-bold text-ink">{item.title}</div>
+        <div className="mt-0.5 text-label text-ink-3">{item.meta}</div>
       </div>
     </div>
   )

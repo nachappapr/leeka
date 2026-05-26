@@ -23,7 +23,7 @@ export function MobileTabBar() {
             type="button"
             aria-label={tab.label}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 py-2 text-xs font-bold",
+              "flex flex-col items-center justify-center gap-1 py-2 text-label font-bold",
               tab.active ? "text-coral" : "text-ink-3",
             )}
           >

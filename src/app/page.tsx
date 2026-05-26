@@ -91,7 +91,7 @@ function Section({
         {title}
       </h2>
       {intro ? (
-        <p className="mb-6 max-w-2xl text-base text-ink-2">{intro}</p>
+        <p className="mb-6 max-w-2xl text-body text-ink-2">{intro}</p>
       ) : (
         <div className="mb-6" />
       )}
@@ -110,11 +110,11 @@ function ColorSwatches() {
         >
           <div className={`h-20 ${s.cls}`} aria-hidden />
           <div className="px-3.5 py-3">
-            <div className="text-sm font-extrabold text-ink">{s.label}</div>
-            <div className="mt-0.5 font-mono text-xs text-ink-3">
+            <div className="text-body-sm font-extrabold text-ink">{s.label}</div>
+            <div className="mt-0.5 font-mono text-label text-ink-3">
               {s.token}
             </div>
-            <div className="mt-0.5 font-mono text-xs text-ink-2">{s.hex}</div>
+            <div className="mt-0.5 font-mono text-label text-ink-2">{s.hex}</div>
           </div>
         </div>
       ))}
@@ -126,7 +126,7 @@ function ButtonShowcase() {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="mb-2.5 text-base font-extrabold text-ink">Tones</h3>
+        <h3 className="mb-2.5 text-body font-extrabold text-ink">Tones</h3>
         <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
           <PillButton tone="primary">Primary action</PillButton>
           <PillButton tone="secondary">Secondary</PillButton>
@@ -138,7 +138,7 @@ function ButtonShowcase() {
         </div>
       </div>
       <div>
-        <h3 className="mb-2.5 text-base font-extrabold text-ink">Sizes</h3>
+        <h3 className="mb-2.5 text-body font-extrabold text-ink">Sizes</h3>
         <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
           <PillButton size="sm">Small · 36</PillButton>
           <PillButton size="md">Default · 44</PillButton>
@@ -146,7 +146,7 @@ function ButtonShowcase() {
         </div>
       </div>
       <div>
-        <h3 className="mb-2.5 text-base font-extrabold text-ink">States</h3>
+        <h3 className="mb-2.5 text-body font-extrabold text-ink">States</h3>
         <div className="flex flex-wrap items-center gap-3 rounded-xl bg-card p-7 shadow-card">
           <PillButton>Default</PillButton>
           <PillButton className="bg-coral-press">Pressed</PillButton>
@@ -195,26 +195,26 @@ function CardShowcase() {
     <div className="grid gap-4 sm:grid-cols-2">
       <Card>
         <CardHeader>
-          <div className="text-xs font-extrabold tracking-wide text-ink-3 uppercase">
+          <div className="text-label font-extrabold tracking-wide text-ink-3 uppercase">
             Received this month
           </div>
           <CardTitle className="tabular mt-2 font-sans text-3xl font-extrabold tracking-tight text-paid-ink">
             ₹68,200
           </CardTitle>
-          <CardDescription className="mt-1.5 text-sm text-ink-2">
+          <CardDescription className="mt-1.5 text-body-sm text-ink-2">
             ↗ 12% vs last month
           </CardDescription>
         </CardHeader>
       </Card>
       <Card className="bg-primary text-primary-foreground">
         <CardHeader>
-          <div className="text-xs font-extrabold tracking-wide opacity-90 uppercase">
+          <div className="text-label font-extrabold tracking-wide opacity-90 uppercase">
             Total outstanding
           </div>
           <CardTitle className="tabular mt-2 font-sans text-4xl font-extrabold tracking-tight">
             ₹26,400
           </CardTitle>
-          <CardDescription className="mt-1.5 text-sm text-primary-foreground/90">
+          <CardDescription className="mt-1.5 text-body-sm text-primary-foreground/90">
             4 unpaid invoices
           </CardDescription>
         </CardHeader>
@@ -248,20 +248,20 @@ function TypographyShowcase() {
   return (
     <div className="rounded-xl bg-card p-7 shadow-card">
       <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
-        <div className="text-xs text-ink-3">
-          <div className="mb-1 text-sm font-extrabold text-ink">
+        <div className="text-label text-ink-3">
+          <div className="mb-1 text-body-sm font-extrabold text-ink">
             Display · money
           </div>
           <div>Plus Jakarta · 800</div>
           <div className="font-mono">48 / 1 · tnum lnum</div>
         </div>
-        <div className="tabular text-5xl font-extrabold tracking-tight text-primary">
+        <div className="tabular text-h1 font-extrabold tracking-tight text-primary">
           ₹68,200
         </div>
       </div>
       <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
-        <div className="text-xs text-ink-3">
-          <div className="mb-1 text-sm font-extrabold text-ink">
+        <div className="text-label text-ink-3">
+          <div className="mb-1 text-body-sm font-extrabold text-ink">
             Heading · h1
           </div>
           <div>Plus Jakarta · 800</div>
@@ -272,18 +272,18 @@ function TypographyShowcase() {
         </div>
       </div>
       <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
-        <div className="text-xs text-ink-3">
-          <div className="mb-1 text-sm font-extrabold text-ink">Body</div>
+        <div className="text-label text-ink-3">
+          <div className="mb-1 text-body-sm font-extrabold text-ink">Body</div>
           <div>Plus Jakarta · 500</div>
           <div className="font-mono">16 / 1.5</div>
         </div>
-        <div className="text-base font-medium text-ink-2">
+        <div className="text-body font-medium text-ink-2">
           Pick a customer or add a new one — your saved customers show up first.
         </div>
       </div>
       <div className="grid items-baseline gap-6 py-5 md:grid-cols-[200px_1fr]">
-        <div className="text-xs text-ink-3">
-          <div className="mb-1 text-sm font-extrabold text-ink">Devanagari</div>
+        <div className="text-label text-ink-3">
+          <div className="mb-1 text-body-sm font-extrabold text-ink">Devanagari</div>
           <div>Noto Sans Devanagari · 700</div>
         </div>
         <div className="text-2xl font-bold text-ink">
@@ -298,13 +298,13 @@ export default function DesignSystemPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 md:py-16">
       <header className="mb-12">
-        <div className="inline-block rounded-full bg-coral-soft px-3 py-1 text-xs font-extrabold tracking-widest text-coral-ink uppercase">
+        <div className="inline-block rounded-full bg-coral-soft px-3 py-1 text-label font-extrabold tracking-widest text-coral-ink uppercase">
           Design system · v0.1
         </div>
-        <h1 className="mt-4 max-w-3xl text-5xl font-extrabold tracking-tight text-ink">
+        <h1 className="mt-4 max-w-3xl text-h1 font-extrabold tracking-tight text-ink">
           Lekka — a warm, chat-app-simple invoicing tool.
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-ink-2">
+        <p className="mt-4 max-w-2xl text-title-sm text-ink-2">
           Warm coral on cream. Soft, friendly, the opposite of cold corporate
           fintech. This page exercises every token and reusable primitive
           currently in the design system.

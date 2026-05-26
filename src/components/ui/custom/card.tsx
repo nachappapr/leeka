@@ -24,7 +24,7 @@ export function Card({ title, children, action, className }: CardProps) {
       )}
     >
       <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
-        <h2 className="text-base font-extrabold tracking-tight text-ink">
+        <h2 className="text-body font-extrabold tracking-tight text-ink">
           {title}
         </h2>
         {action}

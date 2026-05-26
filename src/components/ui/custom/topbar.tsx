@@ -17,7 +17,7 @@ export function Topbar({ title, subtitle }: TopbarProps) {
           {title}
         </h1>
         {subtitle && (
-          <p className="truncate text-xs font-semibold text-ink-3">
+          <p className="truncate text-label font-semibold text-ink-3">
             {subtitle}
           </p>
         )}
@@ -26,7 +26,7 @@ export function Topbar({ title, subtitle }: TopbarProps) {
       <div className="flex h-10 w-96 items-center gap-2.5 rounded-full border border-border bg-card px-3.5 max-tablet:w-full max-tablet:max-w-96 max-tablet:min-w-0 max-mobile:hidden">
         <Search className="size-4 shrink-0 text-ink-3" aria-hidden />
         <Input
-          className="h-auto flex-1 rounded-none border-0 bg-transparent px-0 py-0 text-sm text-ink shadow-none focus-visible:border-0 focus-visible:ring-0 placeholder:text-ink-3 md:text-sm"
+          className="h-auto flex-1 rounded-none border-0 bg-transparent px-0 py-0 text-body-sm text-ink shadow-none focus-visible:border-0 focus-visible:ring-0 placeholder:text-ink-3 md:text-body-sm"
           placeholder="Search invoices, customers..."
           aria-label="Search invoices and customers"
         />

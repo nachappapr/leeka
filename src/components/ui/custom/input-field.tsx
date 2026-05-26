@@ -9,8 +9,8 @@ const inputFieldVariants = cva(
   {
     variants: {
       size: {
-        web: "h-11 px-3.5 text-sm",
-        mobile: "h-14 px-4 text-base",
+        web: "h-11 px-3.5 text-body-sm",
+        mobile: "h-14 px-4 text-body",
       },
     },
     defaultVariants: { size: "web" },

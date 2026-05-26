@@ -14,7 +14,7 @@ const TONE_CLASS: Record<AgingTone, string> = {
 function AgingBar({ bucket }: { bucket: AgingBucket }) {
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-      <div className="w-20 text-xs font-semibold text-ink-3">{bucket.label}</div>
+      <div className="w-20 text-label font-semibold text-ink-3">{bucket.label}</div>
       <div
         className="relative h-2 overflow-hidden rounded-full bg-surface-2"
         role="img"
@@ -25,7 +25,7 @@ function AgingBar({ bucket }: { bucket: AgingBucket }) {
           style={{ width: `${bucket.percent}%` }}
         />
       </div>
-      <div className="tabular text-right text-sm font-bold text-ink">
+      <div className="tabular text-right text-body-sm font-bold text-ink">
         {bucket.amount}
       </div>
     </div>

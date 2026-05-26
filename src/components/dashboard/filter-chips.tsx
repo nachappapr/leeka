@@ -10,7 +10,7 @@ export function FilterChips() {
           type="button"
           aria-pressed={chip.active}
           className={cn(
-            "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-sm font-bold transition-colors",
+            "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-body-sm font-bold transition-colors",
             chip.active
               ? "bg-ink text-white"
               : "border border-border bg-card text-ink-2 hover:bg-surface-2",
@@ -19,7 +19,7 @@ export function FilterChips() {
           {chip.label}
           <span
             className={cn(
-              "rounded-full px-2 py-px text-xs font-extrabold",
+              "rounded-full px-2 py-px text-label font-extrabold",
               chip.active
                 ? "bg-white/20 text-white"
                 : "bg-background text-ink-3",

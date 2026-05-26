@@ -44,7 +44,7 @@ function DataHead({
     <TableHead
       scope="col"
       className={cn(
-        "text-xs font-extrabold uppercase tracking-wide text-ink-3 py-3",
+        "text-label font-extrabold uppercase tracking-wide text-ink-3 py-3",
         className
       )}
       {...props}

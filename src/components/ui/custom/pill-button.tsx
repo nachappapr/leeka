@@ -22,9 +22,9 @@ const pillButtonVariants = cva(
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
       },
       size: {
-        sm: "h-9 px-3.5 text-[13px]",
-        md: "h-11 px-4.5 text-sm",
-        lg: "h-13 px-6 text-base",
+        sm: "h-9 px-3.5 text-caption",
+        md: "h-11 px-4.5 text-body-sm",
+        lg: "h-13 px-6 text-body",
       },
     },
     defaultVariants: {

@@ -162,7 +162,7 @@ export function AppSidebar() {
         {/* User row — centered when icon-only, full when expanded */}
         <div className="flex items-center gap-2.5 border-t border-sidebar-border px-2 pt-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:pt-0">
           <Avatar className="size-9 shrink-0">
-            <AvatarFallback className="bg-coral! text-white! text-14 font-black tracking-wide">
+            <AvatarFallback className="bg-coral! text-white! text-body-sm font-black tracking-wide">
               RK
             </AvatarFallback>
           </Avatar>
