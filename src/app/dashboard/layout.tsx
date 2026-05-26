@@ -1,15 +1,28 @@
-// Server Component — no "use client"
-import { Sidebar } from "@/components/ui/custom/sidebar"
+import { cookies } from "next/headers";
 
-export default function DashboardLayout({
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/primitives/sidebar";
+import { AppSidebar } from "@/components/ui/custom/sidebar";
+
+export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
+
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <main className="flex flex-1 flex-col min-w-0">{children}</main>
-    </div>
-  )
+    <SidebarProvider
+      defaultOpen={defaultOpen}
+      // eslint-disable-next-line no-restricted-syntax
+      style={{ "--sidebar-width": "15rem" } as React.CSSProperties}
+      className="bg-background"
+    >
+      <AppSidebar />
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
+  );
 }

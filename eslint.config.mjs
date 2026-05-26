@@ -112,7 +112,7 @@ const eslintConfig = defineConfig([
   // blocked.
   {
     files: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
-    ignores: ["src/components/icons/**"],
+    ignores: ["src/components/icons/**", "src/components/ui/primitives/**"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -126,6 +126,16 @@ const eslintConfig = defineConfig([
           ],
         },
       ],
+    },
+  },
+
+  // Shadcn-generated hooks may use patterns that trigger React rules —
+  // don't lint them as feature code.
+  {
+    files: ["src/hooks/**/*.{ts,tsx}"],
+    rules: {
+      "react-hooks/exhaustive-deps": "off",
+      "react-hooks/set-state-in-effect": "off",
     },
   },
 ]);

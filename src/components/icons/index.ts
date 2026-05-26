@@ -29,6 +29,7 @@ export {
   Clock,
   Check,
   Eye,
+  Menu,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source

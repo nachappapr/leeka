@@ -81,6 +81,56 @@ Rules:
 - **Feature folder by default.** New components from a page go to `src/components/<feature>/` named after the route. Don't reach for `src/components/ui/custom/` until the component is **obviously cross-cutting** — meaning the name signals app-wide use (Topbar, MobileTabBar, CustomerCell, StatusPill, PillButton). When in doubt, start in the feature folder and ask before promoting.
 - **Page composes, page doesn't define.** If `page.tsx` grows a `function ChildName()` block, that block belongs in its own file in the feature folder. The only exceptions are the default-exported page component itself and trivial 3–5 line layout fragments that have no name worth giving.
 
+### 7. Page → Container split — `page.tsx` imports one container, never composes sub-components directly
+
+The route file (`src/app/<feature>/page.tsx`) is **route plumbing**. It owns route-level concerns and nothing else. All composition — layout shell, sub-component arrangement, data fetching, client-state wiring — moves into a **single container** under `src/components/<feature>/<feature>-container.tsx`. The page renders exactly one element: `<FeatureContainer />` (passing through any route-level props the container needs).
+
+**When this rule kicks in:** the moment a page composes **2 or more sub-components** OR does **any data fetching**, it MUST delegate to a container. Trivial single-component pages (e.g. a route that renders one `<FeatureContainer />` already, or a placeholder rendering one component) are exempt — but the threshold is low and the default is "use a container."
+
+**Page (`src/app/<feature>/page.tsx`) — allowed to do:**
+- `export const metadata` / `generateMetadata`
+- destructure `params` / `searchParams`
+- auth/redirect guards (e.g. `redirect()`, `notFound()`)
+- pass route-level props into the container
+- render exactly one `<FeatureContainer />`
+
+**Page MUST NOT:**
+- import sub-components from `src/components/<feature>/` other than the container
+- import UI primitives from `src/components/ui/` (those belong in the container or its children)
+- arrange layout (no flex/grid wrappers, no `<div className="...">` shells around the container)
+- fetch data, define hooks, hold state, or define inline sub-components
+
+**Container (`src/components/<feature>/<feature>-container.tsx`):**
+- Filename = `<feature>-container.tsx` (kebab-case), exported as `<Feature>Container`
+- Owns the layout shell, sub-component composition, and data fetching (Server Component by default — only `"use client"` when the container itself needs interactivity at its root)
+- Imports sub-components from the same feature folder
+- One per route by default. If a feature truly has multiple distinct surfaces (e.g. a list view vs detail view under the same route segment), use one container per surface and name them by surface (`invoices-list-container.tsx`, `invoice-detail-container.tsx`) — don't multiplex inside one container
+
+```
+src/app/dashboard/
+  page.tsx                       ← renders <DashboardContainer />, nothing else
+  layout.tsx
+src/components/dashboard/
+  dashboard-container.tsx        ← composition root + data + layout shell
+  hero-grid.tsx
+  invoices-card.tsx
+  filter-chips.tsx
+  invoices-table.tsx
+```
+
+Example page (the whole file):
+
+```tsx
+// src/app/dashboard/page.tsx
+import { DashboardContainer } from "@/components/dashboard/dashboard-container";
+
+export default function DashboardPage() {
+  return <DashboardContainer />;
+}
+```
+
+If a page legitimately needs to branch between containers (e.g. role-gated dashboards), branching in the page is fine — but each branch still returns a single container element, never inline composition.
+
 ---
 
 ## Agent dispatch (mandatory routing rule)
