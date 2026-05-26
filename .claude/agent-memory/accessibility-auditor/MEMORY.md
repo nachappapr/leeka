@@ -5,7 +5,7 @@
 - [Icon bubble contrast ratios](project_icon_bubble_contrast.md) — text-whatsapp-icon/bg-whatsapp-soft PASSES at 4.51:1 (fix confirmed); text-coral-press/bg-coral-soft 3.40:1; text-paid/bg-paid-soft borderline 3.05:1
 - [Aging bar fill contrast ratios](project_aging_bar_contrast.md) — bg-pending-bar/bg-surface-2 passes at 5.33:1 (fix confirmed); bg-paid borderline 3.06:1; bg-overdue passes 4.60:1
 - [role=img vs role=meter for data bars](project_role_img_vs_meter.md) — "share of total" bars use role=img+aria-label; role=meter/progressbar is wrong for this use case
-- [text-coral on bg-card contrast fail](project_coral_on_white_contrast.md) — #f46a39 on #ffffff = 3.01:1; fails SC 1.4.3 for normal text; coral-press is darker candidate for fix
+- [text-coral on bg-card contrast](project_coral_on_white_contrast.md) — #f46a39 on #ffffff = 3.01:1; FAILS 4.5:1 (normal text); barely PASSES 3:1 (large text >=18.67px bold); coral-press (4.03:1) recommended for safety margin
 - [DataHead scope=col — RESOLVED](project_table_scope_pattern.md) — scope="col" now set as default in DataHead wrapper; decorative aria-hidden th edge case documented
 - [cursor-pointer inert rows pattern](project_cursor_pointer_inert_rows.md) — DataRow + DataListRow have hover/cursor affordance but no keyboard contract; interactivity deferred; escalates to Critical when onClick lands
 - [PillButton focus ring contrast fail](project_pillbutton_focus_ring.md) — ring-accent (#ffe7da) on bg-background (#fbf6ef) = 1.09:1; fails WCAG 2.4.11; fix: swap to ring-coral-press or ring-ring; static CSS, no client boundary
@@ -19,3 +19,5 @@
 - [Invoice date not in time element](project_date_time_element.md) — invoice.date is a plain <span>; must be <time dateTime="YYYY-MM-DD">; requires ISO companion field or server-side parse; no client boundary; SC 1.3.1 Medium
 - [FilterChips inactive border contrast fail](project_filter_chips_border_contrast.md) — border-border (#ece3d4) on bg-card (#ffffff) = 1.27:1; fails SC 1.4.11; fix: border-ink-3 (5.92:1)
 - [FilterChips live region missing](project_filter_chips_live_region.md) — result-set update is silent; no aria-live; fix: role="status" sr-only count inside InvoicesFilterShell (already client, no boundary cost)
+- [Duplicate banner landmark — header inside main](project_duplicate_header_landmark.md) — any <header> not at the page root creates a second banner landmark; sub-section title bars must use <div>
+- [Table double-label — aria-label vs caption](project_table_double_label.md) — never use both aria-label and <caption> on a <table>; use <caption className="sr-only"> alone

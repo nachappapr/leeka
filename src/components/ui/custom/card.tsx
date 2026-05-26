@@ -13,9 +13,11 @@ export interface CardProps {
   children: React.ReactNode
   action?: React.ReactNode
   className?: string
+  headingLevel?: 2 | 3
 }
 
-export function Card({ title, children, action, className }: CardProps) {
+export function Card({ title, children, action, className, headingLevel = 2 }: CardProps) {
+  const Heading = `h${headingLevel}` as "h2" | "h3"
   return (
     <CardPrimitive
       className={cn(
@@ -26,9 +28,9 @@ export function Card({ title, children, action, className }: CardProps) {
       {title || action ? (
         <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
           {title ? (
-            <h2 className="text-body font-extrabold tracking-tight text-ink">
+            <Heading className="text-body font-extrabold tracking-tight text-ink">
               {title}
-            </h2>
+            </Heading>
           ) : null}
           {action}
         </div>

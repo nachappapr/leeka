@@ -1,4 +1,8 @@
-import type { Invoice, InvoiceFilterChip } from "@/lib/types"
+import type {
+  Invoice,
+  InvoiceDetail,
+  InvoiceFilterChip,
+} from "@/lib/types"
 
 export const INVOICES: ReadonlyArray<Invoice> = [
   { id: "#INV-1042", customer: "Mehta General Store",  city: "Mumbai",    isoDate: "2026-05-15", amount: "₹24,500", status: "overdue" },
@@ -21,3 +25,101 @@ export const INVOICES_FILTER_CHIPS: ReadonlyArray<InvoiceFilterChip> = [
   { id: "overdue", label: "Overdue" },
   { id: "draft",   label: "Draft"   },
 ]
+
+// ── Invoice details ─────────────────────────────────────────────────────────
+// Static line items per invoice for the detail page. Item totals plus 5% GST
+// are not strictly equal to the rounded `amount` shown on the list — the
+// detail page recomputes totals from its line items.
+
+const ISSUER = "Raj Kumar"
+
+export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
+  {
+    ...INVOICES[0],
+    items: [
+      { name: "Premium Mithai Box · 500g", qty: 4, unitPrice: 850 },
+      { name: "Kaju Katli · 250g",          qty: 2, unitPrice: 550 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-15",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[1],
+    items: [
+      { name: "Cotton Saree · Block Print", qty: 3, unitPrice: 1800 },
+      { name: "Silk Dupatta",                qty: 4, unitPrice: 950 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-13",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[2],
+    items: [
+      { name: "USB-C Cable · 1m", qty: 6, unitPrice: 350 },
+      { name: "Wall Charger 20W",  qty: 2, unitPrice: 1200 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-11",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[3],
+    items: [
+      { name: "Multivitamin Tablets · 60ct", qty: 5, unitPrice: 450 },
+      { name: "Cough Syrup · 100ml",          qty: 3, unitPrice: 180 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-09",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[4],
+    items: [
+      { name: "Cotton Bedsheet · King",  qty: 4, unitPrice: 1600 },
+      { name: "Pillow Covers · Pair",     qty: 6, unitPrice: 400 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-07",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[5],
+    items: [
+      { name: "MS Steel Rods · 12mm", qty: 10, unitPrice: 2200 },
+      { name: "TMT Bars · Bundle",     qty: 2,  unitPrice: 4100 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-04",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[6],
+    items: [
+      { name: "Wholesale Spice Mix · 1kg", qty: 5, unitPrice: 1200 },
+      { name: "Premium Ghee · 500g",        qty: 4, unitPrice: 650 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-06-01",
+    issuerName: ISSUER,
+  },
+  {
+    ...INVOICES[7],
+    items: [
+      { name: "Cement Bag · 50kg",     qty: 30, unitPrice: 380 },
+      { name: "Construction Sand · m³", qty: 6,  unitPrice: 2500 },
+    ],
+    taxPct: 5,
+    dueIsoDate: "2026-05-28",
+    issuerName: ISSUER,
+  },
+]
+
+export function findInvoiceDetail(
+  idWithoutHash: string,
+): InvoiceDetail | undefined {
+  return INVOICE_DETAILS.find(
+    (inv) => inv.id.replace("#", "") === idWithoutHash,
+  )
+}

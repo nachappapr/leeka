@@ -1,15 +1,22 @@
 ---
 name: coral-on-white-contrast
-description: text-coral (#f46a39) on bg-card (#ffffff) fails 4.5:1 at 3.01:1; same token fails on bg-background (#fbf6ef) at 2.80:1
+description: text-coral (#f46a39) on bg-card (#ffffff) = 3.01:1; fails 4.5:1 for normal text; barely passes 3:1 for large text (>=18.67px bold or >=24px normal)
 metadata:
   type: project
 ---
 
-`text-coral` (#f46a39) on `bg-card` (#ffffff) = **3.01:1** — FAILS SC 1.4.3 for normal text (≥14px bold and below).
-`text-coral` (#f46a39) on `bg-background` (#fbf6ef, cream) = **2.80:1** — also fails.
+`text-coral` (#f46a39) on `bg-card` (#ffffff) = **3.01:1** (exact: 3.0141).
+`text-coral` (#f46a39) on `bg-background` (#fbf6ef, cream) = **2.80:1**.
 
-`text-coral-press` (#d9531f) on `bg-card` should be checked whenever a fix is prescribed — it is darker and may pass.
+- For **normal text** (below 18.67px bold / below 24px normal): FAILS SC 1.4.3 (need ≥4.5:1).
+- For **large text** (≥18.67px bold or ≥24px normal): 3.01:1 technically PASSES SC 1.4.3 (need ≥3:1) by the slimmest margin. Treat as a medium-risk pass — sub-pixel rendering can erode this. Flag as a design concern and recommend coral-press.
+- `text-coral-press` (#d9531f) on `bg-card` = **4.03:1** — passes large-text 3:1 with headroom; still fails normal-text 4.5:1.
 
-**Why:** The "View all" button in the Card header (`src/app/dashboard/page.tsx:142`) uses `text-coral` on a white card background. This is a High severity SC 1.4.3 violation. Any interactive control or text using `text-coral` directly on card/background surfaces will fail.
+Known occurrences:
+- Dashboard "View all" button label: normal-sized text → HIGH (SC 1.4.3).
+- Invoice detail ID (text-h2, 28px/800): large text → PASSES 3:1 barely; worth noting as design debt.
+- Invoice detail avatar initials (22px/800): large text → PASSES 3:1 barely.
 
-**How to apply:** Always flag `text-coral` on `bg-card` or `bg-background` for normal text. Check if `text-coral-press` (#d9531f) is the intended accessible alternative; compute that ratio before recommending it as the fix. See [[coral-contrast]] for gradient-background ratios.
+**Why:** coral is the brand accent; it is not dark enough for body text on white/cream. The threshold is whether the element is large text per WCAG definition.
+
+**How to apply:** Always flag `text-coral` on normal text. For large text on bg-card: note the barely-passing ratio and recommend coral-press for safety margin. See [[coral-contrast]] for gradient-background ratios.

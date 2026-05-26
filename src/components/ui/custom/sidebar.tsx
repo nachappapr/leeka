@@ -33,10 +33,34 @@ const navButtonClass = cn(
   "group-data-[collapsible=icon]:mx-auto",
 );
 
+// A nav item is active when the current path equals its href OR sits beneath
+// it as a child route. To prevent a broader href (/invoices) from claiming a
+// sibling's specific path (/invoices/new), the broader item only matches when
+// no other registered href is a longer prefix of the current path.
+function isNavItemActive(
+  href: string,
+  pathname: string,
+  allHrefs: ReadonlyArray<string>,
+): boolean {
+  if (pathname === href) return true;
+  if (href === "/") return false;
+  if (!pathname.startsWith(`${href}/`)) return false;
+  return !allHrefs.some(
+    (other) =>
+      other !== href &&
+      other.startsWith(`${href}/`) &&
+      (pathname === other || pathname.startsWith(`${other}/`)),
+  );
+}
+
 export function AppSidebar() {
   const pathname = usePathname();
   const { setOpen } = useSidebar();
   const isTablet = useIsTablet();
+  const allHrefs = React.useMemo(
+    () => [...NAV_MAIN, ...NAV_ACCOUNT].map((item) => item.href),
+    [],
+  );
 
   const setOpenRef = React.useRef(setOpen);
   React.useEffect(() => {
@@ -79,7 +103,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="gap-0.5">
               {NAV_MAIN.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = isNavItemActive(item.href, pathname, allHrefs);
                 const Icon = item.icon;
                 return (
                   <SidebarMenuItem key={item.href}>
@@ -117,7 +141,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="gap-0.5">
               {NAV_ACCOUNT.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = isNavItemActive(item.href, pathname, allHrefs);
                 const Icon = item.icon;
                 return (
                   <SidebarMenuItem key={item.href}>

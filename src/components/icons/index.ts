@@ -36,6 +36,11 @@ export {
   ArrowDown,
   ChevronsUpDown,
   ChevronLeft,
+  Share2 as Share,
+  Edit2 as Edit,
+  Trash2,
+  MoreHorizontal,
+  Copy,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source

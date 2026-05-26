@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const pillButtonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full border-[1.5px] border-transparent font-sans font-bold whitespace-nowrap transition-[background-color,box-shadow,transform,color,border-color] outline-none select-none focus-visible:ring-4 focus-visible:ring-coral-press active:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full border-[1.5px] border-transparent font-sans font-bold whitespace-nowrap transition-[background-color,box-shadow,transform,color,border-color] outline-none select-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       tone: {
