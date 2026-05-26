@@ -5,7 +5,7 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed bottom-0 left-0 right-0 z-30 grid grid-cols-5 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-30 grid grid-cols-5 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] min-mobile:hidden"
     >
       {MOBILE_TABS.map((tab) =>
         tab.isPrimary ? (

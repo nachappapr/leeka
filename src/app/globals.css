@@ -193,6 +193,10 @@
   --spacing-tap: 48px;
 }
 
+@custom-variant max-tablet (@media (max-width: 1100px));
+@custom-variant max-mobile (@media (max-width: 768px));
+@custom-variant min-mobile (@media (min-width: 769px));
+
 :root {
   --background: #fbf6ef;
   --foreground: #1f1a14;

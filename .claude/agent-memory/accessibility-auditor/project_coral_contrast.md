@@ -33,5 +33,10 @@ Measured 2026-05-26 against src/app/globals.css tokens. All ratios are exact WCA
 - vs #E94A1F: **2.69:1** — FAILS non-text 3:1 (SC 1.4.11)
 - NOTE: dot is aria-hidden and decorative (adjacent text carries meaning). Not a hard SC 1.4.11 violation; flag as medium if dot is intended as a meaningful indicator.
 
+## Hero amount large text (HeroGrid audit 2026-05-26)
+- 56px/800-weight and 40px/800-weight both qualify as WCAG large text (≥18.67px at ≥700 weight)
+- Requires 3:1. White on #F46A39 = 2.90:1. **FAILS large-text 3:1 by 0.10.**
+- Fix confirmed: change gradient from-coral → from-coral-press (#D9531F); white on coral-press L≈0.22 → (1.05/0.27) ≈ 3.89:1 ✓
+
 ## Key takeaway
-Opacity-reduced white on coral NEVER reaches 4.5:1. Small text on the coral gradient requires the gradient's lighter stop to be darkened significantly (lighter stop L must drop below ~0.182 for white to reach 4.5:1; practically, small text on coral should use an opaque dark-toned overlay or a dark text colour). Large text (≥24px) needs lighter stop L < 0.300; at #F46A39 (L=0.3116) even full-opacity white at 2.90:1 misses 3:1.
+Opacity-reduced white on coral NEVER reaches 4.5:1. Small text on the coral gradient requires the gradient's lighter stop to be darkened significantly (lighter stop L must drop below ~0.182 for white to reach 4.5:1; practically, small text on coral should use an opaque dark-toned overlay or a dark text colour). Large text (≥24px/≥18.67px bold) needs lighter stop L < 0.300; at #F46A39 (L≈0.312) even full-opacity white at 2.90:1 misses 3:1. Changing the gradient start to coral-press (#D9531F) fixes the large-text fail but does NOT fix small text on the tile — small text still needs bg-black/30 overlays or a different approach.

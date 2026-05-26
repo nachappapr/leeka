@@ -18,7 +18,7 @@ export default async function DashboardLayout({
     <SidebarProvider
       defaultOpen={defaultOpen}
       // eslint-disable-next-line no-restricted-syntax
-      style={{ "--sidebar-width": "15rem" } as React.CSSProperties}
+      style={{ "--sidebar-width": "15rem", "--sidebar-width-icon": "4.75rem" } as React.CSSProperties}
       className="bg-background"
     >
       <AppSidebar />

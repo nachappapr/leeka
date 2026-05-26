@@ -1,8 +1,10 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useIsTablet } from "@/hooks/use-tablet";
 import { Receipt, Sparkles } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import {
@@ -17,6 +19,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/primitives/sidebar";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { NAV_MAIN, NAV_ACCOUNT } from "@/components/ui/custom/sidebar-nav";
@@ -25,16 +29,27 @@ import { cn } from "@/lib/utils";
 const navButtonClass = cn(
   "h-auto rounded-nav-item gap-3 px-3 py-2.5 font-semibold text-body-sm text-ink-2",
   "hover:bg-background hover:text-ink",
-  "[&[data-active]_svg]:text-coral data-[active]:text-coral-ink",
+  "[&[data-active]_svg]:text-coral-press data-[active]:text-coral-ink",
+  "group-data-[collapsible=icon]:mx-auto",
 );
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setOpen } = useSidebar();
+  const isTablet = useIsTablet();
+
+  const setOpenRef = React.useRef(setOpen);
+  React.useEffect(() => {
+    setOpenRef.current = setOpen;
+  });
+  React.useEffect(() => {
+    if (isTablet) setOpenRef.current(false);
+  }, [isTablet]);
 
   return (
     <Sidebar collapsible="icon">
       {/* Brand */}
-      <SidebarHeader className="p-3.5 pb-2 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:pb-1">
+      <SidebarHeader className="p-3.5 pb-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-5 group-data-[collapsible=icon]:pb-5">
         <div className="flex items-center gap-3 px-2 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-nav-item bg-coral shadow-coral group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:rounded-md">
             <Receipt
@@ -50,11 +65,12 @@ export function AppSidebar() {
               Invoicing
             </div>
           </div>
+          <SidebarTrigger className="ml-auto text-ink-3 hover:text-ink group-data-[collapsible=icon]:hidden" />
         </div>
       </SidebarHeader>
 
       {/* Navigation */}
-      <SidebarContent className="group-data-[collapsible=icon]:pt-3">
+      <SidebarContent className="group-data-[collapsible=icon]:pt-2">
         {/* Main group */}
         <SidebarGroup>
           <SidebarGroupLabel className="h-auto px-3 pb-1 text-kicker uppercase tracking-wider text-ink-3 font-black">
@@ -69,7 +85,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       isActive={isActive}
-                      tooltip={item.label}
+                      tooltip={item.badge != null ? `${item.label} (${item.badge})` : item.label}
                       className={navButtonClass}
                       render={
                         <Link

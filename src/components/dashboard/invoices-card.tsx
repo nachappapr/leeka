@@ -1,3 +1,4 @@
+import { ChevronRight } from "@/components/icons";
 import { CustomerCell } from "@/components/ui/custom/customer-cell";
 import { Card } from "@/components/ui/custom/card";
 import {
@@ -20,14 +21,15 @@ export function InvoicesCard() {
       action={
         <button
           type="button"
-          className="text-sm font-bold text-coral-press hover:text-coral-ink"
+          className="inline-flex items-center gap-1 text-body-sm font-bold text-coral-ink hover:text-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-ink focus-visible:ring-offset-2 rounded-sm"
         >
-          View all
+          See all
+          <ChevronRight className="size-4" aria-hidden />
         </button>
       }
     >
       <FilterChips />
-      <DataTable className="table-fixed max-md:hidden">
+      <DataTable className="table-fixed max-mobile:hidden" aria-label="Recent invoices">
         <DataHeader>
           <DataRow className="cursor-default hover:bg-background">
             <DataHead className="w-2/6 pl-6">Customer</DataHead>
@@ -59,7 +61,7 @@ export function InvoicesCard() {
       </DataTable>
       <ul
         aria-label="Recent invoices"
-        className="flex flex-col gap-3 p-4 md:hidden"
+        className="flex flex-col gap-3 p-4 min-mobile:hidden"
       >
         {INVOICES.map((inv) => (
           <DataListRow key={inv.id} invoice={inv} />

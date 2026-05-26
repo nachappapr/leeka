@@ -1,6 +1,6 @@
-import { Bell, Plus, Search } from "@/components/icons";
+import { Bell, Search } from "@/components/icons";
 import { MobileMenuButton } from "@/components/ui/custom/mobile-menu-button";
-import { PillButton } from "@/components/ui/custom/pill-button";
+import { Input } from "@/components/ui/primitives/input";
 
 interface TopbarProps {
   title: string;
@@ -9,11 +9,11 @@ interface TopbarProps {
 
 export function Topbar({ title, subtitle }: TopbarProps) {
   return (
-    <header className="sticky top-0 z-10 grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-border bg-background/85 px-7 py-3.5 backdrop-blur-md backdrop-saturate-150 max-md:flex max-md:gap-2.5 max-md:px-4">
+    <header className="sticky top-0 z-10 grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-border bg-background/85 px-7 py-3.5 backdrop-blur-md backdrop-saturate-150 max-tablet:grid-cols-[auto_1fr_auto] max-mobile:flex max-mobile:gap-2.5 max-mobile:px-4 max-mobile:py-3">
       <MobileMenuButton />
 
       <div className="min-w-0">
-        <h1 className="truncate text-xl font-extrabold tracking-tight text-ink max-md:text-lg">
+        <h1 className="truncate text-20 font-black tracking-snug text-ink max-mobile:text-17">
           {title}
         </h1>
         {subtitle && (
@@ -23,27 +23,23 @@ export function Topbar({ title, subtitle }: TopbarProps) {
         )}
       </div>
 
-      <div className="flex h-10 w-96 items-center gap-2.5 rounded-full border border-border bg-card px-3.5 max-md:hidden">
+      <div className="flex h-10 w-96 items-center gap-2.5 rounded-full border border-border bg-card px-3.5 max-tablet:w-full max-tablet:max-w-96 max-tablet:min-w-0 max-mobile:hidden">
         <Search className="size-4 shrink-0 text-ink-3" aria-hidden />
-        <input
-          className="flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-ink-3"
+        <Input
+          className="h-auto flex-1 rounded-none border-0 bg-transparent px-0 py-0 text-sm text-ink shadow-none focus-visible:border-0 focus-visible:ring-0 placeholder:text-ink-3 md:text-sm"
           placeholder="Search invoices, customers..."
           aria-label="Search invoices and customers"
         />
       </div>
 
-      <div className="flex items-center justify-end gap-3 max-md:ml-auto">
+      <div className="flex items-center justify-end gap-3 max-mobile:ml-auto">
         <button
           type="button"
           aria-label="Notifications"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:bg-surface-2"
+          className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:bg-surface-2 max-mobile:size-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
         >
           <Bell className="size-5" aria-hidden />
         </button>
-        <PillButton tone="primary" className="max-md:hidden">
-          <Plus className="size-4" aria-hidden />
-          <span>New invoice</span>
-        </PillButton>
       </div>
     </header>
   );
