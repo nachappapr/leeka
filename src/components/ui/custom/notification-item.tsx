@@ -11,8 +11,8 @@ import type { NotificationTone } from "@/lib/types/notifications"
 export interface NotificationItemProps {
   customer: string
   verb: string
-  amount: number
-  invoiceNo: string
+  amount?: number
+  invoiceNo?: string
   tone: NotificationTone
   timestamp: string | Date
   unread?: boolean
@@ -35,9 +35,15 @@ function NotificationItem({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   href: _href,
 }: NotificationItemProps) {
-  const formattedAmount = formatAmount(amount)
   const timeLabel = relTime(timestamp)
-  const ariaLabel = `${customer} ${verb} ₹${formattedAmount} for ${invoiceNo}, ${timeLabel}`
+  const ariaLabel = [
+    `${customer} ${verb}`,
+    amount !== undefined ? `₹${formatAmount(amount)}` : null,
+    invoiceNo ?? null,
+    timeLabel,
+  ]
+    .filter(Boolean)
+    .join(", ")
 
   return (
     <button
@@ -67,10 +73,14 @@ function NotificationItem({
       <div className="min-w-0 flex-1 self-center">
         <p className="text-13 text-ink-2 leading-snug max-mobile:text-body-sm">
           <span className="font-bold text-ink">{customer}</span>{" "}
-          {verb}{" "}
-          <span className="font-bold text-ink tabular-nums">₹{formattedAmount}</span>
+          {verb}
+          {amount !== undefined && (
+            <>{" "}<span className="font-bold text-ink tabular-nums">₹{formatAmount(amount)}</span></>
+          )}
         </p>
-        <p className="text-12 text-ink-3 mt-1">{invoiceNo}</p>
+        {invoiceNo && (
+          <p className="text-12 text-ink-3 mt-1">{invoiceNo}</p>
+        )}
         <p className="text-11 text-ink-3 mt-0.5">{timeLabel}</p>
       </div>
 

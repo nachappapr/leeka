@@ -27,3 +27,4 @@
 - [InputField + TextareaField focus ring fail](project_input_textarea_focus_ring.md) — ring-ring/50 ≈ 1.73:1 on bg-card; fails SC 2.4.11; fix: ring-coral-press (4.03:1); static CSS, no client boundary
 - [text-coral-press on bg-background kicker text fails](project_coral_press_on_bg_background_kicker.md) — 3.76:1 for 11px small text; fails SC 1.4.3; fix: text-coral-ink; first seen in mobile items editor
 - [Desktop items table: no focus indicator + no input labels](project_desktop_table_inputs_no_label_no_focus.md) — border-0+ring-0 = zero focus indicator (Critical 2.4.7); no aria-label on any input (Critical 4.1.2); both fixed with static attributes in already-client component
+- [FilterChips single-select must use radiogroup pattern](project_filter_chips_radiogroup.md) — role=group+aria-pressed is wrong for one-always-active chips; correct: role=radiogroup, role=radio, aria-checked, roving tabIndex, arrow-key nav (APG Radio Group); already client, no boundary cost

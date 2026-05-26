@@ -1,5 +1,6 @@
 import {
   Asterisk,
+  Bell,
   FileText,
   Home,
   Info,
@@ -20,6 +21,12 @@ export const NAV_MAIN = [
     href: "/invoices",
     icon: FileText,
     badge: 3 as number | undefined,
+  },
+  {
+    label: "Activity",
+    href: "/activity",
+    icon: Bell,
+    badge: undefined as number | undefined,
   },
   {
     label: "New invoice",

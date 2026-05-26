@@ -8,6 +8,9 @@ const TONE_BG: Record<NotificationTone, string> = {
   info: "bg-info",
   // bg-whatsapp-press (#1fae54) replaces bg-whatsapp (#25d366): brand bright green failed WCAG 1.4.11 against white panel surface (1.98:1); press tone passes at 3.38:1 while remaining clearly WhatsApp-brand-recognizable.
   whatsapp: "bg-whatsapp-press",
+  customer: "bg-coral",
+  draft: "bg-draft",
+  sent: "bg-pending",
 }
 
 interface NotificationRailProps {

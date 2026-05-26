@@ -5,6 +5,9 @@ import {
   AlertCircle,
   Info,
   WhatsApp,
+  Users,
+  Edit,
+  Share,
 } from "@/components/icons"
 import type { ComponentType, SVGProps } from "react"
 import type { NotificationTone } from "@/lib/types/notifications"
@@ -40,6 +43,21 @@ const TONE_MAP: Record<NotificationTone, ToneConfig> = {
     Icon: WhatsApp,
     bgClass: "bg-whatsapp-soft",
     fgClass: "text-whatsapp-icon",
+  },
+  customer: {
+    Icon: Users,
+    bgClass: "bg-coral-soft",
+    fgClass: "text-coral-ink",
+  },
+  draft: {
+    Icon: Edit,
+    bgClass: "bg-draft-soft",
+    fgClass: "text-draft-ink",
+  },
+  sent: {
+    Icon: Share,
+    bgClass: "bg-pending-soft",
+    fgClass: "text-pending-ink",
   },
 }
 

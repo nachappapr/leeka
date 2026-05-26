@@ -5,3 +5,17 @@ export interface ActivityItem {
   title: string
   meta: string
 }
+
+export type ActivityFilterId =
+  | "all"
+  | "payments"
+  | "views"
+  | "overdue"
+  | "whatsapp"
+  | "customers"
+
+export interface ActivityGlanceRow {
+  label: string
+  tone: import("@/lib/types/notifications").NotificationTone
+  count: number
+}
