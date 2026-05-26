@@ -1,10 +1,17 @@
-import { Check, Download, Edit, WhatsApp } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import Link from "next/link"
 
-export function InvoiceActionsDraft() {
+import { Check, Download, Edit, WhatsApp } from "@/components/icons"
+import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button"
+import { cn } from "@/lib/utils"
+
+interface InvoiceActionsDraftProps {
+  invoiceId: string
+}
+
+export function InvoiceActionsDraft({ invoiceId }: InvoiceActionsDraftProps) {
   return (
     <>
-      <PillButton tone="primary" size="lg" className="w-full">
+      <PillButton tone="primary" size="md" className="w-full">
         <Check strokeWidth={2.4} aria-hidden />
         Send invoice
       </PillButton>
@@ -13,10 +20,14 @@ export function InvoiceActionsDraft() {
         Send on WhatsApp
       </PillButton>
       <div className="grid grid-cols-2 gap-2">
-        <PillButton tone="outline" size="md">
+        <Link
+          href={`/invoices/${invoiceId.replace("#", "")}/edit`}
+          aria-label="Edit invoice"
+          className={cn(pillButtonVariants({ tone: "outline", size: "md" }), "w-full")}
+        >
           <Edit aria-hidden />
           Edit
-        </PillButton>
+        </Link>
         <PillButton tone="outline" size="md">
           <Download aria-hidden />
           PDF

@@ -1,14 +1,18 @@
+import Link from "next/link"
+
 import { Check, Download, Edit, WhatsApp } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button"
+import { cn } from "@/lib/utils"
 
 interface InvoiceActionsOpenProps {
+  invoiceId: string
   isOverdue: boolean
 }
 
-export function InvoiceActionsOpen({ isOverdue }: InvoiceActionsOpenProps) {
+export function InvoiceActionsOpen({ invoiceId, isOverdue }: InvoiceActionsOpenProps) {
   return (
     <>
-      <PillButton tone="primary" size="lg" className="w-full">
+      <PillButton tone="primary" size="md" className="w-full">
         <Check strokeWidth={2.4} aria-hidden />
         Mark as paid
       </PillButton>
@@ -17,10 +21,13 @@ export function InvoiceActionsOpen({ isOverdue }: InvoiceActionsOpenProps) {
         {isOverdue ? "Send nudge" : "Send reminder"}
       </PillButton>
       <div className="grid grid-cols-2 gap-2">
-        <PillButton tone="outline" size="md">
+        <Link
+          href={`/invoices/${invoiceId.replace("#", "")}/edit`}
+          className={cn(pillButtonVariants({ tone: "outline", size: "md" }))}
+        >
           <Edit aria-hidden />
           Edit
-        </PillButton>
+        </Link>
         <PillButton tone="outline" size="md">
           <Download aria-hidden />
           PDF

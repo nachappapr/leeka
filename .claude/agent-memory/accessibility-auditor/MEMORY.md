@@ -21,3 +21,9 @@
 - [FilterChips live region missing](project_filter_chips_live_region.md) — result-set update is silent; no aria-live; fix: role="status" sr-only count inside InvoicesFilterShell (already client, no boundary cost)
 - [Duplicate banner landmark — header inside main](project_duplicate_header_landmark.md) — any <header> not at the page root creates a second banner landmark; sub-section title bars must use <div>
 - [Table double-label — aria-label vs caption](project_table_double_label.md) — never use both aria-label and <caption> on a <table>; use <caption className="sr-only"> alone
+- [Duplicate banner landmark — CORRECTED](project_duplicate_header_landmark.md) — all Lekka content is inside SidebarInset (<main>); <header> inside <main> = role=generic, NOT banner; no duplicate-banner risk
+- [WhatsApp button contrast fail](project_whatsapp_button_contrast.md) — bg-whatsapp (#25d366) + text-card = 1.98:1; fails SC 1.4.3; fix: bg-whatsapp-icon (#178040) = 5.00:1
+- [White text on bg-coral for small text](project_coral_white_text_on_bg.md) — text-card on bg-coral = 3.01:1; fails 4.5:1 for any text <18.67px bold; fix: text-ink (#1f1a14) on coral = 5.73:1; invoice ID coral-on-white at 18px also fails
+- [InputField + TextareaField focus ring fail](project_input_textarea_focus_ring.md) — ring-ring/50 ≈ 1.73:1 on bg-card; fails SC 2.4.11; fix: ring-coral-press (4.03:1); static CSS, no client boundary
+- [text-coral-press on bg-background kicker text fails](project_coral_press_on_bg_background_kicker.md) — 3.76:1 for 11px small text; fails SC 1.4.3; fix: text-coral-ink; first seen in mobile items editor
+- [Desktop items table: no focus indicator + no input labels](project_desktop_table_inputs_no_label_no_focus.md) — border-0+ring-0 = zero focus indicator (Critical 2.4.7); no aria-label on any input (Critical 4.1.2); both fixed with static attributes in already-client component

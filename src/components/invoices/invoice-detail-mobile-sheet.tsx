@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import type React from "react"
 
 import { Clock, Copy, Download, Edit, MoreHorizontal, Share, Trash2 } from "@/components/icons"
@@ -19,11 +20,12 @@ interface InvoiceDetailMobileSheetProps {
 interface SheetAction {
   icon: React.ReactNode
   label: string
+  href?: string
 }
 
-function getActions(status: StatusPillStatus): SheetAction[] {
+function getActions(invoiceId: string, status: StatusPillStatus): SheetAction[] {
   const base: SheetAction[] = [
-    { icon: <Edit className="size-4.5" aria-hidden />, label: "Edit invoice" },
+    { icon: <Edit className="size-4.5" aria-hidden />, label: "Edit invoice", href: `/invoices/${invoiceId.replace("#", "")}/edit` },
     { icon: <Download className="size-4.5" aria-hidden />, label: "Download PDF" },
     { icon: <Share className="size-4.5" aria-hidden />, label: "Share link" },
     { icon: <Copy className="size-4.5" aria-hidden />, label: "Duplicate" },
@@ -34,11 +36,14 @@ function getActions(status: StatusPillStatus): SheetAction[] {
   return base
 }
 
+const ACTION_CLASS = "flex w-full items-center gap-3.5 px-5.5 py-3.5 text-left text-15 font-semibold text-ink transition-colors active:bg-background hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-coral-press"
+const ICON_CLASS = "flex size-9 shrink-0 items-center justify-center rounded-nav-item bg-background text-ink-2"
+
 export function InvoiceDetailMobileSheet({
   invoiceId,
   status,
 }: InvoiceDetailMobileSheetProps) {
-  const actions = getActions(status)
+  const actions = getActions(invoiceId, status)
 
   return (
     <Sheet>
@@ -69,15 +74,17 @@ export function InvoiceDetailMobileSheet({
         <ul>
           {actions.map((action) => (
             <li key={action.label}>
-              <SheetClose
-                className="flex w-full items-center gap-3.5 px-5.5 py-3.5 text-left text-15 font-semibold text-ink transition-colors active:bg-background hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-coral-press"
-              >
-                {/* Icon: 36×36, radius 10px, bg-background */}
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-nav-item bg-background text-ink-2">
-                  {action.icon}
-                </span>
-                {action.label}
-              </SheetClose>
+              {action.href ? (
+                <Link href={action.href} className={ACTION_CLASS}>
+                  <span className={ICON_CLASS}>{action.icon}</span>
+                  {action.label}
+                </Link>
+              ) : (
+                <SheetClose className={ACTION_CLASS}>
+                  <span className={ICON_CLASS}>{action.icon}</span>
+                  {action.label}
+                </SheetClose>
+              )}
             </li>
           ))}
         </ul>

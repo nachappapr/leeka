@@ -14,12 +14,12 @@ const pillButtonVariants = cva(
         outline: "bg-card text-foreground border-ink-3 hover:bg-surface-2",
         ghost: "bg-transparent text-foreground hover:bg-surface-2",
         paid: "bg-paid text-card shadow-press hover:bg-paid-ink",
-        whatsapp: "bg-whatsapp text-card shadow-press hover:bg-whatsapp-press",
+        whatsapp: "bg-whatsapp-icon text-card shadow-press hover:bg-whatsapp-press",
         destructive:
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
       },
       size: {
-        sm: "h-9 px-3.5 text-[13px]",
+        sm: "h-9 px-3.5 text-caption",
         md: "h-11 px-4.5 text-sm",
         lg: "h-13 px-6 text-base",
       },

@@ -21,8 +21,14 @@ export default async function AppLayout({
       style={{ "--sidebar-width": "15rem", "--sidebar-width-icon": "4.75rem" } as React.CSSProperties}
       className="bg-background"
     >
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-card focus:px-4 focus:py-2 focus:text-body-sm focus:font-bold focus:text-ink focus:ring-2 focus:ring-coral-press focus:shadow-float"
+      >
+        Skip to main content
+      </a>
       <AppSidebar />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset id="main-content">{children}</SidebarInset>
     </SidebarProvider>
   );
 }

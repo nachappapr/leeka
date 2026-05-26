@@ -11,7 +11,7 @@ function FieldLabel({
     <label
       data-slot="field-label"
       className={cn(
-        "mb-1.5 block text-label font-bold tracking-wide text-ink-2 uppercase",
+        "mb-1.5 block text-label font-bold text-ink-2",
         className
       )}
       {...props}

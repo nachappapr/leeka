@@ -1,11 +1,13 @@
 ---
 name: duplicate-header-landmark
-description: InvoiceDetailHeader uses <header> which creates a second banner landmark alongside Topbar's <header>; fix is to use <div>
+description: In Lekka all page content is inside SidebarInset (<main>), so <header> inside it is scoped (role=generic, NOT banner). No duplicate-banner risk from sub-section headers in this layout.
 type: project
 ---
 
-`InvoiceDetailHeader` (`src/components/invoices/invoice-detail-header.tsx`) originally used `<header>` as its root element. Because it is a direct descendant of `<main>` (not nested inside `<article>`, `<aside>`, `<nav>`, or `<section>`), it is promoted to a `banner` landmark by the browser — duplicating the banner already created by `<Topbar>`.
+In Lekka's layout tree, `SidebarInset` renders a `<main>` element. Per the HTML5/ARIA spec, a `<header>` element has `role="banner"` **only** when it is NOT a descendant of `<article>`, `<aside>`, `<main>`, `<nav>`, or `<section>`. Because all page components (including `Topbar`) are rendered inside `<main>` via `SidebarInset`, every `<header>` in the tree — including `Topbar`'s — is scoped to `role="generic"`, not `role="banner"`. The `<html>` root has no dedicated page-level `<header>` outside `<main>`.
 
-**Why:** ARIA landmark semantics: the `banner` role implies "the page header". Only one banner per page is the expected contract. Two banners cause AT users to see "banner" twice in the landmarks pane (NVDA / VoiceOver rotor), with no way to distinguish them.
+**Consequence:** There is no `banner` landmark in the rendered output at all. This is a different (and separately auditable) concern — not a duplicate-banner problem. Sub-section `<header>` elements inside `<main>` do not create extra banners.
 
-**How to apply:** Any `<header>` that is not the true page-level header (i.e., it's a sub-section title bar inside a content area) must use `<div>` instead. The page-level banner is owned by `Topbar`. All other structural "header rows" inside cards or content sections use `<div>`. Flag any `<header>` that does not sit at the very top of the page tree.
+**Why:** Previous memory incorrectly stated that a `<header>` inside `<main>` (SidebarInset) creates a second banner. The HTML spec scopes the banner role to headers that are direct descendants of `<body>` or outside any sectioning content element (`<main>`, `<article>`, `<aside>`, `<nav>`, `<section>`).
+
+**How to apply:** In Lekka, never flag `<header>` inside page content as a duplicate-banner violation. The landmark audit concern is instead: does the app have any `banner` landmark? Currently no. That is a separate Medium finding if raised. Sub-section `<header>` elements (like `InvoiceEditHeader`) are safe to use — they render as `role="generic"` inside `<main>`.

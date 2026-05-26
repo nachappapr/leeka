@@ -6,9 +6,10 @@ import { InvoiceActionsPaid } from "./invoice-actions-paid"
 
 interface InvoiceActionsCardProps {
   status: StatusPillStatus
+  invoiceId: string
 }
 
-export function InvoiceActionsCard({ status }: InvoiceActionsCardProps) {
+export function InvoiceActionsCard({ status, invoiceId }: InvoiceActionsCardProps) {
   const isPaid = status === "paid"
   const isDraft = status === "draft"
   const isOverdue = status === "overdue"
@@ -19,9 +20,9 @@ export function InvoiceActionsCard({ status }: InvoiceActionsCardProps) {
         {isPaid ? (
           <InvoiceActionsPaid />
         ) : isDraft ? (
-          <InvoiceActionsDraft />
+          <InvoiceActionsDraft invoiceId={invoiceId} />
         ) : (
-          <InvoiceActionsOpen isOverdue={isOverdue} />
+          <InvoiceActionsOpen invoiceId={invoiceId} isOverdue={isOverdue} />
         )}
       </div>
     </Card>

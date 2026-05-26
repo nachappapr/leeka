@@ -28,7 +28,7 @@ export function Card({ title, children, action, className, headingLevel = 2 }: C
       {title || action ? (
         <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
           {title ? (
-            <Heading className="text-body font-extrabold tracking-tight text-ink">
+            <Heading className="text-body font-extrabold tracking-snug text-ink">
               {title}
             </Heading>
           ) : null}
