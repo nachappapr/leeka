@@ -13,6 +13,7 @@ export {
   BarChart2,
   Settings,
   Bell,
+  BellOff,
   Search,
   TrendingUp,
   CheckCircle2,
@@ -28,6 +29,7 @@ export {
   IndianRupee,
   Clock,
   Check,
+  CheckCheck,
   Eye,
   Menu,
 } from "lucide-react"

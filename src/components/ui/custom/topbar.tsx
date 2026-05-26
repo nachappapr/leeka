@@ -1,5 +1,7 @@
-import { Bell, Search } from "@/components/icons";
+import { Search } from "@/components/icons";
 import { MobileMenuButton } from "@/components/ui/custom/mobile-menu-button";
+import { NotificationPanel } from "@/components/ui/custom/notification-panel";
+import { NOTIFICATIONS } from "@/lib/constants/notifications";
 import { Input } from "@/components/ui/primitives/input";
 
 interface TopbarProps {
@@ -33,13 +35,7 @@ export function Topbar({ title, subtitle }: TopbarProps) {
       </div>
 
       <div className="flex items-center justify-end gap-3 max-mobile:ml-auto">
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:bg-surface-2 max-mobile:size-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
-        >
-          <Bell className="size-5" aria-hidden />
-        </button>
+        <NotificationPanel groups={NOTIFICATIONS} />
       </div>
     </header>
   );
