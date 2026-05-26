@@ -1,7 +1,7 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const pillButtonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-full border-[1.5px] border-transparent font-sans font-bold whitespace-nowrap transition-[background-color,box-shadow,transform,color,border-color] outline-none select-none focus-visible:ring-4 focus-visible:ring-coral-press active:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -10,14 +10,11 @@ const pillButtonVariants = cva(
       tone: {
         primary:
           "bg-primary text-primary-foreground shadow-press hover:bg-coral-press",
-        secondary:
-          "bg-coral-soft text-coral-ink hover:bg-coral-soft/80",
-        outline:
-          "bg-card text-foreground border-line-strong hover:bg-surface-2",
+        secondary: "bg-coral-soft text-coral-ink hover:bg-coral-soft/80",
+        outline: "bg-card text-foreground border-ink-3 hover:bg-surface-2",
         ghost: "bg-transparent text-foreground hover:bg-surface-2",
         paid: "bg-paid text-card shadow-press hover:bg-paid-ink",
-        whatsapp:
-          "bg-whatsapp text-card shadow-press hover:bg-whatsapp-press",
+        whatsapp: "bg-whatsapp text-card shadow-press hover:bg-whatsapp-press",
         destructive:
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
       },
@@ -31,8 +28,8 @@ const pillButtonVariants = cva(
       tone: "primary",
       size: "md",
     },
-  }
-)
+  },
+);
 
 function PillButton({
   className,
@@ -47,7 +44,7 @@ function PillButton({
       className={cn(pillButtonVariants({ tone, size }), className)}
       {...props}
     />
-  )
+  );
 }
 
-export { PillButton, pillButtonVariants }
+export { PillButton, pillButtonVariants };

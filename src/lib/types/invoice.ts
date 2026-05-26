@@ -4,13 +4,14 @@ export interface Invoice {
   id: string
   customer: string
   city: string
-  date: string
+  isoDate: string
   amount: string
   status: StatusPillStatus
 }
 
-export interface FilterChip {
+export type InvoiceStatusFilter = StatusPillStatus | "all"
+
+export interface InvoiceFilterChip {
+  id: InvoiceStatusFilter
   label: string
-  count: number
-  active?: boolean
 }

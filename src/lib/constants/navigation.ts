@@ -8,9 +8,9 @@ import {
 import type { MobileTab } from "@/lib/types"
 
 export const MOBILE_TABS: ReadonlyArray<MobileTab> = [
-  { label: "Home",      icon: LayoutDashboard, href: "/dashboard",           active: true },
-  { label: "Invoices",  icon: FileText,        href: "/dashboard/invoices"               },
-  { label: "",          icon: Plus,            href: "/new",                 isPrimary: true },
-  { label: "Customers", icon: Users,           href: "/dashboard/customers"              },
-  { label: "Settings",  icon: Settings,        href: "/dashboard/settings"               },
+  { label: "Home",      icon: LayoutDashboard, href: "/dashboard"                          },
+  { label: "Invoices",  icon: FileText,        href: "/invoices"                           },
+  { label: "",          icon: Plus,            href: "/invoices/new",        isPrimary: true },
+  { label: "Customers", icon: Users,           href: "/customers"                          },
+  { label: "Settings",  icon: Settings,        href: "/settings"                           },
 ]

@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
 import { StatusPill } from "@/components/ui/custom/status-pill"
 import type { Invoice } from "@/lib/types"
+import { formatInvoiceDate } from "@/lib/utils"
 
 export interface DataListRowProps {
   invoice: Invoice
@@ -28,7 +29,9 @@ export function DataListRow({ invoice }: DataListRowProps) {
           <div className="mt-0.5 flex items-center gap-1.5 text-label text-ink-3">
             <span>{invoice.id}</span>
             <span aria-hidden>·</span>
-            <span>{invoice.date}</span>
+            <time dateTime={invoice.isoDate}>
+              {formatInvoiceDate(invoice.isoDate)}
+            </time>
           </div>
         </div>
       </div>

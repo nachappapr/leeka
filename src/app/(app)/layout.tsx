@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/primitives/sidebar";
 import { AppSidebar } from "@/components/ui/custom/sidebar";
 
-export default async function DashboardLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
