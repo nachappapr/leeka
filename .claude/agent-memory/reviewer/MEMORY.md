@@ -6,3 +6,4 @@
 - ['use client' on pure render components](project-use-client-pure-render.md) — recurring: implementers add 'use client' to child components with no hooks/events; Critical #1; fix is to remove the directive
 - [Duplicate sidebar layout per route](project-duplicate-sidebar-layout.md) — each sidebar route copies the full SidebarProvider shell; fix is an (app) route group layout
 - [Base UI Button is a Client Component](project-base-ui-button-is-client.md) — Button.js has 'use client' + useButton hook; any file rendering PillButton must have a client boundary; missing boundary is Critical #1
+- [globals.css animation additions](project-globals-css-animation.md) — implementers add @keyframes/@layer utilities for surface-specific animations without approval; High #12; fix: get explicit approval or keep in @theme

@@ -13,7 +13,6 @@ export function DashboardContainer() {
       <Topbar title="Dashboard" subtitle="Overview of your business" />
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
         <DashboardGreeting />
-
         <HeroGrid />
         <div className="grid grid-cols-[2fr_1fr] gap-5 max-tablet:grid-cols-1 max-mobile:gap-3.5">
           <InvoicesCard />

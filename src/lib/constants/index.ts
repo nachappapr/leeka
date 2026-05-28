@@ -1,5 +1,6 @@
 export * from "./activity"
 export * from "./aging"
 export * from "./customers"
+export * from "./home"
 export * from "./invoices"
 export * from "./navigation"

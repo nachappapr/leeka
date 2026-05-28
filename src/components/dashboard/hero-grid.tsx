@@ -3,7 +3,7 @@ import { Clock, IndianRupee } from "@/components/icons";
 export function HeroGrid() {
   return (
     <div className="grid grid-cols-[2fr_1fr_1fr] gap-4 max-tablet:grid-cols-2 max-mobile:grid-cols-1 max-mobile:gap-3">
-      <div className="relative overflow-hidden rounded-lg bg-linear-135 from-coral to-coral-deep p-7 shadow-coral-hero max-tablet:col-span-2 max-mobile:col-span-1 max-mobile:p-5">
+      <div className="relative overflow-hidden rounded-xl bg-linear-135 from-coral to-coral-deep p-7 shadow-coral-hero max-tablet:col-span-2 max-mobile:col-span-1 max-mobile:p-5">
         <span
           className="pointer-events-none absolute -right-10 -top-10 size-45 rounded-full bg-white/12"
           aria-hidden="true"
@@ -26,7 +26,7 @@ export function HeroGrid() {
         </div>
       </div>
 
-      <div className="rounded-md bg-card p-6 shadow-card max-mobile:p-4">
+      <div className="rounded-xl bg-card p-6 shadow-card max-mobile:p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="text-12 font-black uppercase tracking-wide text-ink-3">
             Received this month
@@ -41,7 +41,7 @@ export function HeroGrid() {
         <div className="mt-1.5 text-13 text-ink-2">↗12% vs last month</div>
       </div>
 
-      <div className="rounded-md bg-card p-6 shadow-card max-mobile:p-4">
+      <div className="rounded-xl bg-card p-6 shadow-card max-mobile:p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="text-12 font-black uppercase tracking-wide text-ink-3">
             Overdue

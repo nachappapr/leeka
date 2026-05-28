@@ -17,6 +17,7 @@ const pillButtonVariants = cva(
         whatsapp: "bg-whatsapp-icon text-card shadow-press hover:bg-whatsapp-press",
         destructive:
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
+        onCoral: "bg-card text-coral-ink hover:bg-coral-soft",
       },
       size: {
         sm: "h-9 px-3.5 text-caption",
@@ -35,6 +36,8 @@ function PillButton({
   className,
   tone = "primary",
   size = "md",
+  render,
+  nativeButton,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof pillButtonVariants>) {
   return (
@@ -42,6 +45,8 @@ function PillButton({
       data-slot="pill-button"
       data-tone={tone}
       className={cn(pillButtonVariants({ tone, size }), className)}
+      render={render}
+      nativeButton={nativeButton ?? render === undefined}
       {...props}
     />
   );

@@ -41,7 +41,29 @@ export {
   Trash2,
   MoreHorizontal,
   Copy,
+  // Home page additions
+  Star,
+  ArrowRight,
+  Wifi,
+  Globe,
+  MessageCircle,
+  Quote,
+  PlayCircle,
+  Languages,
+  WifiOff,
+  Hash,
+  HelpCircle,
+  Monitor,
+  Lock,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source
 export { WhatsApp } from "./whatsapp"
+
+// Lekka brand / illustration icons
+export { LekkaLogo } from "./lekka-logo"
+export { HeroUnderline } from "./hero-underline"
+export { StepIllustration1 } from "./step-illustration-1"
+export { StepIllustration2 } from "./step-illustration-2"
+export { StepIllustration3 } from "./step-illustration-3"
+export { IndiaFlagStripe } from "./india-flag-stripe"

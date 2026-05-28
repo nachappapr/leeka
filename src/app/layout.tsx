@@ -25,7 +25,7 @@ const jetMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lekka — chat-app-simple invoicing",
+  title: "ArthaPatra — chat-app-simple invoicing",
   description:
     "Warm, friendly invoicing for India's small vendors. Send, get paid, repeat.",
 };

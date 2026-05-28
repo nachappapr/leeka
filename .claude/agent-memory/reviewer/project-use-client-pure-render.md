@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-Implementers repeatedly add `'use client'` to components that are consumed inside a Client Component parent and have no hooks, event handlers, or browser API calls of their own. Examples: `InvoicesTable` (Unit 7), `InvoicesMobileList` (Unit 7).
+Implementers repeatedly add `'use client'` to components that are consumed inside a Client Component parent and have no hooks, event handlers, or browser API calls of their own. Examples: `InvoicesTable` (Unit 7), `InvoicesMobileList` (Unit 7), `DesignSystemContainer` (N1 home build — entire showcase container marked client when it has no interactivity at its own root).
 
 **Why:** When a component is a child of a Client Component, it is already included in the client bundle — the child does not need its own `'use client'`. Adding it unnecessarily widens the client boundary, prevents the component from ever being used as a Server Component in another context, and is a principle #1 violation (SSR integrity: `'use client'` only where strictly required).
 
