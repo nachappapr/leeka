@@ -1,8 +1,8 @@
 import type React from "react"
 
-// Lekka brand logo glyph — receipt shape with serrated bottom edge.
-// Paths copied verbatim from ArthaPatra Home.html nav (~line 971).
-// Fills are hardcoded: the mark is always rendered inside a coral square.
+// ArthaPatra brand mark — receipt stub with serrated bottom edge.
+// White body; dark lines render on coral or dark tile backgrounds.
+// Sub-line opacity 0.4 per design (wordmark-color.jsx BrandLogo reference).
 export function LekkaLogo(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -18,8 +18,8 @@ export function LekkaLogo(props: React.SVGProps<SVGSVGElement>) {
         fill="#FFFFFF"
       />
       <rect x="28" y="32" width="44" height="6" rx="2" fill="#15110C" />
-      <rect x="28" y="46" width="36" height="4" rx="2" fill="#15110C" opacity=".22" />
-      <rect x="28" y="56" width="28" height="4" rx="2" fill="#15110C" opacity=".22" />
+      <rect x="28" y="46" width="36" height="4" rx="2" fill="#15110C" opacity=".4" />
+      <rect x="28" y="56" width="28" height="4" rx="2" fill="#15110C" opacity=".4" />
     </svg>
   )
 }

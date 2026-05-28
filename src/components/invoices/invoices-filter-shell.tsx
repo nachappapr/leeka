@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 
 import {
   FilterChips,
@@ -12,6 +13,10 @@ import { Card } from "@/components/ui/custom/card";
 import { INVOICES_FILTER_CHIPS } from "@/lib/constants";
 import type { Invoice, InvoiceStatusFilter } from "@/lib/types";
 
+const VALID_FILTERS: ReadonlyArray<InvoiceStatusFilter> = [
+  "all", "paid", "sent", "viewed", "overdue", "draft",
+];
+
 interface InvoicesFilterShellProps {
   invoices: ReadonlyArray<Invoice>;
   header: ReactNode;
@@ -21,7 +26,11 @@ export function InvoicesFilterShell({
   invoices,
   header,
 }: InvoicesFilterShellProps) {
-  const [filter, setFilter] = useState<InvoiceStatusFilter>("all");
+  const searchParams = useSearchParams();
+  const initialFilter = searchParams.get("filter") as InvoiceStatusFilter | null;
+  const [filter, setFilter] = useState<InvoiceStatusFilter>(
+    initialFilter && VALID_FILTERS.includes(initialFilter) ? initialFilter : "all",
+  );
 
   const chipItems = useMemo<ReadonlyArray<FilterChipsItem>>(
     () =>

@@ -1,4 +1,5 @@
 export * from "./auth"
+export * from "./search"
 export * from "./activity"
 export * from "./aging"
 export * from "./customers"

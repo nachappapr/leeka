@@ -37,7 +37,7 @@ export function MobileTabBar() {
             href={tab.href}
             aria-current={isActive ? "page" : undefined}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 py-2 text-label font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
+              "flex flex-col items-center justify-center gap-0.5 py-2 text-11 font-bold tracking-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
               isActive ? "text-coral-press" : "text-ink-3",
             )}
           >

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useIsTablet } from "@/hooks/use-tablet";
-import { Receipt, Sparkles } from "@/components/icons";
+import { LekkaLogo, Sparkles } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import {
   Sidebar,
@@ -76,14 +76,14 @@ export function AppSidebar() {
       <SidebarHeader className="p-3.5 pb-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-5 group-data-[collapsible=icon]:pb-5">
         <div className="flex items-center gap-3 px-2 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-nav-item bg-coral shadow-coral group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:rounded-md">
-            <Receipt
-              className="size-5 text-white group-data-[collapsible=icon]:size-4"
+            <LekkaLogo
+              className="size-5 group-data-[collapsible=icon]:size-4"
               aria-hidden
             />
           </div>
           <div className="group-data-[collapsible=icon]:hidden">
             <div className="text-19 font-black tracking-snug text-ink">
-              Lekka
+              arthapatra<span className="text-coral">.</span>
             </div>
             <div className="text-11 font-semibold tracking-wide text-ink-3">
               Invoicing
