@@ -1,22 +1,20 @@
-import { LekkaLogo, Check } from "@/components/icons"
-import { TRUST_MARKS } from "@/lib/constants/auth"
-import { BrowserPreviewCard } from "@/components/auth/browser-preview-card"
+import { LekkaLogo, Check } from "@/components/icons";
+import { TRUST_MARKS } from "@/lib/constants/auth";
+import { BrowserPreviewCard } from "@/components/auth/browser-preview-card";
 
 function AuthMarketingPanel() {
   return (
     // Desktop: coral gradient panel | Tablet: transparent header over container gradient | Mobile: own gradient
     <aside
       aria-label="About ArthaPatra"
-      className="relative flex h-full min-h-screen flex-col overflow-hidden px-14 py-10 text-white [background:linear-gradient(160deg,#F46A39_0%,#E94A1F_55%,#B83A14_100%)] max-tablet:[background:transparent] max-tablet:block max-tablet:overflow-visible max-tablet:min-h-0 max-tablet:p-0 max-tablet:max-w-[620px] max-tablet:mx-auto max-mobile:flex max-mobile:flex-col max-mobile:overflow-hidden max-mobile:min-h-0 max-mobile:px-5 max-mobile:py-5 max-mobile:[background:linear-gradient(160deg,#F46A39_0%,#E94A1F_55%,#B83A14_100%)]"
+      className="relative flex h-full min-h-screen flex-col overflow-hidden px-14 py-10 text-white [background:linear-gradient(160deg,#F46A39_0%,#E94A1F_55%,#B83A14_100%)] max-tablet:[background:transparent] max-tablet:block max-tablet:overflow-visible max-tablet:min-h-0 max-tablet:p-0 max-tablet:max-w-155 max-tablet:mx-auto max-mobile:flex max-mobile:flex-col max-mobile:overflow-hidden max-mobile:min-h-0 max-mobile:px-5 max-mobile:py-5 max-mobile:[background:linear-gradient(160deg,#F46A39_0%,#E94A1F_55%,#B83A14_100%)]"
     >
       {/* Layered gradient overlays — hidden at tablet (container carries them); restored at mobile */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 max-tablet:hidden max-mobile:block [background:radial-gradient(120%_80%_at_0%_0%,rgba(255,255,255,0.10)_0%,transparent_60%)]" />
         <div className="absolute inset-0 max-tablet:hidden max-mobile:block [background:radial-gradient(80%_60%_at_100%_100%,rgba(0,0,0,0.18)_0%,transparent_60%)]" />
-        {/* eslint-disable-next-line better-tailwindcss/no-restricted-classes -- D-GLOW-SIZE: glow circle sizes are design-mandated; no Tailwind size token covers these */}
-        <div className="absolute -top-32 -right-32 size-[520px] rounded-full bg-white/18 blur-3xl max-tablet:size-[420px] max-tablet:-top-[180px] max-tablet:-right-[120px] max-tablet:opacity-60 max-mobile:hidden" />
-        {/* eslint-disable-next-line better-tailwindcss/no-restricted-classes -- D-GLOW-SIZE */}
-        <div className="absolute -bottom-24 -left-24 size-[380px] rounded-full bg-white/12 blur-3xl max-tablet:hidden" />
+        <div className="absolute -top-32 -right-32 size-130 rounded-full bg-white/18 blur-3xl max-tablet:size-105 max-tablet:-top-45 max-tablet:-right-30 max-tablet:opacity-60 max-mobile:hidden" />
+        <div className="absolute -bottom-24 -left-24 size-95 rounded-full bg-white/12 blur-3xl max-tablet:hidden" />
       </div>
 
       {/* Brand row */}
@@ -40,16 +38,14 @@ function AuthMarketingPanel() {
           Invoices in your pocket.{" "}
           <span className="rounded-sm bg-white/25 px-1">Get paid faster.</span>
         </h1>
-        {/* eslint-disable-next-line better-tailwindcss/no-restricted-classes -- D-SUB-WIDTH: 460px desktop / 540px tablet are design-specified max-widths */}
-        <p className="mt-4.5 max-w-[460px] text-17 leading-relaxed text-white/80 max-tablet:mt-3 max-tablet:max-w-[540px] max-tablet:text-body max-mobile:max-w-none max-mobile:text-15">
-          Free web invoicing for India&apos;s small shops, home bakers, tailors and
-          traders. Open it on your phone in the morning, switch to your laptop
-          in the afternoon — same data, same login.
+        <p className="mt-4.5 max-w-115 text-17 leading-relaxed text-white/80 max-tablet:mt-3 max-tablet:max-w-135 max-tablet:text-body max-mobile:max-w-none max-mobile:text-15">
+          Free web invoicing for India&apos;s small shops, home bakers, tailors
+          and traders. Open it on your phone in the morning, switch to your
+          laptop in the afternoon — same data, same login.
         </p>
 
         {/* Mini browser preview — hidden at tablet + mobile */}
-        {/* eslint-disable-next-line better-tailwindcss/no-restricted-classes -- D-PREVIEW-WIDTH: 540px is the design-specified max-width */}
-        <div className="mt-8 max-w-[540px] max-tablet:hidden">
+        <div className="mt-8 max-w-135 max-tablet:hidden">
           <BrowserPreviewCard />
         </div>
 
@@ -74,7 +70,7 @@ function AuthMarketingPanel() {
         </ul>
       </div>
     </aside>
-  )
+  );
 }
 
-export { AuthMarketingPanel }
+export { AuthMarketingPanel };
