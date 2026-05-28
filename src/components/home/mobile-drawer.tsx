@@ -175,7 +175,7 @@ function MobileDrawer({ open, onClose, triggerRef }: MobileDrawerProps) {
             tone="outline"
             size="md"
             className="w-full"
-            render={<Link href="/dashboard" onClick={onClose} />}
+            render={<Link href="/auth" onClick={onClose} />}
           >
             Log in
           </PillButton>
@@ -184,7 +184,7 @@ function MobileDrawer({ open, onClose, triggerRef }: MobileDrawerProps) {
             tone="primary"
             size="lg"
             className="w-full"
-            render={<Link href="/dashboard" onClick={onClose} />}
+            render={<Link href="/auth?mode=signup" onClick={onClose} />}
           >
             Get started free
           </PillButton>

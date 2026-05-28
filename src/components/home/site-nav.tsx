@@ -79,7 +79,7 @@ function SiteNav() {
               <PillButton
                 tone="outline"
                 size="md"
-                render={<Link href="/dashboard" />}
+                render={<Link href="/auth" />}
               >
                 Log in
               </PillButton>
@@ -89,7 +89,7 @@ function SiteNav() {
             <PillButton
               tone="primary"
               size="md"
-              render={<Link href="/dashboard" />}
+              render={<Link href="/auth?mode=signup" />}
               className="max-mobile:size-10 max-mobile:p-0"
             >
               <Plus className="size-5 min-mobile:hidden" aria-hidden="true" />

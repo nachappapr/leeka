@@ -135,7 +135,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       "English + 5 Indian languages",
     ],
     ctaLabel: "Get started free",
-    ctaHref: "/dashboard",
+    ctaHref: "/auth?mode=signup",
     highlighted: false,
   },
   {
@@ -152,7 +152,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       "Priority Hindi & English support",
     ],
     ctaLabel: "Start 14-day free trial",
-    ctaHref: "/dashboard",
+    ctaHref: "/auth?mode=signup",
     highlighted: true,
   },
 ]
@@ -204,7 +204,7 @@ export const FOOTER_NAV: FooterNavGroup[] = [
       { label: "Features", href: "#features" },
       { label: "How it works", href: "#how" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Open the app", href: "/dashboard" },
+      { label: "Open the app", href: "/auth" },
     ],
   },
   {
@@ -275,6 +275,6 @@ export const CTA_BAND = {
   headlineLine1: "Stop chasing payments.",
   headlineLine2: "Start running your shop.",
   body: "Join 10,400+ vendors who get paid faster, on WhatsApp, with ArthaPatra.",
-  primaryCta: { label: "Sign up free", href: "/dashboard" },
-  secondaryCta: { label: "Log in", href: "/dashboard" },
+  primaryCta: { label: "Sign up free", href: "/auth?mode=signup" },
+  secondaryCta: { label: "Log in", href: "/auth" },
 } as const

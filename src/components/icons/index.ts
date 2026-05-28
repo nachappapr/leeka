@@ -31,6 +31,8 @@ export {
   Check,
   CheckCheck,
   Eye,
+  EyeOff,
+  ArrowLeft,
   Menu,
   ArrowUp,
   ArrowDown,
@@ -55,10 +57,16 @@ export {
   HelpCircle,
   Monitor,
   Lock,
+  ShoppingBag,
+  Package,
+  UserRound,
+  Store,
+  Briefcase,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source
 export { WhatsApp } from "./whatsapp"
+export { GoogleIcon } from "./google-icon"
 
 // Lekka brand / illustration icons
 export { LekkaLogo } from "./lekka-logo"
@@ -67,3 +75,7 @@ export { StepIllustration1 } from "./step-illustration-1"
 export { StepIllustration2 } from "./step-illustration-2"
 export { StepIllustration3 } from "./step-illustration-3"
 export { IndiaFlagStripe } from "./india-flag-stripe"
+
+// Auth page icons
+export { SparklesIcon } from "./sparkles-icon"
+export { UtensilsCrossedIcon } from "./utensils-crossed-icon"

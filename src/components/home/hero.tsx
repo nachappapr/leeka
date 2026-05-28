@@ -70,7 +70,7 @@ function Hero() {
               <PillButton
                 tone="primary"
                 size="lg"
-                render={<Link href="/dashboard" />}
+                render={<Link href="/auth?mode=signup" />}
               >
                 <ArrowRight className="size-5" aria-hidden="true" />
                 Open ArthaPatra free
