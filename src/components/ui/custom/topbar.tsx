@@ -15,7 +15,7 @@ export function Topbar({ title, subtitle }: TopbarProps) {
       <MobileMenuButton />
 
       <div className="min-w-0 max-mobile:flex-1">
-        <h1 className="truncate text-20 font-black tracking-snug text-ink max-mobile:text-17">
+        <h1 className="truncate text-title font-black text-ink">
           {title}
         </h1>
         {subtitle && (

@@ -78,17 +78,17 @@ export function FilterChips({
             tabIndex={isActive ? 0 : -1}
             onClick={() => onValueChange(item.id)}
             className={cn(
-              "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-body-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
+              "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border-[1.5px] px-3.5 text-caption font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
               isActive
-                ? "bg-ink text-white"
-                : "border border-ink-3 bg-card text-ink-2 hover:bg-surface-2",
+                ? "border-transparent bg-ink text-white"
+                : "border-ink-3 bg-card text-ink-2 hover:bg-surface-2",
             )}
           >
             {item.label}
             {item.count !== undefined && (
               <span
                 className={cn(
-                  "rounded-full px-2 py-px text-label font-extrabold",
+                  "rounded-full px-2 py-px text-kicker font-extrabold",
                   isActive
                     ? "bg-white/20 text-white"
                     : "bg-background text-ink-3",

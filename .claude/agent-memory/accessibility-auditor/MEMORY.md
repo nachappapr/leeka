@@ -32,3 +32,9 @@
 - [Responsive icon-only buttons: max-mobile:hidden on text = no accessible name](project_icon_only_button_mobile.md) — use sr-only not display:none for hidden label text so AT still gets the button name
 - [Search combobox APG pattern gaps](project_search_combobox_pattern.md) — role=combobox+aria-expanded+aria-activedescendant must be a trio; button role=option is invalid; MobileSearchSheet missing role=dialog+focus trap; both missing live region
 - [coral text on white/cream surfaces](project_coral_text_on_surfaces.md) — coral (#f46a39) on surface=3.01:1, on cream=2.80:1; fails 4.5:1 normal text; only coral-ink (#5a1e08) is safe for body/label text on light backgrounds
+- [StatusPill size=sm contrast — VERIFIED](project_status_pill_sm_contrast.md) — all five ink/soft pairs pass 4.5:1 at 11px; info pair is tightest at 4.56:1; dots+text label satisfies SC 1.4.1
+- [DataListRow label contrast — VERIFIED](project_data_list_row_label_contrast.md) — text-label (12px) text-ink-3 on bg-card = 5.92:1; PASSES SC 1.4.3 after ink-2→ink-3 + 14px→12px change
+- [Eyebrow pill: primary on coral-soft fails](project_export_modal_eyebrow_contrast.md) — text-primary (#f46a39) on bg-coral-soft (#ffe7da) = 2.54:1; fails 4.5:1 at 11px; fix: text-coral-ink (10.90:1)
+- [tablist without tabpanels — wrong pattern](project_tablist_without_tabpanels.md) — role=tablist/tab on a format selector with no tabpanels violates APG Tabs; correct: role=radiogroup/radio + aria-checked + roving tabindex + arrow-key nav
+- [sr-only checkbox: no visible focus on label](project_sr_only_checkbox_focus.md) — sr-only input focus outline is clipped/invisible; label needs focus-within:ring-coral-press; pure CSS fix, no client boundary
+- [Chip group labelling gap](project_chip_group_labelling.md) — FieldLabel (<div>) not linked via aria-labelledby to chip-group wrapper; fix: id on label + role=group + aria-labelledby on wrapper

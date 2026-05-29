@@ -59,7 +59,7 @@ function PanelBody({
             size="sm"
             onClick={onMarkAllRead}
             disabled={!onMarkAllRead || unreadCount === 0}
-            className="h-8 px-2.5 text-12 font-semibold text-ink-2 hover:text-ink focus-visible:ring-coral-press"
+            className="h-8 px-2.5 text-label font-semibold text-ink-2 hover:text-ink focus-visible:ring-coral-press"
           >
             Mark all read
           </Button>

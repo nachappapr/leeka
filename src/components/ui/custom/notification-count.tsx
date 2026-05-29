@@ -25,7 +25,7 @@ function NotificationCount({
         "rounded-full",
         "bg-coral-soft text-coral-ink",
         "font-sans font-bold",
-        "text-11 leading-none align-middle",
+        "text-kicker leading-none align-middle",
         className
       )}
     >

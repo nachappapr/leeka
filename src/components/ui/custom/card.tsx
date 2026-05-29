@@ -34,7 +34,7 @@ export function Card({
       {title || action ? (
         <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
           {title ? (
-            <Heading className="text-body font-extrabold tracking-snug text-ink">
+            <Heading className="text-title-sm font-extrabold text-ink">
               {title}
             </Heading>
           ) : null}

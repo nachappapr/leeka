@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const statusPillVariants = cva(
-  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold tracking-wide whitespace-nowrap before:inline-block before:size-1.5 before:rounded-full before:bg-current before:opacity-80",
+  "inline-flex items-center rounded-full font-bold tracking-wide whitespace-nowrap before:inline-block before:size-1.5 before:rounded-full before:bg-current before:opacity-80",
   {
     variants: {
       status: {
@@ -17,9 +17,14 @@ const statusPillVariants = cva(
         overdue: "bg-overdue-soft text-overdue-ink",
         paid: "bg-paid-soft text-paid-ink",
       },
+      size: {
+        default: "gap-1.5 px-2.5 py-1 text-label",
+        sm: "gap-1 px-2 py-0.5 text-kicker",
+      },
     },
     defaultVariants: {
       status: "draft",
+      size: "default",
     },
   }
 )
@@ -41,6 +46,7 @@ const STATUS_LABEL: Record<StatusPillStatus, string> = {
 function StatusPill({
   className,
   status = "draft",
+  size,
   children,
   render,
   ...props
@@ -49,7 +55,7 @@ function StatusPill({
     defaultTagName: "span",
     props: mergeProps<"span">(
       {
-        className: cn(statusPillVariants({ status }), className),
+        className: cn(statusPillVariants({ status, size }), className),
         children: children ?? STATUS_LABEL[status ?? "draft"],
       },
       props

@@ -1,6 +1,7 @@
-import { Download, Plus } from "@/components/icons"
+import { Plus } from "@/components/icons"
 import { PageHeader } from "@/components/ui/custom/page-header"
 import { PillButton } from "@/components/ui/custom/pill-button"
+import { ExportTrigger } from "@/components/invoices/export-trigger"
 
 export function InvoicesPageHeader() {
   return (
@@ -9,10 +10,7 @@ export function InvoicesPageHeader() {
       subtitle="All your invoices in one place. Filter, sort, or open any one."
       actions={
         <>
-          <PillButton tone="outline" size="md">
-            <Download aria-hidden />
-            Export CSV
-          </PillButton>
+          <ExportTrigger />
           <PillButton tone="primary" size="md">
             <Plus aria-hidden />
             New invoice

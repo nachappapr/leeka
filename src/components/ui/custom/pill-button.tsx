@@ -21,8 +21,8 @@ const pillButtonVariants = cva(
       },
       size: {
         sm: "h-9 px-3.5 text-caption",
-        md: "h-11 px-4.5 text-sm",
-        lg: "h-13 px-6 text-base",
+        md: "h-11 px-4.5 text-body-sm",
+        lg: "h-13 px-6 text-body",
       },
     },
     defaultVariants: {

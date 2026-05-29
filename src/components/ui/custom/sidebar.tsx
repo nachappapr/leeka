@@ -77,15 +77,15 @@ export function AppSidebar() {
         <div className="flex items-center gap-3 px-2 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-nav-item bg-coral shadow-coral group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:rounded-md">
             <LekkaLogo
-              className="size-5 group-data-[collapsible=icon]:size-4"
+              className="size-6 group-data-[collapsible=icon]:size-5"
               aria-hidden
             />
           </div>
           <div className="group-data-[collapsible=icon]:hidden">
-            <div className="text-19 font-black tracking-snug text-ink">
+            <div className="text-17 font-black tracking-snug text-ink">
               arthapatra<span className="text-coral">.</span>
             </div>
-            <div className="text-11 font-semibold tracking-wide text-ink-3">
+            <div className="text-kicker font-semibold tracking-wide text-ink-3">
               Invoicing
             </div>
           </div>
@@ -121,7 +121,7 @@ export function AppSidebar() {
                       <Icon className="size-4 shrink-0" aria-hidden />
                       <span className="flex-1">{item.label}</span>
                       {item.badge != null && (
-                        <span className="ml-auto rounded-full bg-overdue px-2 py-px text-11 font-black text-white group-data-[collapsible=icon]:hidden">
+                        <span className="ml-auto rounded-full bg-overdue px-2 py-px text-kicker font-black text-white group-data-[collapsible=icon]:hidden">
                           {item.badge}
                         </span>
                       )}
@@ -194,7 +194,7 @@ export function AppSidebar() {
             <div className="truncate text-caption font-bold text-ink">
               Raj Kumar Trading
             </div>
-            <div className="text-11 text-ink-3">Free plan</div>
+            <div className="text-kicker text-ink-3">Free plan</div>
           </div>
         </div>
       </SidebarFooter>

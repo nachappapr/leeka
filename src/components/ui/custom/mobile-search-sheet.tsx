@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { useRouter } from "next/navigation"
 
 import { Search, XIcon, ChevronRight, Receipt, Users, Plus } from "@/components/icons"
@@ -66,6 +67,10 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
     }
   }, [open, onClose])
 
+  // Render to document.body — the Topbar <header> uses backdrop-filter, which
+  // establishes a containing block for fixed descendants, so an in-place
+  // `fixed inset-0` would resolve to the header strip, not the viewport.
+  // (open is always false during SSR, so this stays hydration-safe.)
   if (!open) return null
 
   const q = query.trim().toLowerCase()
@@ -148,7 +153,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
     saveRecentSearches([])
   }
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -161,7 +166,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
       </div>
 
       {/* Search header */}
-      <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3.5">
+      <div className="flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
         <div className="flex h-11 flex-1 items-center gap-3 rounded-full border border-border bg-cream px-4 transition-[border-color,box-shadow] duration-150 focus-within:border-coral focus-within:shadow-[0_0_0_4px_var(--color-coral-soft)]">
           <Search className="size-4 shrink-0 text-ink-3" aria-hidden />
           <input
@@ -182,7 +187,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
           />
           {query && (
             <button
-              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-line text-ink-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+              className="flex size-6 shrink-0 items-center justify-center rounded-full bg-line text-ink-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
               onClick={() => setQuery("")}
               aria-label="Clear search"
             >
@@ -199,7 +204,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
         </button>
       </div>
 
-      {/* Scope chips — radiogroup semantics; h-12 = 48px tap target; border-ink-3 = 5.9:1 contrast */}
+      {/* Scope chips — radiogroup semantics; h-9 = 36px matches design chip height; border-ink-3 = 5.9:1 contrast */}
       {!noData && (
         <div
           role="radiogroup"
@@ -212,9 +217,9 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
               role="radio"
               aria-checked={scope === s}
               className={cn(
-                "h-12 shrink-0 rounded-full border px-3.5 text-13 font-bold capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
+                "h-9 shrink-0 rounded-full border-[1.5px] px-3.5 text-caption font-bold capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
                 scope === s
-                  ? "border-ink bg-ink text-white"
+                  ? "border-transparent bg-ink text-white"
                   : "border-ink-3 bg-surface text-ink",
               )}
               onClick={() => setScope(s)}
@@ -259,7 +264,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
             {recents.length > 0 && (
               <div className="py-3.5">
                 <div className="mb-2.5 flex items-center justify-between px-4.5">
-                  <h2 className="text-11 font-black uppercase tracking-wider text-ink-3">
+                  <h2 className="text-kicker font-black uppercase tracking-wider text-ink-3">
                     Recent
                   </h2>
                   {/* coral-ink on cream = 12:1 — passes 4.5:1 */}
@@ -293,7 +298,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
             {/* Jump-to */}
             <div className={cn("pt-3.5", recents.length > 0 && "border-t border-border")}>
               <div className="mb-2.5 px-4.5">
-                <h2 className="text-11 font-black uppercase tracking-wider text-ink-3">
+                <h2 className="text-kicker font-black uppercase tracking-wider text-ink-3">
                   Jump to
                 </h2>
               </div>
@@ -343,7 +348,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
             {invMatches.length > 0 && (
               <div role="group" aria-labelledby="ms-inv-lbl" className="py-3.5">
                 <div className="mb-2.5 flex items-center justify-between px-4.5">
-                  <span id="ms-inv-lbl" className="text-11 font-black uppercase tracking-wider text-ink-3">
+                  <span id="ms-inv-lbl" className="text-kicker font-black uppercase tracking-wider text-ink-3">
                     Invoices
                   </span>
                   <span className="rounded-full border border-border bg-surface px-2 py-0.5 text-label font-bold text-ink-3">
@@ -357,20 +362,20 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                     onClick={() => openInvoice(inv.id, inv.customer)}
                   >
                     <Avatar className="size-11 shrink-0">
-                      <AvatarFallback className="bg-coral-soft text-13 font-extrabold text-coral-ink">
+                      <AvatarFallback className="bg-coral-soft text-caption font-extrabold text-coral-ink">
                         {initials(inv.customer)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-15 font-bold text-ink">
+                      <div className="truncate text-body font-bold text-ink">
                         {inv.customer}
                       </div>
-                      <div className="mt-1 text-13 text-ink-3">
+                      <div className="mt-1 text-caption text-ink-3">
                         {inv.id} · {inv.isoDate} ·{" "}
                         <span className="font-bold">{inv.amount}</span>
                       </div>
                     </div>
-                    <StatusPill status={inv.status} className="self-start mt-0.5 shrink-0" />
+                    <StatusPill status={inv.status} size="sm" className="self-start mt-0.5 shrink-0" />
                   </button>
                 ))}
               </div>
@@ -382,7 +387,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                 className={cn("py-3.5", invMatches.length > 0 && "border-t border-border")}
               >
                 <div className="mb-2.5 flex items-center justify-between px-4.5">
-                  <span id="ms-cust-lbl" className="text-11 font-black uppercase tracking-wider text-ink-3">
+                  <span id="ms-cust-lbl" className="text-kicker font-black uppercase tracking-wider text-ink-3">
                     Customers
                   </span>
                   <span className="rounded-full border border-border bg-surface px-2 py-0.5 text-label font-bold text-ink-3">
@@ -396,13 +401,13 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                     onClick={() => openCustomer(cust.id, cust.name)}
                   >
                     <Avatar className="size-11 shrink-0">
-                      <AvatarFallback className="bg-coral-soft text-13 font-extrabold text-coral-ink">
+                      <AvatarFallback className="bg-coral-soft text-caption font-extrabold text-coral-ink">
                         {initials(cust.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <div className="text-15 font-bold text-ink">{cust.name}</div>
-                      <div className="mt-1 text-13 text-ink-3">
+                      <div className="text-body font-bold text-ink">{cust.name}</div>
+                      <div className="mt-1 text-caption text-ink-3">
                         {cust.phone}
                         {cust.invoiceCount
                           ? ` · ${cust.invoiceCount} invoice${cust.invoiceCount === 1 ? "" : "s"}`
@@ -422,6 +427,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

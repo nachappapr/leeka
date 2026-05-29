@@ -5,7 +5,7 @@ export function DashboardGreeting() {
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <h2 className="text-26 font-black tracking-tight text-ink max-mobile:text-title">
+        <h2 className="text-h2 font-black text-ink">
           <span lang="hi">Namaste</span>, Raj <span aria-hidden="true">👋</span>
         </h2>
         <p className="mt-0.5 text-body-sm text-ink-2">

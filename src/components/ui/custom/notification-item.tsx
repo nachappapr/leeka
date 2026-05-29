@@ -71,7 +71,7 @@ function NotificationItem({
 
       {/* Body copy */}
       <div className="min-w-0 flex-1 self-center">
-        <p className="text-13 text-ink-2 leading-snug max-mobile:text-body-sm">
+        <p className="text-caption text-ink-2 leading-snug">
           <span className="font-bold text-ink">{customer}</span>{" "}
           {verb}
           {amount !== undefined && (
@@ -79,9 +79,9 @@ function NotificationItem({
           )}
         </p>
         {invoiceNo && (
-          <p className="text-12 text-ink-3 mt-1">{invoiceNo}</p>
+          <p className="text-label text-ink-3 mt-1">{invoiceNo}</p>
         )}
-        <p className="text-11 text-ink-3 mt-0.5">{timeLabel}</p>
+        <p className="text-label text-ink-3 mt-0.5">{timeLabel}</p>
       </div>
 
       {/* Unread indicator — self-start prevents stretch distortion */}

@@ -1,6 +1,6 @@
 import {
   FileText,
-  LayoutDashboard,
+  Home,
   Plus,
   Settings,
   Users,
@@ -8,7 +8,7 @@ import {
 import type { MobileTab } from "@/lib/types"
 
 export const MOBILE_TABS: ReadonlyArray<MobileTab> = [
-  { label: "Home",      icon: LayoutDashboard, href: "/dashboard"                          },
+  { label: "Home",      icon: Home,            href: "/dashboard"                          },
   { label: "Invoices",  icon: FileText,        href: "/invoices"                           },
   { label: "",          icon: Plus,            href: "/invoices/new",        isPrimary: true },
   { label: "Customers", icon: Users,           href: "/customers"                          },

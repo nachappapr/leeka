@@ -17,7 +17,7 @@ const eslintConfig = defineConfig([
   // eslint-config-next; we just pull in the rule set.
   { rules: jsxA11y.flatConfigs.recommended.rules },
 
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".claude/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".claude/**", ".design-ref/**"]),
 
   // ── Tailwind correctness + design-token enforcement ──────────────────────
   // Feature code (src/app, src/components) must use design tokens, not

@@ -186,11 +186,11 @@ export function SearchPalette() {
                     <div className="flex items-center justify-between px-4 pb-1.5 pt-2">
                       <span
                         id="sp-inv-lbl"
-                        className="text-11 font-black uppercase tracking-wider text-ink-3"
+                        className="text-kicker font-black uppercase tracking-wider text-ink-3"
                       >
                         {q ? "Invoices" : "Recent invoices"}
                       </span>
-                      <span className="rounded-full border border-border bg-cream px-2 py-0.5 text-11 font-black text-ink-3">
+                      <span className="rounded-full border border-border bg-cream px-2 py-0.5 text-kicker font-black text-ink-3">
                         {invMatches.length}
                       </span>
                     </div>
@@ -230,7 +230,7 @@ export function SearchPalette() {
                         <span className="shrink-0 text-body-sm font-bold text-ink-2">
                           {inv.amount}
                         </span>
-                        <StatusPill status={inv.status} />
+                        <StatusPill status={inv.status} size="sm" />
                       </div>
                     ))}
                   </div>
@@ -247,11 +247,11 @@ export function SearchPalette() {
                     <div className="flex items-center justify-between px-4 pb-1.5 pt-2">
                       <span
                         id="sp-cust-lbl"
-                        className="text-11 font-black uppercase tracking-wider text-ink-3"
+                        className="text-kicker font-black uppercase tracking-wider text-ink-3"
                       >
                         {q ? "Customers" : "Top customers"}
                       </span>
-                      <span className="rounded-full border border-border bg-cream px-2 py-0.5 text-11 font-black text-ink-3">
+                      <span className="rounded-full border border-border bg-cream px-2 py-0.5 text-kicker font-black text-ink-3">
                         {custMatches.length}
                       </span>
                     </div>
@@ -312,16 +312,16 @@ export function SearchPalette() {
               {/* Footer — outside the scroll area */}
               <div className="flex shrink-0 items-center gap-4 border-t border-border bg-cream px-5 py-3">
                 <span className="flex items-center gap-1 text-label text-ink-3">
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-10 font-semibold text-ink-2">↑</kbd>
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-10 font-semibold text-ink-2">↓</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">↑</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">↓</kbd>
                   navigate
                 </span>
                 <span className="flex items-center gap-1 text-label text-ink-3">
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-10 font-semibold text-ink-2">↵</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">↵</kbd>
                   open
                 </span>
                 <span className="flex items-center gap-1 text-label text-ink-3">
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-10 font-semibold text-ink-2">esc</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">esc</kbd>
                   close
                 </span>
               </div>

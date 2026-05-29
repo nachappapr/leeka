@@ -42,12 +42,15 @@ export const dashboardColumns: ColumnDef<Invoice>[] = [
     accessorKey: "status",
     header: "Status",
     enableSorting: false,
-    cell: ({ getValue }) => <StatusPill status={getValue<Invoice["status"]>()} />,
+    cell: ({ getValue }) => (
+      <StatusPill status={getValue<Invoice["status"]>()} />
+    ),
   },
   {
     accessorKey: "amount",
     header: "Amount",
-    sortingFn: (a, b) => parseAmount(a.original.amount) - parseAmount(b.original.amount),
+    sortingFn: (a, b) =>
+      parseAmount(a.original.amount) - parseAmount(b.original.amount),
     cell: ({ getValue }) => (
       <span className="tabular text-body-sm font-bold text-ink">
         {getValue<string>()}
