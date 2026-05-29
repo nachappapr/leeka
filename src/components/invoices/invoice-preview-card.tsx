@@ -40,7 +40,7 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
           <div className="flex size-14 items-center justify-center rounded-xl bg-coral text-22 font-black text-white">
             RK
           </div>
-          <h2 className="mt-3 text-20 font-black text-ink">
+          <h2 className="mt-3 text-title font-black text-ink">
             Raj Kumar Trading
           </h2>
           <address className="not-italic text-caption leading-relaxed text-ink-3">
@@ -136,7 +136,7 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
           <hr className="my-2 border-t border-border" />
           <div className="flex items-baseline justify-between">
             <span className="text-body-sm font-black text-ink">Total</span>
-            <span className="tabular text-h2 font-black tracking-snug text-ink">
+            <span className="tabular text-money-sm font-black text-ink">
               {formatRupees(total)}
             </span>
           </div>

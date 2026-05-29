@@ -38,7 +38,7 @@ export function PageHeader({
             {title}
           </h2>
           {subtitle && (
-            <p className="mt-0.5 truncate text-body-sm font-medium text-ink-3">
+            <p className="mt-0.5 text-body-sm font-medium text-ink-3">
               {subtitle}
             </p>
           )}

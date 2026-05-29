@@ -3,13 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { PillButton } from "@/components/ui/custom/pill-button"
-import { StatusToggleChip } from "@/components/dashboard/status-toggle-chip"
-import { useDashboardActions } from "@/components/dashboard/dashboard-actions-provider"
-import { DASH_STATUSES } from "@/lib/constants/dashboard"
-import { INVOICES } from "@/lib/constants/invoices"
+import { StatusToggleChip } from "@/components/invoices/status-toggle-chip"
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
+import { INVOICE_STATUS_OPTIONS } from "@/lib/constants/invoices"
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
 
-interface DashFilterViewProps {
+interface InvoiceFilterViewProps {
   /** Called when the user applies a filter or cancels. */
   onClose: () => void
 }
@@ -19,8 +18,8 @@ interface DashFilterViewProps {
  * Remounted whenever it enters view so draft always starts fresh from
  * the committed statuses value (no setState-in-effect needed).
  */
-export function DashFilterView({ onClose }: DashFilterViewProps) {
-  const { statuses, setStatuses } = useDashboardActions()
+export function InvoiceFilterView({ onClose }: InvoiceFilterViewProps) {
+  const { statuses, setStatuses, invoices } = useInvoiceListActions()
   const [draft, setDraft] = useState<StatusPillStatus[]>([...statuses])
 
   // Ref to the first chip button for focus management
@@ -38,14 +37,14 @@ export function DashFilterView({ onClose }: DashFilterViewProps) {
   }
 
   const countBy = (status: StatusPillStatus) =>
-    INVOICES.filter((inv) => inv.status === status).length
+    invoices.filter((inv) => inv.status === status).length
 
   const matched = useMemo(
     () =>
       draft.length === 0
-        ? INVOICES.length
-        : INVOICES.filter((inv) => draft.includes(inv.status)).length,
-    [draft],
+        ? invoices.length
+        : invoices.filter((inv) => draft.includes(inv.status)).length,
+    [draft, invoices],
   )
 
   function handleApply() {
@@ -58,14 +57,21 @@ export function DashFilterView({ onClose }: DashFilterViewProps) {
       {/* Drag handle */}
       <div className="mx-auto mt-1.5 mb-3 h-1 w-10 rounded-full bg-line-strong" aria-hidden />
 
-      {/* Visible kicker */}
-      <p className="px-5 pb-2.5 text-kicker uppercase tracking-wider text-ink-3" aria-hidden>
+      {/* Visible kicker — also labels the status chip group */}
+      <p
+        id="invoice-filter-status-group-label"
+        className="px-5 pb-2.5 text-kicker uppercase tracking-wider text-ink-3"
+      >
         Filter by status
       </p>
 
       {/* Status chips */}
-      <div className="flex flex-wrap gap-2 px-5">
-        {DASH_STATUSES.map((s, i) => (
+      <div
+        role="group"
+        aria-labelledby="invoice-filter-status-group-label"
+        className="flex flex-wrap gap-2 px-5"
+      >
+        {INVOICE_STATUS_OPTIONS.map((s, i) => (
           <StatusToggleChip
             key={s.id}
             ref={i === 0 ? firstChipRef : undefined}
@@ -102,14 +108,14 @@ export function DashFilterView({ onClose }: DashFilterViewProps) {
           size="md"
           disabled={draft.length === 0}
           onClick={() => setDraft([])}
-          className="justify-center"
+          className="flex-1 justify-center rounded-lg!"
         >
           Reset
         </PillButton>
         <PillButton
           tone="primary"
           size="md"
-          className="flex-1 justify-center"
+          className="flex-1 justify-center rounded-lg!"
           onClick={handleApply}
         >
           Show {matched} invoice{matched === 1 ? "" : "s"}

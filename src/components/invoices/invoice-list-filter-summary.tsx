@@ -1,16 +1,16 @@
 "use client"
 
 import { ArrowUpDown, XIcon } from "@/components/icons"
-import { useDashboardActions } from "@/components/dashboard/dashboard-actions-provider"
-import { DASH_STATUSES, STATUS_DOT_CLASS } from "@/lib/constants/dashboard"
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
+import { INVOICE_STATUS_OPTIONS, STATUS_DOT_CLASS } from "@/lib/constants/invoices"
 import { cn } from "@/lib/utils"
 
 // Fix #12: chip border border-line → border-ink-3
 const CHIP_CLASS =
   "inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-surface-2 border border-ink-3 text-caption font-bold text-ink-2"
 
-export function DashboardFilterSummary() {
-  const { sort, statuses, setSort, setStatuses, sortLabel } = useDashboardActions()
+export function InvoiceListFilterSummary() {
+  const { sort, statuses, setSort, setStatuses, sortLabel } = useInvoiceListActions()
 
   const hasActiveSort = sort !== "newest"
   const hasActiveFilters = statuses.length > 0
@@ -24,7 +24,7 @@ export function DashboardFilterSummary() {
   }
 
   function getStatusLabel(statusId: string): string {
-    return DASH_STATUSES.find((s) => s.id === statusId)?.label ?? statusId
+    return INVOICE_STATUS_OPTIONS.find((s) => s.id === statusId)?.label ?? statusId
   }
 
   return (

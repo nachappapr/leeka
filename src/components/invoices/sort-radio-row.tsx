@@ -36,7 +36,7 @@ export function SortRadioRow({
         "flex w-full items-center gap-3.5 rounded-lg border-[1.5px] px-3.5 py-3 text-left transition-[background-color,border-color]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
         active
-          ? "border-coral bg-coral-soft"
+          ? "border-coral-press bg-coral-soft"
           // Fix #6: inactive border border-line → border-ink-3; hover border-line-strong → border-ink-2
           : "border-ink-3 bg-cream hover:border-ink-2 hover:bg-surface-2",
       )}

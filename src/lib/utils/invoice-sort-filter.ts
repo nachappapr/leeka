@@ -1,5 +1,5 @@
 import type { Invoice } from "@/lib/types"
-import type { DashSortId } from "@/lib/types/dashboard"
+import type { InvoiceSortId } from "@/lib/types/invoice"
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
 
 /** Parse "₹24,500" → 24500. Returns 0 for unparseable strings. */
@@ -9,12 +9,12 @@ export function parseRupeeString(amount: string): number {
 }
 
 /**
- * Filter invoices by status list (empty = all), then sort by the given DashSortId.
+ * Filter invoices by status list (empty = all), then sort by the given InvoiceSortId.
  * Returns a new array; original is not mutated.
  */
-export function applyDashSortFilter(
+export function applyInvoiceSortFilter(
   invoices: ReadonlyArray<Invoice>,
-  sort: DashSortId,
+  sort: InvoiceSortId,
   statuses: ReadonlyArray<StatusPillStatus>,
 ): Invoice[] {
   // Attach original index so "newest" = input order (already newest-first).
@@ -24,7 +24,7 @@ export function applyDashSortFilter(
     list = list.filter((inv) => (statuses as ReadonlyArray<string>).includes(inv.status))
   }
 
-  const comparators: Record<DashSortId, (a: typeof list[0], b: typeof list[0]) => number> = {
+  const comparators: Record<InvoiceSortId, (a: typeof list[0], b: typeof list[0]) => number> = {
     newest:  (a, b) => a._i - b._i,
     oldest:  (a, b) => b._i - a._i,
     amtHigh: (a, b) => parseRupeeString(b.amount) - parseRupeeString(a.amount),

@@ -1,7 +1,7 @@
 import { forwardRef } from "react"
 
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
-import { STATUS_DOT_CLASS } from "@/lib/constants/dashboard"
+import { STATUS_DOT_CLASS } from "@/lib/constants/invoices"
 import { cn } from "@/lib/utils"
 
 interface StatusToggleChipProps {

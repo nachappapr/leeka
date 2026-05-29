@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react"
 
 import { ArrowDown, ArrowUp, IndianRupee, UserRound } from "@/components/icons"
 import { PillButton } from "@/components/ui/custom/pill-button"
-import { SortRadioRow } from "@/components/dashboard/sort-radio-row"
-import { useDashboardActions } from "@/components/dashboard/dashboard-actions-provider"
-import { DASH_SORTS } from "@/lib/constants/dashboard"
-import type { DashSortId } from "@/lib/types/dashboard"
+import { SortRadioRow } from "@/components/invoices/sort-radio-row"
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
+import { INVOICE_SORTS } from "@/lib/constants/invoices"
+import type { InvoiceSortId } from "@/lib/types/invoice"
 
 function sortIcon(iconKey: string): React.ReactNode {
   const cls = "size-5"
@@ -20,7 +20,7 @@ function sortIcon(iconKey: string): React.ReactNode {
   }
 }
 
-interface DashSortViewProps {
+interface InvoiceSortViewProps {
   /** Called when the user applies a sort or cancels. */
   onClose: () => void
 }
@@ -30,30 +30,30 @@ interface DashSortViewProps {
  * Remounted whenever it enters view so draft always starts fresh from
  * the committed sort value (no setState-in-effect needed).
  */
-export function DashSortView({ onClose }: DashSortViewProps) {
-  const { sort, setSort } = useDashboardActions()
-  const [draft, setDraft] = useState<DashSortId>(sort)
+export function InvoiceSortView({ onClose }: InvoiceSortViewProps) {
+  const { sort, setSort } = useInvoiceListActions()
+  const [draft, setDraft] = useState<InvoiceSortId>(sort)
 
   // Store DOM nodes for roving-tabindex focus management
   const rowNodes = useRef<(HTMLButtonElement | null)[]>(
-    Array.from({ length: DASH_SORTS.length }, () => null),
+    Array.from({ length: INVOICE_SORTS.length }, () => null),
   )
 
   // Move focus to the selected radio row when this view mounts
   useEffect(() => {
-    const idx = DASH_SORTS.findIndex((s) => s.id === draft)
+    const idx = INVOICE_SORTS.findIndex((s) => s.id === draft)
     const node = rowNodes.current[idx >= 0 ? idx : 0]
     node?.focus()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // intentionally empty — fire only on mount
 
   function handleGroupKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    const currentIndex = DASH_SORTS.findIndex((s) => s.id === draft)
+    const currentIndex = INVOICE_SORTS.findIndex((s) => s.id === draft)
     let nextIndex = currentIndex
 
     if (e.key === "ArrowDown") {
       e.preventDefault()
-      nextIndex = Math.min(currentIndex + 1, DASH_SORTS.length - 1)
+      nextIndex = Math.min(currentIndex + 1, INVOICE_SORTS.length - 1)
     } else if (e.key === "ArrowUp") {
       e.preventDefault()
       nextIndex = Math.max(currentIndex - 1, 0)
@@ -62,13 +62,13 @@ export function DashSortView({ onClose }: DashSortViewProps) {
       nextIndex = 0
     } else if (e.key === "End") {
       e.preventDefault()
-      nextIndex = DASH_SORTS.length - 1
+      nextIndex = INVOICE_SORTS.length - 1
     } else {
       return
     }
 
     if (nextIndex !== currentIndex) {
-      setDraft(DASH_SORTS[nextIndex].id)
+      setDraft(INVOICE_SORTS[nextIndex].id)
       rowNodes.current[nextIndex]?.focus()
     }
   }
@@ -96,7 +96,7 @@ export function DashSortView({ onClose }: DashSortViewProps) {
         onKeyDown={handleGroupKeyDown}
         className="flex flex-col gap-2 overflow-y-auto px-3.5 max-h-96"
       >
-        {DASH_SORTS.map((s, i) => (
+        {INVOICE_SORTS.map((s, i) => (
           <SortRadioRow
             key={s.id}
             active={draft === s.id}
@@ -115,7 +115,7 @@ export function DashSortView({ onClose }: DashSortViewProps) {
         <PillButton
           tone="outline"
           size="md"
-          className="w-2/5 justify-center"
+          className="flex-1 justify-center rounded-lg!"
           onClick={onClose}
         >
           Cancel
@@ -123,7 +123,7 @@ export function DashSortView({ onClose }: DashSortViewProps) {
         <PillButton
           tone="primary"
           size="md"
-          className="w-3/5 justify-center"
+          className="flex-1 justify-center rounded-lg!"
           onClick={handleApply}
         >
           Apply sort

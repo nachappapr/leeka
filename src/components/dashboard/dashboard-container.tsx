@@ -2,21 +2,22 @@ import { ActivityCard } from "@/components/ui/custom/activity-card";
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { MoneyAwaitedCard } from "@/components/ui/custom/money-awaited-card";
 import { Topbar } from "@/components/ui/custom/topbar";
-import { DashboardActionsProvider } from "@/components/dashboard/dashboard-actions-provider";
-import { DashboardActionsTrigger } from "@/components/dashboard/dashboard-actions-trigger";
+import { InvoiceListActionsProvider } from "@/components/invoices/invoice-list-actions-provider";
+import { InvoiceListActionsTrigger } from "@/components/invoices/invoice-list-actions-trigger";
 import { DashboardGreeting } from "@/components/dashboard/dashboard-greeting";
 import { HeroGrid } from "@/components/dashboard/hero-grid";
 import { InvoicesCard } from "@/components/dashboard/invoices-card";
 import { ACTIVITY_ITEMS, AGING_BUCKETS } from "@/lib/constants";
+import { INVOICES } from "@/lib/constants/invoices";
 
 export function DashboardContainer() {
   return (
-    <DashboardActionsProvider>
+    <InvoiceListActionsProvider invoices={INVOICES}>
       <div className="flex flex-1 flex-col">
         <Topbar
           title="Dashboard"
           subtitle="Overview of your business"
-          actions={<DashboardActionsTrigger />}
+          actions={<InvoiceListActionsTrigger />}
         />
         <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
           <DashboardGreeting />
@@ -31,6 +32,6 @@ export function DashboardContainer() {
         </div>
         <MobileTabBar />
       </div>
-    </DashboardActionsProvider>
-  );
+    </InvoiceListActionsProvider>
+  )
 }

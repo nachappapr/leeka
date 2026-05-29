@@ -21,12 +21,12 @@ export function InvoicePreviewMetaCell({
       {primaryDateTime ? (
         <time
           dateTime={primaryDateTime}
-          className="mt-1.5 block text-15 font-bold text-ink"
+          className="mt-1.5 block text-body font-bold text-ink"
         >
           {primary}
         </time>
       ) : (
-        <div className="mt-1.5 text-15 font-bold text-ink">{primary}</div>
+        <div className="mt-1.5 text-body font-bold text-ink">{primary}</div>
       )}
       <div className={`text-caption ${secondaryClassName}`}>{secondary}</div>
     </div>

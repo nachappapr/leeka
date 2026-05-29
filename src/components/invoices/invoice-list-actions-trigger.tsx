@@ -3,15 +3,15 @@
 import { useRef, useState } from "react"
 
 import { MoreHorizontal } from "@/components/icons"
-import { DashboardActionsSheet } from "@/components/dashboard/dashboard-actions-sheet"
-import { useDashboardActions } from "@/components/dashboard/dashboard-actions-provider"
+import { InvoiceListActionsSheet } from "@/components/invoices/invoice-list-actions-sheet"
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
 import { cn } from "@/lib/utils"
 
 export type ActionsView = "menu" | "sort" | "filter" | null
 
-export function DashboardActionsTrigger() {
+export function InvoiceListActionsTrigger() {
   const [view, setView] = useState<ActionsView>(null)
-  const { statuses } = useDashboardActions()
+  const { statuses } = useInvoiceListActions()
 
   const triggerRef = useRef<HTMLButtonElement>(null)
 
@@ -46,7 +46,7 @@ export function DashboardActionsTrigger() {
         )}
       </button>
 
-      <DashboardActionsSheet
+      <InvoiceListActionsSheet
         view={view}
         onViewChange={setView}
         triggerRef={triggerRef}

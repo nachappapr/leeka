@@ -10,13 +10,13 @@ import {
   SheetContent,
   SheetTitle,
 } from "@/components/ui/primitives/sheet"
-import { ActionSheetRow } from "@/components/dashboard/action-sheet-row"
-import { DashSortView } from "@/components/dashboard/dash-sort-view"
-import { DashFilterView } from "@/components/dashboard/dash-filter-view"
-import { useDashboardActions } from "@/components/dashboard/dashboard-actions-provider"
-import type { ActionsView } from "@/components/dashboard/dashboard-actions-trigger"
+import { ActionSheetRow } from "@/components/invoices/action-sheet-row"
+import { InvoiceSortView } from "@/components/invoices/invoice-sort-view"
+import { InvoiceFilterView } from "@/components/invoices/invoice-filter-view"
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
+import type { ActionsView } from "@/components/invoices/invoice-list-actions-trigger"
 
-interface DashboardActionsSheetProps {
+interface InvoiceListActionsSheetProps {
   view: ActionsView
   onViewChange: (v: ActionsView) => void
   /** Ref to the ⋯ trigger button for focus restoration on close */
@@ -34,12 +34,12 @@ interface DashboardActionsSheetProps {
  * that left Base UI's backdrop in the DOM indefinitely, blocking pointer
  * events on the trigger after a nested sheet was applied.
  */
-export function DashboardActionsSheet({
+export function InvoiceListActionsSheet({
   view,
   onViewChange,
   triggerRef,
-}: DashboardActionsSheetProps) {
-  const { sortLabel, filterLabel, statuses, openExport } = useDashboardActions()
+}: InvoiceListActionsSheetProps) {
+  const { sortLabel, filterLabel, statuses, openExport } = useInvoiceListActions()
 
   // Focus the first menu row when swapping BACK to the menu view from
   // a nested view. When the dialog opens fresh, Base UI handles initial
@@ -62,7 +62,7 @@ export function DashboardActionsSheet({
       ? "Sort by"
       : view === "filter"
         ? "Filter by status"
-        : "Dashboard actions"
+        : "Invoice actions"
 
   return (
     <Sheet
@@ -88,7 +88,7 @@ export function DashboardActionsSheet({
 
             {/* Visible kicker (decorative — accessible name is the sr-only SheetTitle) */}
             <p className="px-5 pb-2.5 text-kicker uppercase tracking-wider text-ink-3" aria-hidden>
-              Dashboard · actions
+              Invoices · actions
             </p>
 
             <ActionSheetRow
@@ -127,12 +127,12 @@ export function DashboardActionsSheet({
 
         {/* ── Sort view — conditional render gives fresh mount each time ── */}
         {view === "sort" && (
-          <DashSortView onClose={() => onViewChange(null)} />
+          <InvoiceSortView onClose={() => onViewChange(null)} />
         )}
 
         {/* ── Filter view — conditional render gives fresh mount each time ── */}
         {view === "filter" && (
-          <DashFilterView onClose={() => onViewChange(null)} />
+          <InvoiceFilterView onClose={() => onViewChange(null)} />
         )}
       </SheetContent>
     </Sheet>

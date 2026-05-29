@@ -3,44 +3,46 @@
 import { createContext, useContext, useMemo, useState } from "react"
 
 import { ExportInvoicesModal } from "@/components/invoices/export-invoices-modal"
-import { DASH_SORTS } from "@/lib/constants/dashboard"
-import { INVOICES } from "@/lib/constants/invoices"
-import type { DashSortId } from "@/lib/types/dashboard"
+import { INVOICE_SORTS } from "@/lib/constants/invoices"
+import type { Invoice } from "@/lib/types"
+import type { InvoiceSortId } from "@/lib/types/invoice"
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
 
-interface DashboardActionsContextValue {
-  sort: DashSortId
+interface InvoiceListActionsContextValue {
+  sort: InvoiceSortId
   statuses: ReadonlyArray<StatusPillStatus>
-  setSort: (id: DashSortId) => void
+  setSort: (id: InvoiceSortId) => void
   setStatuses: (statuses: StatusPillStatus[]) => void
   sortLabel: string
   filterLabel: string
   exportOpen: boolean
   openExport: () => void
   closeExport: () => void
+  invoices: ReadonlyArray<Invoice>
 }
 
-const DashboardActionsContext = createContext<DashboardActionsContextValue | null>(null)
+const InvoiceListActionsContext = createContext<InvoiceListActionsContextValue | null>(null)
 
-export function useDashboardActions(): DashboardActionsContextValue {
-  const ctx = useContext(DashboardActionsContext)
+export function useInvoiceListActions(): InvoiceListActionsContextValue {
+  const ctx = useContext(InvoiceListActionsContext)
   if (!ctx) {
-    throw new Error("useDashboardActions must be used inside <DashboardActionsProvider>")
+    throw new Error("useInvoiceListActions must be used inside <InvoiceListActionsProvider>")
   }
   return ctx
 }
 
-interface DashboardActionsProviderProps {
+interface InvoiceListActionsProviderProps {
   children: React.ReactNode
+  invoices: ReadonlyArray<Invoice>
 }
 
-export function DashboardActionsProvider({ children }: DashboardActionsProviderProps) {
-  const [sort, setSort] = useState<DashSortId>("newest")
+export function InvoiceListActionsProvider({ children, invoices }: InvoiceListActionsProviderProps) {
+  const [sort, setSort] = useState<InvoiceSortId>("newest")
   const [statuses, setStatuses] = useState<StatusPillStatus[]>([])
   const [exportOpen, setExportOpen] = useState(false)
 
   const sortLabel = useMemo(
-    () => DASH_SORTS.find((s) => s.id === sort)?.label ?? DASH_SORTS[0].label,
+    () => INVOICE_SORTS.find((s) => s.id === sort)?.label ?? INVOICE_SORTS[0].label,
     [sort],
   )
 
@@ -54,7 +56,7 @@ export function DashboardActionsProvider({ children }: DashboardActionsProviderP
     [statuses],
   )
 
-  const value = useMemo<DashboardActionsContextValue>(
+  const value = useMemo<InvoiceListActionsContextValue>(
     () => ({
       sort,
       statuses,
@@ -65,19 +67,20 @@ export function DashboardActionsProvider({ children }: DashboardActionsProviderP
       exportOpen,
       openExport: () => setExportOpen(true),
       closeExport: () => setExportOpen(false),
+      invoices,
     }),
-    [sort, statuses, sortLabel, filterLabel, exportOpen],
+    [sort, statuses, sortLabel, filterLabel, exportOpen, invoices],
   )
 
   return (
-    <DashboardActionsContext.Provider value={value}>
+    <InvoiceListActionsContext.Provider value={value}>
       {children}
       <ExportInvoicesModal
         open={exportOpen}
         onClose={() => setExportOpen(false)}
-        invoices={INVOICES}
+        invoices={invoices}
         initialFormat="pdf"
       />
-    </DashboardActionsContext.Provider>
+    </InvoiceListActionsContext.Provider>
   )
 }

@@ -36,7 +36,7 @@ function getActions(invoiceId: string, status: StatusPillStatus): SheetAction[] 
   return base
 }
 
-const ACTION_CLASS = "flex w-full items-center gap-3.5 px-5.5 py-3.5 text-left text-15 font-semibold text-ink transition-colors active:bg-background hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-coral-press"
+const ACTION_CLASS = "flex w-full items-center gap-3.5 px-5.5 py-3.5 text-left text-body font-semibold text-ink transition-colors active:bg-background hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-coral-press"
 const ICON_CLASS = "flex size-9 shrink-0 items-center justify-center rounded-nav-item bg-background text-ink-2"
 
 export function InvoiceDetailMobileSheet({
@@ -94,7 +94,7 @@ export function InvoiceDetailMobileSheet({
 
         {/* Destructive — same layout, danger colours */}
         <SheetClose
-          className="flex w-full items-center gap-3.5 px-5.5 py-3.5 text-left text-15 font-semibold text-overdue transition-colors active:bg-background hover:bg-overdue-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-overdue"
+          className="flex w-full items-center gap-3.5 px-5.5 py-3.5 text-left text-body font-semibold text-overdue transition-colors active:bg-background hover:bg-overdue-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-overdue"
         >
           <span className="flex size-9 shrink-0 items-center justify-center rounded-nav-item bg-overdue-soft text-overdue">
             <Trash2 className="size-4.5" aria-hidden />
@@ -105,7 +105,7 @@ export function InvoiceDetailMobileSheet({
         {/* Cancel — margin: 10px 14px 0, height 50px→snap h-12, radius 14px */}
         <div className="px-3.5 pt-2.5 pb-4">
           <SheetClose
-            className="h-12 w-full rounded-lg bg-background text-15 font-bold text-ink transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
+            className="h-12 w-full rounded-lg bg-background text-body font-bold text-ink transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
           >
             Cancel
           </SheetClose>

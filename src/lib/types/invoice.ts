@@ -35,3 +35,19 @@ export interface InvoiceDetail extends Invoice {
   issuerName: string
   notes?: string
 }
+
+// ── Invoice list sort/filter types ─────────────────────────────────────────
+
+export type InvoiceSortId =
+  | "newest"
+  | "oldest"
+  | "amtHigh"
+  | "amtLow"
+  | "nameAZ"
+
+export interface InvoiceSortOption {
+  id: InvoiceSortId
+  label: string
+  hint: string
+  iconKey: "arrowDown" | "arrowUp" | "rupee" | "user"
+}
