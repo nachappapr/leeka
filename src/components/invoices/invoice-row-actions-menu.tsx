@@ -63,13 +63,6 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
   return (
     <>
       <div className="flex items-center justify-end gap-1">
-        <Link
-          href={`/invoices/${invoice.id.replace("#", "")}`}
-          aria-label={`View invoice ${invoice.id} for ${invoice.customer}`}
-          className="after:absolute after:inset-0 sr-only focus-visible:not-sr-only focus-visible:rounded-md focus-visible:bg-card focus-visible:px-2 focus-visible:py-1 focus-visible:text-body-sm focus-visible:font-medium focus-visible:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-        >
-          View
-        </Link>
         <DropdownMenu onOpenChangeComplete={handleMenuOpenChangeComplete}>
         <DropdownMenuTrigger
           onClick={(e) => e.stopPropagation()}

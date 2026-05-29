@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   flexRender,
   getCoreRowModel,
@@ -37,6 +38,7 @@ interface InvoicesTableProps {
 }
 
 export function InvoicesTable({ invoices }: InvoicesTableProps) {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -76,6 +78,18 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                 const sorted = header.column.getIsSorted();
                 const isLast = i === hg.headers.length - 1;
 
+                const sortIcon = (
+                  <span aria-hidden className="text-ink-3">
+                    {sorted === "asc" ? (
+                      <ArrowUp className="size-3" />
+                    ) : sorted === "desc" ? (
+                      <ArrowDown className="size-3" />
+                    ) : (
+                      <ChevronsUpDown className="size-3" />
+                    )}
+                  </span>
+                );
+
                 return (
                   <DataHead
                     key={header.id}
@@ -84,14 +98,8 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                       i > 0 && !isLast && "w-1/6",
                       i === 4 && "text-right",
                       isLast && "w-15 pr-6",
-                      canSort && "cursor-pointer select-none",
                     )}
                     aria-hidden={isLast || undefined}
-                    onClick={
-                      canSort
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
                     aria-sort={
                       sorted === "asc"
                         ? "ascending"
@@ -102,25 +110,29 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                             : undefined
                     }
                   >
-                    {!isLast && (
-                      <span className="inline-flex items-center gap-1">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                        {canSort && (
-                          <span aria-hidden className="text-ink-3">
-                            {sorted === "asc" ? (
-                              <ArrowUp className="size-3" />
-                            ) : sorted === "desc" ? (
-                              <ArrowDown className="size-3" />
-                            ) : (
-                              <ChevronsUpDown className="size-3" />
-                            )}
-                          </span>
-                        )}
-                      </span>
-                    )}
+                    {!isLast &&
+                      (canSort ? (
+                        // Keyboard-operable sort control (WCAG 2.1.1): a real
+                        // <button> in the header, not an onClick on the <th>.
+                        <button
+                          type="button"
+                          onClick={header.column.getToggleSortingHandler()}
+                          className="inline-flex select-none items-center gap-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                          {sortIcon}
+                        </button>
+                      ) : (
+                        <span className="inline-flex items-center gap-1">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                        </span>
+                      ))}
                   </DataHead>
                 );
               })}
@@ -129,10 +141,22 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
         </DataHeader>
         <DataBody>
           {table.getRowModel().rows.map((row) => {
+            const detailHref = `/invoices/${row.original.id.replace("#", "")}`;
             return (
               <DataRow
                 key={row.id}
-                className="relative"
+                onClick={(e) => {
+                  // Guard: let interactive elements handle their own clicks
+                  if (
+                    (e.target as HTMLElement).closest(
+                      'a, button, input, textarea, select, [role="menu"], [role="menuitem"], [data-slot="dropdown-menu-trigger"]',
+                    )
+                  )
+                    return;
+                  // Guard: don't navigate when user is selecting text
+                  if (window.getSelection()?.toString()) return;
+                  router.push(detailHref);
+                }}
               >
                 {row.getVisibleCells().map((cell, i) => {
                   const isLast = i === row.getVisibleCells().length - 1;
@@ -145,7 +169,10 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                         isLast && "pr-6 text-center",
                       )}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </DataCell>
                   );
                 })}
@@ -157,7 +184,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
 
       {totalRows > pageSize && (
         <div className="flex items-center justify-between border-t border-border px-6 py-3">
-          <p className="text-body-sm text-ink-3">
+          <p role="status" className="text-body-sm text-ink-3">
             {from}–{to} of {totalRows}
           </p>
           <div className="flex items-center gap-1">

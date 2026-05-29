@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { CustomerCell } from "@/components/ui/custom/customer-cell";
@@ -15,7 +16,13 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
     accessorKey: "customer",
     header: "Customer",
     cell: ({ row }) => (
-      <CustomerCell customer={row.original.customer} city={row.original.city} />
+      <Link
+        href={`/invoices/${row.original.id.replace("#", "")}`}
+        aria-label={`View invoice ${row.original.id} for ${row.original.customer}`}
+        className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+      >
+        <CustomerCell customer={row.original.customer} city={row.original.city} />
+      </Link>
     ),
   },
   {
