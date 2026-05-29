@@ -1,3 +1,5 @@
+import type React from "react"
+
 import { MobileMenuButton } from "@/components/ui/custom/mobile-menu-button"
 import { MobileSearchTrigger } from "@/components/ui/custom/mobile-search-trigger"
 import { NotificationPanel } from "@/components/ui/custom/notification-panel"
@@ -7,9 +9,11 @@ import { NOTIFICATIONS } from "@/lib/constants/notifications"
 interface TopbarProps {
   title: string
   subtitle?: string
+  /** Mobile-only action slot — rendered after NotificationPanel in the right cluster */
+  actions?: React.ReactNode
 }
 
-export function Topbar({ title, subtitle }: TopbarProps) {
+export function Topbar({ title, subtitle, actions }: TopbarProps) {
   return (
     <header className="sticky top-0 z-10 grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border bg-background/85 px-7 py-3.5 backdrop-blur-md backdrop-saturate-150 max-mobile:flex max-mobile:gap-2.5 max-mobile:px-4 max-mobile:py-3">
       <MobileMenuButton />
@@ -33,6 +37,7 @@ export function Topbar({ title, subtitle }: TopbarProps) {
       <div className="flex items-center justify-end gap-2 max-mobile:ml-auto">
         <MobileSearchTrigger />
         <NotificationPanel groups={NOTIFICATIONS} />
+        {actions}
       </div>
     </header>
   )

@@ -63,6 +63,8 @@ export {
   Store,
   Briefcase,
   Calendar as CalendarIcon,
+  ArrowUpDown,
+  ListFilter,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source

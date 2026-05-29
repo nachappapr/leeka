@@ -26,11 +26,11 @@ import {
   DataRow,
   DataTable,
 } from "@/components/ui/custom/data-table";
-import { DataListRow } from "@/components/ui/custom/data-list-row";
 import {
   FilterChips,
   type FilterChipsItem,
 } from "@/components/ui/custom/filter-chips";
+import { DashboardInvoicesMobileList } from "@/components/dashboard/dashboard-invoices-mobile-list";
 import { dashboardColumns } from "./dashboard-columns";
 import { INVOICES_FILTER_CHIPS } from "@/lib/constants";
 import type { Invoice, InvoiceStatusFilter } from "@/lib/types";
@@ -45,6 +45,7 @@ interface DashboardInvoicesShellProps {
 export function DashboardInvoicesShell({
   invoices,
 }: DashboardInvoicesShellProps) {
+  // Desktop independent state (mobile sort/filter lives in DashboardInvoicesMobileList)
   const [filter, setFilter] = useState<InvoiceStatusFilter>("all");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -97,16 +98,19 @@ export function DashboardInvoicesShell({
 
   return (
     <>
-      <FilterChips
-        items={chipItems}
-        value={filter}
-        onValueChange={(id) => setFilter(id as InvoiceStatusFilter)}
-        ariaLabel="Filter invoices by status"
-      />
-      <p role="status" className="sr-only">
-        Showing {filteredInvoices.length} invoice
-        {filteredInvoices.length === 1 ? "" : "s"}
-      </p>
+      {/* Desktop status filter — on mobile the ⋯ bottom-sheet filter + summary chips replace this */}
+      <div className="max-mobile:hidden">
+        <FilterChips
+          items={chipItems}
+          value={filter}
+          onValueChange={(id) => setFilter(id as InvoiceStatusFilter)}
+          ariaLabel="Filter invoices by status"
+        />
+        <p role="status" className="sr-only">
+          Showing {filteredInvoices.length} invoice
+          {filteredInvoices.length === 1 ? "" : "s"}
+        </p>
+      </div>
 
       <div className="max-mobile:hidden">
         <DataTable aria-label="Recent invoices" className="table-fixed">
@@ -225,14 +229,8 @@ export function DashboardInvoicesShell({
         )}
       </div>
 
-      <ul
-        aria-label="Recent invoices"
-        className="flex flex-col gap-3 p-4 min-mobile:hidden"
-      >
-        {filteredInvoices.map((inv) => (
-          <DataListRow key={inv.id} invoice={inv} />
-        ))}
-      </ul>
+      {/* Mobile list — sort/filter driven by the ⋯ bottom sheet */}
+      <DashboardInvoicesMobileList invoices={invoices} />
     </>
   );
 }

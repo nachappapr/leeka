@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react"
 
 import { XIcon, Download } from "@/components/icons"
-import { cn } from "@/lib/utils"
+import { cn, parseRupeeString } from "@/lib/utils"
 import { INVOICES } from "@/lib/constants/invoices"
 import {
   EXPORT_DATE_PRESETS,
@@ -44,11 +44,6 @@ export interface ExportInvoicesModalProps {
 // ── Helpers ────────────────────────────────────────────────────────────────
 function slugify(s: string): string {
   return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
-}
-
-function parseRupeeString(amount: string): number {
-  const n = Number(amount.replace(/[₹,\s]/g, ""))
-  return Number.isFinite(n) ? n : 0
 }
 
 // ── Public component — controlled open/close ──────────────────────────────

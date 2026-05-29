@@ -44,3 +44,8 @@
 - [Selected calendar day: white on coral = 3.01:1 at 12px](project_selected_day_white_on_coral.md) — fails SC 1.4.3; fix: bg-coral-soft text-coral-ink or text-ink on bg-primary
 - [Check icon coral on bg-background/coral-soft fails SC 1.4.11](project_check_icon_coral_on_background.md) — 2.80:1 / 2.54:1; fix: text-coral-press (3.75:1 / 3.40:1)
 - [border-line as sole control boundary fails SC 1.4.11](project_border_line_control_boundary.md) — #ece3d4 on #ffffff = 1.25:1; fails when border is the only visual boundary; fix: border-ink-3 (5.95:1)
+- [Sheet title: SheetTitle not aria-label on SheetContent](project_sheet_title_vs_aria_label.md) — aria-label works but breaks 2.5.3 if it doesn't match visible text; SheetTitle is canonical; wires aria-labelledby via Base UI store
+- [Base UI Sheet focus not restored on programmatic open](project_base_ui_sheet_focus_restore.md) — opened via setOpen(true) not SheetTrigger → store has no trigger ref → focus goes to body on close; fix: finalFocus prop on SheetContent
+- [APG Radio Group arrow-key contract — Critical when absent](project_radiogroup_arrow_key_contract.md) — role=radio buttons with default tab stops instead of roving tabIndex + ArrowDown/Up handler = Critical; recurring pattern
+- [text-white on bg-coral badge = 3.01:1 — always fails at small sizes](project_white_on_coral_badge_contrast.md) — count badges at 11–12px fail; fix: bg-coral-ink text-white (10.90:1); recurring in action-sheet and toggle chip
+- [ring-inset on tall content-rich buttons risks focus occlusion](project_ring_inset_occlusion.md) — exterior ring is unambiguous; remove ring-inset from ActionSheetRow-style tall buttons
