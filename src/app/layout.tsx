@@ -5,6 +5,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import "./globals.css";
+import { BrandToaster } from "@/components/ui/custom/brand-toaster";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -40,7 +41,10 @@ export default function RootLayout({
       lang="en"
       className={`${jakarta.variable} ${devanagari.variable} ${jetMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <BrandToaster />
+      </body>
     </html>
   );
 }

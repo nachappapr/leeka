@@ -118,6 +118,16 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
   },
 ]
 
+export const INVOICE_STATUS_LABEL: Record<StatusPillStatus, string> = {
+  draft:   "Draft",
+  sent:    "Sent",
+  viewed:  "Viewed",
+  partial: "Partial",
+  pending: "Pending",
+  overdue: "Overdue",
+  paid:    "Paid",
+}
+
 export function findInvoiceDetail(
   idWithoutHash: string,
 ): InvoiceDetail | undefined {

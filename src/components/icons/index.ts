@@ -42,6 +42,7 @@ export {
   Edit2 as Edit,
   Trash2,
   MoreHorizontal,
+  MoreVertical,
   Copy,
   // Home page additions
   Star,
@@ -65,6 +66,8 @@ export {
   Calendar as CalendarIcon,
   ArrowUpDown,
   ListFilter,
+  Mail,
+  Loader2,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source

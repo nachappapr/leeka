@@ -199,6 +199,9 @@
 
   /* tap target floor */
   --spacing-tap: 48px;
+
+  /* floating bottom-anchored UI clearance — tab-bar height + safe-area */
+  --spacing-mobile-bar-offset: calc(72px + env(safe-area-inset-bottom));
 }
 
 @custom-variant max-tablet (@media (max-width: 1100px));

@@ -3,6 +3,7 @@ import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { INVOICE_STATUS_LABEL } from "@/lib/constants/invoices"
 
 const statusPillVariants = cva(
   "inline-flex items-center rounded-full font-bold tracking-wide whitespace-nowrap before:inline-block before:size-1.5 before:rounded-full before:bg-current before:opacity-80",
@@ -33,16 +34,6 @@ export type StatusPillStatus = NonNullable<
   VariantProps<typeof statusPillVariants>["status"]
 >
 
-const STATUS_LABEL: Record<StatusPillStatus, string> = {
-  draft: "Draft",
-  sent: "Sent",
-  viewed: "Viewed",
-  partial: "Partial",
-  pending: "Pending",
-  overdue: "Overdue",
-  paid: "Paid",
-}
-
 function StatusPill({
   className,
   status = "draft",
@@ -56,7 +47,7 @@ function StatusPill({
     props: mergeProps<"span">(
       {
         className: cn(statusPillVariants({ status, size }), className),
-        children: children ?? STATUS_LABEL[status ?? "draft"],
+        children: children ?? INVOICE_STATUS_LABEL[status ?? "draft"],
       },
       props
     ),

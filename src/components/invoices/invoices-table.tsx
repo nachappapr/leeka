@@ -128,25 +128,30 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
           ))}
         </DataHeader>
         <DataBody>
-          {table.getRowModel().rows.map((row) => (
-            <DataRow key={row.id}>
-              {row.getVisibleCells().map((cell, i) => {
-                const isLast = i === row.getVisibleCells().length - 1;
-                return (
-                  <DataCell
-                    key={cell.id}
-                    className={cn(
-                      i === 0 && "pl-6",
-                      i === 4 && "text-right",
-                      isLast && "pr-6 text-center",
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </DataCell>
-                );
-              })}
-            </DataRow>
-          ))}
+          {table.getRowModel().rows.map((row) => {
+            return (
+              <DataRow
+                key={row.id}
+                className="relative"
+              >
+                {row.getVisibleCells().map((cell, i) => {
+                  const isLast = i === row.getVisibleCells().length - 1;
+                  return (
+                    <DataCell
+                      key={cell.id}
+                      className={cn(
+                        i === 0 && "pl-6",
+                        i === 4 && "text-right",
+                        isLast && "pr-6 text-center",
+                      )}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </DataCell>
+                  );
+                })}
+              </DataRow>
+            );
+          })}
         </DataBody>
       </DataTable>
 
