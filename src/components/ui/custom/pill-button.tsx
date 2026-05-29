@@ -14,7 +14,7 @@ const pillButtonVariants = cva(
         outline: "bg-card text-foreground border-ink-3 hover:bg-surface-2",
         ghost: "bg-transparent text-foreground hover:bg-surface-2",
         paid: "bg-paid text-card shadow-press hover:bg-paid-ink",
-        whatsapp: "bg-whatsapp-icon text-card shadow-press hover:bg-whatsapp-press",
+        whatsapp: "bg-whatsapp text-card shadow-press hover:bg-whatsapp-press",
         destructive:
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
         onCoral: "bg-card text-coral-ink hover:bg-coral-soft",

@@ -33,7 +33,7 @@ export function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
 
           <div className="flex flex-col gap-5">
             <div className="max-mobile:hidden">
-              <InvoiceActionsCard status={invoice.status} invoiceId={invoice.id} />
+              <InvoiceActionsCard invoice={invoice} />
             </div>
             <InvoiceActivityCard />
             <InvoiceStatusTipCard status={invoice.status} />
@@ -41,7 +41,7 @@ export function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
         </div>
       </div>
 
-      <InvoiceDetailMobileFooter invoiceId={invoice.id} status={invoice.status} />
+      <InvoiceDetailMobileFooter invoice={invoice} />
     </div>
   )
 }

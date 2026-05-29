@@ -162,7 +162,7 @@ export function SendChannelsModal({
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent>
         <ModalHeader>
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-whatsapp-icon">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-whatsapp">
             <WhatsApp className="size-5.5 text-card" aria-hidden />
           </div>
           <div className="flex min-w-0 flex-1 flex-col">
@@ -210,16 +210,17 @@ export function SendChannelsModal({
           )}
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter className="max-mobile:flex-wrap">
           {/* Add / Remove note toggle */}
           <button
             type="button"
             disabled={isBusy}
             onClick={handleToggleNote}
             className={cn(
-              "mr-auto inline-flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-caption transition-colors",
+              "mr-auto inline-flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-caption transition-colors min-h-11",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
               "disabled:cursor-not-allowed disabled:opacity-50",
+              "max-mobile:order-2",
               noteOpen ? "text-overdue hover:text-overdue-ink" : "text-ink-3 hover:text-ink",
             )}
           >
@@ -240,6 +241,7 @@ export function SendChannelsModal({
               "h-11 rounded-lg border border-ink-3 bg-card px-4.5 text-body-sm font-bold text-ink transition-colors hover:bg-background",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
               "disabled:cursor-not-allowed disabled:opacity-50",
+              "max-mobile:order-3",
             )}
           >
             Cancel
@@ -250,7 +252,7 @@ export function SendChannelsModal({
             size="md"
             disabled={isBusy}
             onClick={handleSend}
-            className="rounded-lg"
+            className="rounded-lg max-mobile:order-1 max-mobile:w-full max-mobile:h-13"
           >
             {sendState === "sending" ? (
               <>

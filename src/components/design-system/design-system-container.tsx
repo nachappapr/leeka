@@ -69,7 +69,7 @@ const SWATCHES: { label: string; token: string; hex: string; cls: string }[] = [
   {
     label: "WhatsApp",
     token: "--color-whatsapp",
-    hex: "#25D366",
+    hex: "#008069",
     cls: "bg-whatsapp",
   },
 ];

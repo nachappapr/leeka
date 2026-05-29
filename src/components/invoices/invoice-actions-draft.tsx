@@ -6,16 +6,17 @@ import { cn } from "@/lib/utils"
 
 interface InvoiceActionsDraftProps {
   invoiceId: string
+  onSend: () => void
 }
 
-export function InvoiceActionsDraft({ invoiceId }: InvoiceActionsDraftProps) {
+export function InvoiceActionsDraft({ invoiceId, onSend }: InvoiceActionsDraftProps) {
   return (
     <>
       <PillButton tone="primary" size="md" className="w-full">
         <Check strokeWidth={2.4} aria-hidden />
         Send invoice
       </PillButton>
-      <PillButton tone="whatsapp" size="md" className="w-full">
+      <PillButton type="button" tone="whatsapp" size="md" className="w-full" onClick={onSend}>
         <WhatsApp aria-hidden />
         Send on WhatsApp
       </PillButton>

@@ -36,7 +36,7 @@ export function SendSummaryCard({
         </div>
       </div>
       {/* Channel row */}
-      <div className="flex items-center justify-between gap-4 border-t border-dashed border-line py-2">
+      <div className="flex items-center justify-between gap-4 border-t border-dashed border-line py-2 max-mobile:flex-col max-mobile:items-start max-mobile:gap-2">
         <span
           id="send-channel-label"
           className="min-w-24 text-kicker font-bold uppercase tracking-wide text-ink-3"

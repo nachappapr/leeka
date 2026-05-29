@@ -49,7 +49,7 @@ export function InvoiceDetailMobileSheet({
     <Sheet>
       <SheetTrigger
         aria-label="More actions"
-        className="flex size-13 shrink-0 items-center justify-center rounded-lg border-[1.5px] border-ink-3 bg-card text-ink-2 transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
+        className="flex size-11 shrink-0 items-center justify-center rounded-lg border-[1.5px] border-ink-3 bg-card text-ink-2 transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
       >
         <MoreHorizontal className="size-5" aria-hidden />
       </SheetTrigger>

@@ -7,16 +7,17 @@ import { cn } from "@/lib/utils"
 interface InvoiceActionsOpenProps {
   invoiceId: string
   isOverdue: boolean
+  onSend: () => void
 }
 
-export function InvoiceActionsOpen({ invoiceId, isOverdue }: InvoiceActionsOpenProps) {
+export function InvoiceActionsOpen({ invoiceId, isOverdue, onSend }: InvoiceActionsOpenProps) {
   return (
     <>
       <PillButton tone="primary" size="md" className="w-full">
         <Check strokeWidth={2.4} aria-hidden />
         Mark as paid
       </PillButton>
-      <PillButton tone="whatsapp" size="md" className="w-full">
+      <PillButton type="button" tone="whatsapp" size="md" className="w-full" onClick={onSend}>
         <WhatsApp aria-hidden />
         {isOverdue ? "Send nudge" : "Send reminder"}
       </PillButton>

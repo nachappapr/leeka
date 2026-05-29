@@ -1,17 +1,20 @@
 ---
 name: whatsapp-button-contrast
-description: PillButton tone=whatsapp uses bg-whatsapp (#25d366) with text-card (#fff); ratio 1.98:1 — fails SC 1.4.3 badly. Fix: bg-whatsapp-icon (#178040), white text = 5.00:1.
+description: PillButton tone=whatsapp — bg-whatsapp now #008069 after token update 2026-05-30; white text = 4.86:1; PASSES SC 1.4.3; prior deviation RESOLVED.
 type: project
 ---
 
-`PillButton` with `tone="whatsapp"` applies `bg-whatsapp` (#25d366) + `text-card` (#ffffff).
+`PillButton` with `tone="whatsapp"` applies `bg-whatsapp` + `text-card` (#ffffff).
 
-Measured ratio: **1.98:1** — fails SC 1.4.3 by a large margin (needs 4.5:1 for normal text at any size).
+**Token history:**
+- Before 2026-05-30: `--color-whatsapp` = #25d366 → 1.98:1 vs white → FAILS SC 1.4.3. Accepted deviation.
+- After 2026-05-30: `--color-whatsapp` = #008069 → **4.86:1** vs white → PASSES SC 1.4.3 (threshold 4.5:1 for 14px bold normal text).
 
-`bg-whatsapp-press` (#1fae54) with white text = **2.90:1** — still fails.
+`bg-whatsapp-press` (#006653) on white panel surface = **6.94:1** → PASSES SC 1.4.11 (≥3:1 non-text).
+`bg-whatsapp-icon` (#178040) on white surface = **5.00:1** → still available as fallback if needed.
 
-**Fix:** Change the whatsapp tone in `pill-button.tsx` to use `bg-whatsapp-icon` (#178040) + `text-card`: ratio = **5.00:1** ✓. This is the darkest available whatsapp token and the only one that passes AA.
+**Status (2026-05-30): DEVIATION RESOLVED.** Token update from #25d366 → #008069 brings both rest state and hover state into AA compliance. No longer an accepted deviation — treat as passing in future audits.
 
-**Why:** The lighter WhatsApp green (#25d366) was chosen for brand recognition, but it is too light for white text at any body text size.
+**Why:** Token updated to WhatsApp's official darker green (#008069), which satisfies both brand recognition and WCAG AA contrast.
 
-**How to apply:** Whenever auditing or reviewing a component that uses `tone="whatsapp"`, `bg-whatsapp`, or `text-whatsapp`, check the contrast. The fix is always `bg-whatsapp-icon` for surfaces with white text.
+**How to apply:** Report as PASS for SC 1.4.3 in future audits. The notification-rail dot uses `bg-whatsapp-press` (#006653) which is decorative (aria-hidden) but still passes SC 1.4.11 at 6.94:1 on white.

@@ -6,7 +6,7 @@ const TONE_BG: Record<NotificationTone, string> = {
   pending: "bg-pending",
   overdue: "bg-overdue",
   info: "bg-info",
-  // bg-whatsapp-press (#1fae54) replaces bg-whatsapp (#25d366): brand bright green failed WCAG 1.4.11 against white panel surface (1.98:1); press tone passes at 3.38:1 while remaining clearly WhatsApp-brand-recognizable.
+  // bg-whatsapp-press (#006653) replaces bg-whatsapp (#008069) for the dot: uses the darker press tone for the decorative rail; #006653 on white panel surface is ~6.9:1, well above the 3:1 threshold for non-text elements (WCAG 1.4.11).
   whatsapp: "bg-whatsapp-press",
   customer: "bg-coral",
   draft: "bg-draft",

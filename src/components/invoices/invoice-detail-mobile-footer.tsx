@@ -1,22 +1,27 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
-import { Bell, Check, Edit, WhatsApp } from "@/components/icons";
+import { Check, Edit, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
+import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
 import { cn } from "@/lib/utils";
-import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
+import type { Invoice } from "@/lib/types";
 import { InvoiceDetailMobileSheet } from "./invoice-detail-mobile-sheet";
 
 interface InvoiceDetailMobileFooterProps {
-  invoiceId: string;
-  status: StatusPillStatus;
+  invoice: Invoice;
 }
 
 // Sticky bottom action bar on mobile. Sits directly at the bottom of the
 // viewport — MobileTabBar is removed from invoice detail pages.
 export function InvoiceDetailMobileFooter({
-  invoiceId,
-  status,
+  invoice,
 }: InvoiceDetailMobileFooterProps) {
+  const [sendOpen, setSendOpen] = useState(false);
+  const invoiceId = invoice.id;
+  const status = invoice.status;
   const isPaid = status === "paid";
   const isDraft = status === "draft";
 
@@ -26,11 +31,18 @@ export function InvoiceDetailMobileFooter({
         aria-label="Invoice actions"
         className="fixed bottom-0 left-0 right-0 z-20 flex items-center gap-2 border-t border-border bg-card px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] shadow-sheet min-mobile:hidden"
       >
-        <PillButton tone="whatsapp" size="md" className="flex-1 rounded-lg!">
+        <PillButton
+          type="button"
+          tone="whatsapp"
+          size="md"
+          className="flex-1 rounded-lg!"
+          onClick={() => setSendOpen(true)}
+        >
           <WhatsApp aria-hidden />
           Send receipt
         </PillButton>
         <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+        <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
       </footer>
     );
   }
@@ -63,8 +75,14 @@ export function InvoiceDetailMobileFooter({
       aria-label="Invoice actions"
       className="fixed bottom-0 left-0 right-0 z-20 flex items-center gap-2 border-t border-border bg-card px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] shadow-sheet min-mobile:hidden"
     >
-      <PillButton tone="outline" size="md" className="flex-1 rounded-lg!">
-        <Bell aria-hidden />
+      <PillButton
+        type="button"
+        tone="whatsapp"
+        size="md"
+        className="flex-1 rounded-lg!"
+        onClick={() => setSendOpen(true)}
+      >
+        <WhatsApp aria-hidden />
         Remind
       </PillButton>
       <PillButton tone="primary" size="md" className="flex-1 rounded-lg!">
@@ -72,6 +90,7 @@ export function InvoiceDetailMobileFooter({
         Mark paid
       </PillButton>
       <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
     </footer>
   );
 }

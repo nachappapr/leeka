@@ -12,7 +12,7 @@ export function InvoicePreviewItemMobileRow({
   return (
     <li className="flex items-start justify-between gap-3 border-b border-dashed border-border py-3 last:border-b-0">
       <div className="min-w-0 flex-1">
-        <div className="text-body-sm font-semibold text-ink">{item.name}</div>
+        <div className="text-body font-bold text-ink">{item.name}</div>
         <div className="tabular mt-0.5 text-caption text-ink-3">
           {item.qty} × {formatRupees(item.unitPrice)}
         </div>
