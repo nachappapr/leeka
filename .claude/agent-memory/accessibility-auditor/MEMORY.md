@@ -38,3 +38,9 @@
 - [tablist without tabpanels — wrong pattern](project_tablist_without_tabpanels.md) — role=tablist/tab on a format selector with no tabpanels violates APG Tabs; correct: role=radiogroup/radio + aria-checked + roving tabindex + arrow-key nav
 - [sr-only checkbox: no visible focus on label](project_sr_only_checkbox_focus.md) — sr-only input focus outline is clipped/invisible; label needs focus-within:ring-coral-press; pure CSS fix, no client boundary
 - [Chip group labelling gap](project_chip_group_labelling.md) — FieldLabel (<div>) not linked via aria-labelledby to chip-group wrapper; fix: id on label + role=group + aria-labelledby on wrapper
+- [CalendarDayButton focus ring fail](project_calendar_day_focus_ring.md) — ring-ring/50 on bg-background = 1.68:1; fails 2.4.11; fix: ring-coral-press in calendar.tsx; static CSS
+- [Popover without PopoverTitle = unlabelled dialog](project_popover_no_title_unlabelled_dialog.md) — Base UI PopoverPopup always renders role=dialog; aria-labelledby wires to PopoverTitle store; no title = no name; add sr-only PopoverTitle
+- [react-day-picker classNames.today fully replaced, not merged](project_calendar_today_classnames_override.md) — consumer override drops bg-muted from primitive; text-primary on bg-background = 2.80:1; fix: include bg in override
+- [Selected calendar day: white on coral = 3.01:1 at 12px](project_selected_day_white_on_coral.md) — fails SC 1.4.3; fix: bg-coral-soft text-coral-ink or text-ink on bg-primary
+- [Check icon coral on bg-background/coral-soft fails SC 1.4.11](project_check_icon_coral_on_background.md) — 2.80:1 / 2.54:1; fix: text-coral-press (3.75:1 / 3.40:1)
+- [border-line as sole control boundary fails SC 1.4.11](project_border_line_control_boundary.md) — #ece3d4 on #ffffff = 1.25:1; fails when border is the only visual boundary; fix: border-ink-3 (5.95:1)

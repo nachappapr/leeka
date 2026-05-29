@@ -62,6 +62,7 @@ export {
   UserRound,
   Store,
   Briefcase,
+  Calendar as CalendarIcon,
 } from "lucide-react"
 
 // Custom SVG icons — paths copied verbatim from design source
@@ -79,3 +80,6 @@ export { IndiaFlagStripe } from "./india-flag-stripe"
 // Auth page icons
 export { SparklesIcon } from "./sparkles-icon"
 export { UtensilsCrossedIcon } from "./utensils-crossed-icon"
+
+// App chrome icons
+export { LogOut } from "./log-out"

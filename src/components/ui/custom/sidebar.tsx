@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useIsTablet } from "@/hooks/use-tablet";
-import { LekkaLogo, Sparkles } from "@/components/icons";
+import { LekkaLogo, Sparkles, LogOut } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import {
   Sidebar,
@@ -55,6 +55,7 @@ function isNavItemActive(
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { setOpen } = useSidebar();
   const isTablet = useIsTablet();
   const allHrefs = React.useMemo(
@@ -190,12 +191,20 @@ export function AppSidebar() {
               RK
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0 group-data-[collapsible=icon]:hidden">
+          <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
             <div className="truncate text-caption font-bold text-ink">
               Raj Kumar Trading
             </div>
             <div className="text-kicker text-ink-3">Free plan</div>
           </div>
+          <button
+            type="button"
+            aria-label="Log out"
+            onClick={() => router.push("/auth")}
+            className="flex shrink-0 items-center justify-center size-8.5 rounded-nav-item border border-line bg-surface text-ink-3 transition-[background-color,color,border-color] hover:bg-overdue-soft hover:text-overdue hover:border-overdue-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 group-data-[collapsible=icon]:hidden"
+          >
+            <LogOut size={18} aria-hidden />
+          </button>
         </div>
       </SidebarFooter>
 

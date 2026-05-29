@@ -1,5 +1,8 @@
 "use client"
 
+import { BrandDatePicker } from "@/components/ui/custom/brand-date-picker"
+import { FieldLabel } from "@/components/ui/custom/field-label"
+
 interface ExportDateRangeProps {
   from: string
   setFrom: (v: string) => void
@@ -10,24 +13,22 @@ interface ExportDateRangeProps {
 export function ExportDateRange({ from, setFrom, to, setTo }: ExportDateRangeProps) {
   return (
     <div className="grid grid-cols-2 gap-2.5 mt-2.5 max-mobile:grid-cols-1">
-      <label className="flex flex-col gap-1.5">
-        <span className="text-label font-bold text-ink-2">From</span>
-        <input
-          type="date"
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel>From</FieldLabel>
+        <BrandDatePicker
           value={from}
-          onChange={(e) => setFrom(e.target.value)}
-          className="h-11 rounded-md border border-line-strong bg-card px-3 text-body-sm font-medium text-ink focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          onValueChange={setFrom}
+          ariaLabel="From date"
         />
-      </label>
-      <label className="flex flex-col gap-1.5">
-        <span className="text-label font-bold text-ink-2">To</span>
-        <input
-          type="date"
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel>To</FieldLabel>
+        <BrandDatePicker
           value={to}
-          onChange={(e) => setTo(e.target.value)}
-          className="h-11 rounded-md border border-line-strong bg-card px-3 text-body-sm font-medium text-ink focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+          onValueChange={setTo}
+          ariaLabel="To date"
         />
-      </label>
+      </div>
     </div>
   )
 }

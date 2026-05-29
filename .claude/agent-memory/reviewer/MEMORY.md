@@ -9,3 +9,4 @@
 - [globals.css animation additions](project-globals-css-animation.md) — implementers add @keyframes/@layer utilities for surface-specific animations without approval; High #12; fix: get explicit approval or keep in @theme
 - [FieldLabel re-implemented in feature code](project-fieldlabel-duplicate.md) — private FieldLabel (div) in feature code when ui/custom/field-label.tsx (label) already exists; High #2; import the shared wrapper
 - [Responsive type scale bundled into component unit](project-globals-css-type-scale.md) — --fs-* tokens + @media mobile overrides added to globals.css inside a modal unit, not consumed by unit files; High #12; needs standalone approval
+- [Unused shadcn primitive + out-of-scope primitive touch](project-unused-shadcn-primitive.md) — implementers run shadcn add <X> then write the brand wrapper against raw Base UI API, leaving the shim with zero consumers; also touch out-of-scope primitives (button.tsx import path); Medium #13/#14
