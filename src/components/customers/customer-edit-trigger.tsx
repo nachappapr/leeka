@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Edit } from "@/components/icons"
 import { PillButton } from "@/components/ui/custom/pill-button"
 import { CustomerFormModal } from "@/components/ui/custom/customer-form-modal"
@@ -10,7 +11,7 @@ interface CustomerEditTriggerProps {
   customer: Customer
   /** Optional callback — caller can update local/server state on save. */
   onSave?: (payload: CustomerSavePayload) => void
-  /** Optional callback — caller handles deletion. */
+  /** Optional callback — caller handles deletion (e.g. list-row removal). */
   onDelete?: (customer: Customer) => void
   /** Extra classes for the trigger button (e.g. mobile flex sizing). */
   className?: string
@@ -22,6 +23,7 @@ export function CustomerEditTrigger({
   onDelete,
   className,
 }: CustomerEditTriggerProps) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
@@ -33,6 +35,7 @@ export function CustomerEditTrigger({
   function handleDelete(c: Customer) {
     // TODO: wire to backend — delete customer via Server Action
     onDelete?.(c)
+    router.push("/customers")
   }
 
   return (
@@ -55,7 +58,7 @@ export function CustomerEditTrigger({
         open={open}
         onOpenChange={setOpen}
         onSave={handleSave}
-        onDelete={onDelete ? handleDelete : undefined}
+        onDelete={handleDelete}
         finalFocusRef={triggerRef}
       />
     </>

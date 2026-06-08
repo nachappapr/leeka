@@ -18,6 +18,7 @@ import {
 import { FieldLabel } from "@/components/ui/custom/field-label"
 import { InputField } from "@/components/ui/custom/input-field"
 import { PillButton } from "@/components/ui/custom/pill-button"
+import { CustomerFormDeleteButton } from "@/components/customers/customer-form-delete-button"
 import { CustomerDeleteSheet } from "@/components/customers/customer-delete-sheet"
 import type { Customer, CustomerSavePayload } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -53,6 +54,8 @@ export function CustomerFormModal({
   const [prevOpen, setPrevOpen] = useState(open)
 
   const nameRef = useRef<HTMLInputElement>(null)
+  const deleteButtonRef = useRef<HTMLButtonElement>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   // Render-phase state reset (same pattern as SendChannelsModal): when the
   // modal transitions closed → open, prefill (edit) or clear (add) without a
@@ -115,6 +118,7 @@ export function CustomerFormModal({
   const saveLabel = isEdit ? "Save changes" : "Save customer"
 
   return (
+    <>
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent
         initialFocus={nameRef}
@@ -262,34 +266,10 @@ export function CustomerFormModal({
             )}
           </ModalBody>
 
-          {/* ── Footer ── */}
+          {/* ── Footer ──
+              Order matches the design `.modal-foot`: Cancel · Save (flex-1) ·
+              Delete on the right. */}
           <ModalFooter className="items-center gap-2">
-            {/* Desktop: destructive delete link (only in edit mode with onDelete) */}
-            {isEdit && onDelete && initial && (
-              <button
-                type="button"
-                onClick={() => handleDelete(initial)}
-                className={cn(
-                  "mr-auto hidden min-mobile:inline-flex items-center gap-1.5",
-                  "text-caption text-overdue transition-colors hover:text-overdue-ink",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-overdue focus-visible:ring-offset-1",
-                  "rounded-sm px-1.5 py-1",
-                )}
-              >
-                Delete customer
-              </button>
-            )}
-
-            {/* Mobile: MoreHorizontal → sheet (only in edit mode with onDelete) */}
-            {isEdit && onDelete && initial && (
-              <span className="mr-auto min-mobile:hidden">
-                <CustomerDeleteSheet
-                  customer={initial}
-                  onDelete={handleDelete}
-                />
-              </span>
-            )}
-
             {/* Cancel */}
             <button
               type="button"
@@ -316,9 +296,31 @@ export function CustomerFormModal({
               <Check className="size-4" aria-hidden />
               {saveLabel}
             </PillButton>
+
+            {/* Delete (edit mode only) — sits on the right per the design */}
+            {isEdit && initial && (
+              <CustomerFormDeleteButton
+                ref={deleteButtonRef}
+                onDelete={() => setConfirmOpen(true)}
+              />
+            )}
           </ModalFooter>
         </form>
       </ModalContent>
     </Modal>
+
+    {isEdit && initial && (
+      <CustomerDeleteSheet
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        customer={initial}
+        finalFocusRef={deleteButtonRef}
+        onDelete={(c) => {
+          handleDelete(c)
+          setConfirmOpen(false)
+        }}
+      />
+    )}
+    </>
   )
 }

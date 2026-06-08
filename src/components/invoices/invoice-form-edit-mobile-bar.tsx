@@ -6,7 +6,7 @@ import type React from "react"
 import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 
-import { ChevronLeft, ChevronRight, Edit, MoreHorizontal } from "@/components/icons"
+import { ChevronLeft, ChevronRight, Edit, MoreHorizontal, Trash2 } from "@/components/icons"
 import { PillButton } from "@/components/ui/custom/pill-button"
 import type { Invoice } from "@/lib/types"
 
@@ -19,6 +19,8 @@ interface InvoiceFormEditMobileBarProps {
   previewDisabledMsg?: string
   onPreview: () => void
   onDiscard: () => void
+  /** Fires the delete confirm toast (edit mode only — omit in create mode). */
+  onDelete?: () => void
   invoice: Invoice
   /**
    * Ref to the "Preview invoice" CTA so the parent can restore focus to it
@@ -34,6 +36,7 @@ export function InvoiceFormEditMobileBar({
   previewDisabledMsg,
   onPreview,
   onDiscard,
+  onDelete,
   invoice,
   buttonRef,
 }: InvoiceFormEditMobileBarProps) {
@@ -58,6 +61,19 @@ export function InvoiceFormEditMobileBar({
         onDiscard()
       },
     },
+    ...(onDelete
+      ? [
+          {
+            label: "Delete invoice",
+            icon: <Trash2 className="size-4.5" aria-hidden />,
+            danger: true,
+            onClick: () => {
+              setMoreOpen(false)
+              onDelete()
+            },
+          } satisfies InvoiceFormSheetItem,
+        ]
+      : []),
   ]
 
   return (

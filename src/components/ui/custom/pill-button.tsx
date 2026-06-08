@@ -21,6 +21,8 @@ const pillButtonVariants = cva(
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
         onCoral: "bg-card text-coral-ink hover:bg-coral-soft",
         draft: "bg-draft-soft text-draft-ink hover:bg-draft-soft/80 active:bg-draft-soft/60",
+        ghostDanger:
+          "bg-transparent text-overdue-ink hover:bg-overdue-soft active:bg-overdue-soft",
       },
       size: {
         sm: "h-9 px-3.5 text-caption",

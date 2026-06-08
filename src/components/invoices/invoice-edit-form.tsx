@@ -21,6 +21,7 @@ import { InvoiceFormPreviewMobileBar } from "./invoice-form-preview-mobile-bar"
 import { InvoiceFormPreviewSidebar } from "./invoice-form-preview-sidebar"
 import { InvoiceFormReviewHeader } from "./invoice-form-review-header"
 import { InvoiceFormReviewStage } from "./invoice-form-review-stage"
+import { fireDeleteInvoiceToast } from "./invoice-form-delete-button"
 
 interface InvoiceEditFormProps {
   invoice: InvoiceDetail
@@ -110,6 +111,10 @@ export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
     console.log("Invoice edit submitted:", data)
   }
 
+  function handleDeleteInvoice() {
+    fireDeleteInvoiceToast(invoice.id, () => router.push("/invoices"))
+  }
+
   const invoiceIdNoHash = invoice.id.replace("#", "")
 
   // Synthesized Invoice for SendChannelsModal
@@ -182,10 +187,12 @@ export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
           }
           actionBar={
             <InvoiceFormDesktopActionBar
+              mode="edit"
               canSend={canSend}
               invoice={syntheticInvoice}
               onDiscard={() => router.push(`/invoices/${invoiceIdNoHash}`)}
               discardLabel="Discard changes"
+              onDelete={handleDeleteInvoice}
             />
           }
         />
@@ -195,6 +202,7 @@ export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
         previewDisabledMsg={sendDisabledMsg}
         onPreview={() => setView("preview")}
         onDiscard={() => router.push(`/invoices/${invoiceIdNoHash}`)}
+        onDelete={handleDeleteInvoice}
         invoice={syntheticInvoice}
         buttonRef={previewBtnRef}
       />
