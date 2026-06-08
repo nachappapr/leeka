@@ -12,6 +12,24 @@ export interface Customer {
   invoiceCount: number
   totalBilled: string
   outstanding: string | null
+  // Extended contact + profile fields (all optional — legacy records may omit)
+  email?: string
+  gstin?: string
+  address?: string
+  customerSince?: string
+  paid?: string
+}
+
+// Payload shape used by CustomerFormModal's onSave callback.
+// All list fields plus the form-only opening balance.
+export interface CustomerSavePayload {
+  id?: string // present on edit, absent on add (caller assigns)
+  name: string
+  phone: string
+  email?: string
+  gstin?: string
+  address?: string
+  openingBalance?: number // add-mode only; absent on edit
 }
 
 // The minimal customer shape the invoice form's CustomerPicker selects/holds.

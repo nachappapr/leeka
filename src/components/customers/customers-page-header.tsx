@@ -1,6 +1,5 @@
-import { Plus } from "@/components/icons"
 import { PageHeader } from "@/components/ui/custom/page-header"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { CustomerAddTrigger } from "@/components/customers/customer-add-trigger"
 
 interface CustomersPageHeaderProps {
   totalCount: number
@@ -19,12 +18,8 @@ export function CustomersPageHeader({
     <PageHeader
       title="Customers"
       subtitle={subtitle}
-      actions={
-        <PillButton tone="primary" size="md">
-          <Plus aria-hidden />
-          Add customer
-        </PillButton>
-      }
+      actions={<CustomerAddTrigger />}
+      actionsOnMobile
     />
   )
 }

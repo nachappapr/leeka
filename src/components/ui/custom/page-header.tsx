@@ -10,6 +10,12 @@ interface PageHeaderProps {
   title: React.ReactNode
   subtitle?: React.ReactNode
   actions?: React.ReactNode
+  /**
+   * Keep the actions visible on mobile (default: hidden ≤768, where primary
+   * actions live in the topbar / tab bar). Opt in when a page has no other
+   * mobile path to its action — e.g. "Add customer".
+   */
+  actionsOnMobile?: boolean
   className?: string
 }
 
@@ -19,6 +25,7 @@ export function PageHeader({
   title,
   subtitle,
   actions,
+  actionsOnMobile = false,
   className,
 }: PageHeaderProps) {
   return (
@@ -45,7 +52,12 @@ export function PageHeader({
         </div>
       </div>
       {actions && (
-        <div className="flex shrink-0 items-center gap-2 max-mobile:hidden">
+        <div
+          className={cn(
+            "flex shrink-0 items-center gap-2",
+            !actionsOnMobile && "max-mobile:hidden",
+          )}
+        >
           {actions}
         </div>
       )}
