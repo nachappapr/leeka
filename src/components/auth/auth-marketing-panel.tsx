@@ -26,7 +26,7 @@ function AuthMarketingPanel() {
           <span className="text-title font-extrabold leading-none tracking-tight text-white">
             arthapatra<span className="text-coral-press">.</span>
           </span>
-          <span className="mt-0.5 text-11 font-semibold uppercase tracking-widest text-white/70">
+          <span className="mt-0.5 text-kicker font-semibold uppercase tracking-widest text-white/70">
             Invoicing
           </span>
         </div>
@@ -60,7 +60,7 @@ function AuthMarketingPanel() {
                 <Check className="size-3 text-white" aria-hidden="true" />
               </span>
               <span
-                className="text-body-sm font-semibold text-white/90"
+                className="text-caption font-semibold text-white/90"
                 lang={mark.includes("हिंदी") ? "hi" : undefined}
               >
                 {mark}

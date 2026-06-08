@@ -37,11 +37,11 @@ function AuthOtpStep({
         {mode === "login" ? "Sign in" : "Verify"}
       </p>
 
-      <h2 className="mt-1.5 text-32 font-extrabold max-mobile:text-26 leading-tight tracking-tight text-ink">
+      <h2 className="mt-1.5 text-h2 font-extrabold leading-tight tracking-tight text-ink">
         Enter the code
       </h2>
 
-      <p className="mt-2 mb-6 text-15 text-ink-2">
+      <p className="mt-2 mb-6 text-body text-ink-2">
         Sent to <span className="font-bold text-ink">+91 {phone}</span>{" "}
         <button
           type="button"
@@ -82,7 +82,7 @@ function AuthOtpStep({
         type="button"
         onClick={onSubmit}
         disabled={isDisabled}
-        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-17 font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
       >
         Verify &amp; continue
         <ArrowRight className="size-5" aria-hidden="true" />
@@ -91,7 +91,7 @@ function AuthOtpStep({
       <button
         type="button"
         onClick={onChangeNumber}
-        className="mt-3 flex h-12 w-full items-center justify-center rounded-full text-15 font-bold text-ink-2 transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
+        className="mt-3 flex h-12 w-full items-center justify-center rounded-full text-body font-bold text-ink-2 transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
       >
         Use a different number
       </button>

@@ -35,15 +35,15 @@ function AuthProfileStep({
         Almost done
       </p>
 
-      <h2 className="mt-1.5 text-32 font-extrabold max-mobile:text-26 leading-tight tracking-tight text-ink">
+      <h2 className="mt-1.5 text-h2 font-extrabold leading-tight tracking-tight text-ink">
         Tell us about your business
       </h2>
 
-      <p className="mt-2 mb-7 text-15 leading-relaxed text-ink-2">
+      <p className="mt-2 mb-7 text-body leading-relaxed text-ink-2">
         We&apos;ll use this to brand your invoices. You can change anything later in Settings.
       </p>
 
-      <label htmlFor="biz-name" className="mb-2 block text-caption font-bold text-ink-2">
+      <label htmlFor="biz-name" className="mb-2 block text-label font-bold text-ink-2">
         Business name
       </label>
       <div className="mb-4 flex h-14 items-center gap-2.5 rounded-xl border-[1.5px] border-line-strong bg-surface px-4 transition-all focus-within:border-coral focus-within:ring-4 focus-within:ring-coral/14">
@@ -59,7 +59,7 @@ function AuthProfileStep({
         />
       </div>
 
-      <label htmlFor="your-name" className="mb-2 block text-caption font-bold text-ink-2">
+      <label htmlFor="your-name" className="mb-2 block text-label font-bold text-ink-2">
         Your name
       </label>
       <div className="mb-6 flex h-14 items-center gap-2.5 rounded-xl border-[1.5px] border-line-strong bg-surface px-4 transition-all focus-within:border-coral focus-within:ring-4 focus-within:ring-coral/14">
@@ -75,7 +75,7 @@ function AuthProfileStep({
         />
       </div>
 
-      <p className="mb-3 text-caption font-bold text-ink-2">What do you sell?</p>
+      <p className="mb-3 text-label font-bold text-ink-2">What do you sell?</p>
       <div className="mb-6 grid grid-cols-2 gap-2.5">
         {BIZ_TYPES.map(({ id, label, Icon }) => (
           <button
@@ -100,7 +100,7 @@ function AuthProfileStep({
         type="button"
         onClick={onSubmit}
         disabled={isDisabled}
-        className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-17 font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+        className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
       >
         <Check className="size-5" aria-hidden="true" />
         Finish &amp; open ArthaPatra

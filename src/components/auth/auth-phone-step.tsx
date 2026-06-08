@@ -41,17 +41,17 @@ function AuthPhoneStep({
         {mode === "login" ? "Welcome back" : "Create account"}
       </p>
 
-      <h2 className="mt-1.5 text-32 font-extrabold max-mobile:text-26 leading-tight tracking-tight text-ink">
+      <h2 className="mt-1.5 text-h2 font-extrabold leading-tight tracking-tight text-ink">
         {mode === "login" ? "Sign in with your mobile" : "Let's get you set up"}
       </h2>
 
-      <p className="mb-7 mt-2 text-15 leading-relaxed text-ink-2">
+      <p className="mb-7 mt-2 text-body leading-relaxed text-ink-2">
         {mode === "login"
           ? "We'll send a 6-digit code to verify it's you."
           : "Just your mobile to start — full setup takes under a minute."}
       </p>
 
-      <label htmlFor="phone-input" className="mb-2 block text-caption font-bold text-ink-2">
+      <label htmlFor="phone-input" className="mb-2 block text-label font-bold text-ink-2">
         Mobile number
       </label>
       <div className="flex h-16 items-center gap-2.5 rounded-xl border-[1.5px] border-line-strong bg-surface px-4 transition-all focus-within:border-coral focus-within:ring-4 focus-within:ring-coral/14">
@@ -108,7 +108,7 @@ function AuthPhoneStep({
         type="button"
         onClick={onSubmit}
         disabled={isDisabled}
-        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-17 font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
       >
         {mode === "login" ? "Send code" : "Continue"}
         <ArrowRight className="size-5" aria-hidden="true" />

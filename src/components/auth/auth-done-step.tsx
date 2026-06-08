@@ -15,12 +15,12 @@ function AuthDoneStep({ mode, yourName }: AuthDoneStepProps) {
         <CheckCircle2 className="size-10 text-paid" aria-hidden="true" />
       </span>
       <div>
-        <h2 className="text-32 font-extrabold max-mobile:text-26 tracking-tight text-ink">
+        <h2 className="text-h2 font-extrabold tracking-tight text-ink">
           {mode === "login"
             ? "Welcome to ArthaPatra"
             : `You're all set${firstName ? `, ${firstName}` : ""}!`}
         </h2>
-        <p className="mt-2 text-15 text-ink-2">Opening your dashboard…</p>
+        <p className="mt-2 text-body text-ink-2">Opening your dashboard…</p>
       </div>
     </div>
   )
