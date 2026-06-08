@@ -1,4 +1,8 @@
 {
+  "statusLine": {
+    "type": "command",
+    "command": "npx ccstatusline@latest"
+  },
   "permissions": {
     "allow": [
       "Read(//Users/nextdev/Projects/reppit-web/components/**)",
