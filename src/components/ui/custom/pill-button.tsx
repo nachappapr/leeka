@@ -1,3 +1,5 @@
+import * as React from "react";
+
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -18,6 +20,7 @@ const pillButtonVariants = cva(
         destructive:
           "bg-destructive text-card shadow-press hover:bg-overdue-ink",
         onCoral: "bg-card text-coral-ink hover:bg-coral-soft",
+        draft: "bg-draft-soft text-draft-ink hover:bg-draft-soft/80 active:bg-draft-soft/60",
       },
       size: {
         sm: "h-9 px-3.5 text-caption",
@@ -32,16 +35,23 @@ const pillButtonVariants = cva(
   },
 );
 
-function PillButton({
-  className,
-  tone = "primary",
-  size = "md",
-  render,
-  nativeButton,
-  ...props
-}: ButtonPrimitive.Props & VariantProps<typeof pillButtonVariants>) {
+const PillButton = React.forwardRef<
+  HTMLButtonElement,
+  ButtonPrimitive.Props & VariantProps<typeof pillButtonVariants>
+>(function PillButton(
+  {
+    className,
+    tone = "primary",
+    size = "md",
+    render,
+    nativeButton,
+    ...props
+  },
+  ref,
+) {
   return (
     <ButtonPrimitive
+      ref={ref}
       data-slot="pill-button"
       data-tone={tone}
       className={cn(pillButtonVariants({ tone, size }), className)}
@@ -50,6 +60,8 @@ function PillButton({
       {...props}
     />
   );
-}
+});
+
+PillButton.displayName = "PillButton";
 
 export { PillButton, pillButtonVariants };

@@ -11,7 +11,10 @@ function TextareaField({
     <Textarea
       data-slot="textarea-field"
       className={cn(
-        "rounded-nav-item border-line bg-card font-medium text-body-sm px-3.5 py-2.5 min-h-24 resize-y",
+        // Inputs sit on the --text-body (16) floor at all viewports — per the
+        // responsive type system (Rule 4: raise to 16, don't pin per-breakpoint),
+        // which also avoids iOS's <16px auto-zoom without a max-mobile override.
+        "rounded-nav-item border-line bg-card font-medium text-body px-3.5 py-2.5 min-h-24 resize-y",
         className
       )}
       {...props}

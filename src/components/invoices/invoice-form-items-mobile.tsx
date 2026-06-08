@@ -9,23 +9,23 @@ import { InputField } from "@/components/ui/custom/input-field"
 import type { InvoiceEditFormData } from "@/lib/schema/invoice"
 import { formatRupees } from "@/lib/utils"
 
-interface InvoiceEditItemsMobileProps {
+interface InvoiceFormItemsMobileProps {
   fields: Array<{ id: string; name: string; qty: number; price: number }>
   register: UseFormRegister<InvoiceEditFormData>
   remove: (index: number) => void
 }
 
-export function InvoiceEditItemsMobile({
+export function InvoiceFormItemsMobile({
   fields,
   register,
   remove,
-}: InvoiceEditItemsMobileProps) {
+}: InvoiceFormItemsMobileProps) {
   return (
     <div className="min-mobile:hidden flex flex-col gap-3">
       {fields.map((field, index) => (
         <div
           key={field.id}
-          className="rounded-lg bg-background border border-border p-3.5 pb-4"
+          className="rounded-2xl bg-background border border-border p-3.5 pb-4"
         >
           {/* Card head */}
           <div className="flex items-center justify-between mb-2.5">
@@ -47,7 +47,7 @@ export function InvoiceEditItemsMobile({
           <FieldLabel htmlFor={`item-name-${field.id}`}>Item name</FieldLabel>
           <InputField
             id={`item-name-${field.id}`}
-            size="web"
+            size="mobile"
             className="w-full"
             placeholder="What are you billing for?"
             {...register(`items.${index}.name`)}
@@ -63,6 +63,7 @@ export function InvoiceEditItemsMobile({
                 type="number"
                 inputMode="numeric"
                 min={0}
+                size="mobile"
                 className="w-full tabular"
                 {...register(`items.${index}.qty`, { valueAsNumber: true })}
               />
@@ -76,6 +77,7 @@ export function InvoiceEditItemsMobile({
                 type="number"
                 inputMode="numeric"
                 min={0}
+                size="mobile"
                 className="w-full tabular"
                 {...register(`items.${index}.price`, { valueAsNumber: true })}
               />

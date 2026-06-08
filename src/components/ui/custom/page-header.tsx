@@ -34,7 +34,7 @@ export function PageHeader({
           </Link>
         )}
         <div className="min-w-0">
-          <h2 className="truncate text-26 font-extrabold tracking-snug text-ink max-mobile:text-title">
+          <h2 className="truncate text-h2 font-extrabold text-ink">
             {title}
           </h2>
           {subtitle && (

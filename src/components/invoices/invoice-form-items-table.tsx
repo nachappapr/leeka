@@ -8,17 +8,17 @@ import { InputField } from "@/components/ui/custom/input-field"
 import type { InvoiceEditFormData } from "@/lib/schema/invoice"
 import { formatRupees } from "@/lib/utils"
 
-interface InvoiceEditItemsTableProps {
+interface InvoiceFormItemsTableProps {
   fields: Array<{ id: string; name: string; qty: number; price: number }>
   register: UseFormRegister<InvoiceEditFormData>
   remove: (index: number) => void
 }
 
-export function InvoiceEditItemsTable({
+export function InvoiceFormItemsTable({
   fields,
   register,
   remove,
-}: InvoiceEditItemsTableProps) {
+}: InvoiceFormItemsTableProps) {
   return (
     <div className="max-mobile:hidden">
       {/* Header row */}

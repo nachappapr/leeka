@@ -1,6 +1,6 @@
 import { formatInvoiceDate, formatRupees } from "@/lib/utils"
 
-interface InvoiceEditLivePreviewProps {
+interface InvoiceFormLivePreviewProps {
   invoiceIdNoHash: string
   customerName: string
   phone: string
@@ -12,7 +12,7 @@ interface InvoiceEditLivePreviewProps {
   dueIsoDate: string
 }
 
-export function InvoiceEditLivePreview({
+export function InvoiceFormLivePreview({
   invoiceIdNoHash,
   customerName,
   phone,
@@ -22,7 +22,7 @@ export function InvoiceEditLivePreview({
   total,
   isoDate,
   dueIsoDate,
-}: InvoiceEditLivePreviewProps) {
+}: InvoiceFormLivePreviewProps) {
   const visibleItems = items.filter((it) => it.name.trim().length > 0)
 
   return (
