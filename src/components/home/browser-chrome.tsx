@@ -1,14 +1,22 @@
+import type React from "react"
 import { Lock } from "@/components/icons"
+import { cn } from "@/lib/utils"
 
 interface BrowserChromeProps {
   host: string
   path: string
+  leadingIcon?: React.ReactNode
+  pathTone?: "ink" | "overdue"
 }
 
-function BrowserChrome({ host, path }: BrowserChromeProps) {
+function BrowserChrome({
+  host,
+  path,
+  leadingIcon,
+  pathTone = "ink",
+}: BrowserChromeProps) {
   return (
     <div className="flex items-center gap-3 h-9.5 px-3.5 bg-surface-2 border-b border-border">
-      {/* Traffic-light dots — inline SVG hex approved for this single use case */}
       <svg
         width="33"
         height="11"
@@ -22,11 +30,12 @@ function BrowserChrome({ host, path }: BrowserChromeProps) {
         <circle cx="27.5" cy="5.5" r="5.5" fill="#61C554" />
       </svg>
 
-      {/* URL pill */}
       <div className="flex flex-1 items-center gap-2 h-6 px-3 bg-card rounded-lg text-12 font-semibold text-ink-2 border border-border/50">
-        <Lock className="size-2.5 text-paid shrink-0" strokeWidth={2.4} aria-hidden="true" />
+        {leadingIcon ?? (
+          <Lock className="size-2.5 text-paid shrink-0" strokeWidth={2.4} aria-hidden="true" />
+        )}
         <span className="text-ink-3">{host}</span>
-        <span className="text-ink">{path}</span>
+        <span className={cn(pathTone === "overdue" ? "text-overdue font-bold" : "text-ink")}>{path}</span>
       </div>
     </div>
   )

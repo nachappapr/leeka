@@ -92,3 +92,7 @@ export { LogOut } from "./log-out"
 // Settings page icons
 export { ImageIcon } from "./image-icon"
 export { CameraIcon } from "./camera-icon"
+
+// 404 page icons
+export { TornDoc } from "./torn-doc"
+export { LinkBroken } from "./link-broken"
