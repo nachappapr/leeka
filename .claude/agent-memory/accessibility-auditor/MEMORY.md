@@ -66,3 +66,5 @@
 - [animate-spin no prefers-reduced-motion guard](project_animate_spin_no_prm.md) — Tailwind animate-spin on Loader2 has no motion-reduce:animate-none; Medium SC 2.3.3; pure CSS fix, no boundary cost
 - [customers-table sort header: button-inside-th pattern](project_customers_table_sort_header.md) — onClick on DataHead (<th>) = no keyboard access; invoices-table has correct <button> inside DataHead; use that pattern
 - [Modal focus restore programmatic open](project_modal_focus_restore_programmatic.md) — CustomerFormModal opened via setOpen(true) loses focus to body; fix: initialFocus={nameRef} + finalFocus={triggerRef} on ModalContent/DialogPrimitive.Popup
+- [ToggleSwitch sr-only state span overrides label name](project_toggle_switch_sr_only_name_override.md) — sr-only "On"/"Off" span inside button supersedes htmlFor label; AT hears state not label text; fix: delete the span, rely on aria-checked
+- [Tablist-without-panels on mobile section strips](project_tablist_without_panels_wrong_pattern.md) — role=tablist on conditional-render strips is wrong; correct: nav+aria-current matching desktop aside nav model

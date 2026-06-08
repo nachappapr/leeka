@@ -88,3 +88,7 @@ export { UtensilsCrossedIcon } from "./utensils-crossed-icon"
 
 // App chrome icons
 export { LogOut } from "./log-out"
+
+// Settings page icons
+export { ImageIcon } from "./image-icon"
+export { CameraIcon } from "./camera-icon"

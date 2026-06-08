@@ -114,6 +114,8 @@ ESLint enforces this (`no-restricted-imports` for `lucide-react` outside `src/co
 - No conflicting utilities (`px-4 px-6`). No dead utilities.
 - Use `cn()` for conditional classes.
 - Use `data-*` attributes for state styling (`data-state="open"`) per Base UI's pattern — see `building-components/references/data-attributes.mdx`.
+- **No `style={{ }}` when a primitive or utility class can express it.** Reach for an existing `src/components/ui/` primitive or a Tailwind class first; inline `style` is permitted ONLY for genuinely data-driven CSS variables (`style={{ ['--swatch']: color }}` for a value that varies per item and has no token), and it must carry an inline `// eslint-disable-next-line no-restricted-syntax` with a one-line justification. A static value, a layout shorthand, or anything a primitive already does is NOT a valid reason to inline.
+- **CSS-variable arbitrary values use Tailwind v4 paren syntax** (`bg-(--swatch)`, `size-(--cell-size)`, typed `bg-(image:--grad)` for a gradient) — never the v3 bracket form `bg-[--swatch]`, which v4 does NOT resolve to `var(...)` and silently fails to render.
 
 ESLint enforces correctness + the token bans.
 
@@ -127,7 +129,10 @@ Breaking changes from earlier versions. Read `node_modules/next/dist/docs/` befo
 
 ### 6. File organisation — one component per file, feature folder mirrors the route
 
-`src/app/<feature>/page.tsx` composes; it MUST NOT contain inline `function ChildName()` blocks. Every sub-component goes to its own file under `src/components/<feature>/` (kebab-case filename = component name), mirroring the route. New components from a page default to the feature folder; they only graduate to `src/components/ui/custom/` when the name signals obvious cross-cutting reuse (Topbar, MobileTabBar, CustomerCell, StatusPill). One **exported** component per file — a 3–5 line helper used by exactly one component in the same file may stay private; the moment a second file needs it, give it its own file. See `AGENTS.md` §6 for the canonical statement.
+`src/app/<feature>/page.tsx` composes; it MUST NOT contain inline `function ChildName()` blocks. Every sub-component goes to its own file under `src/components/<feature>/` (kebab-case filename = component name), mirroring the route. New components from a page default to the feature folder; they only graduate to `src/components/ui/custom/` when the name signals obvious cross-cutting reuse (Topbar, MobileTabBar, CustomerCell, StatusPill). See `AGENTS.md` §6 for the canonical statement.
+
+- **One exported component per file. The ONLY exception is `src/components/ui/` primitives and their wrappers** (e.g. a compound `Card`/`CardHeader` pair, or a primitive plus its brand wrapper). Feature components never share a file. A 3–5 line render-only helper used by exactly one component in the same file may stay private and unexported; the moment a second file needs it, give it its own file.
+- **No data/config constants declared inside a component file.** Section lists, option arrays, icon maps, toggle defaults, copy tables, enum-like records — every constant that is feature/module data lives in `src/lib/constants/<feature>.ts` (its type in `src/lib/types/<feature>.ts`), one file per feature. If two components reach for the same inline map (e.g. an `iconName → Icon` record duplicated across a tab strip and a sidebar), that's the signal to hoist it — or, better, attach the resolved value directly to the data row in the constants file (the `navigation.ts` pattern: `{ id, icon: ShoppingBag, label }`), eliminating the indirection entirely. A short local `cn(...)` className string shared between two elements in the same file is styling, not data — inline it, don't promote it to a named const.
 
 ### 7. Accessibility baseline (the auditor will catch you)
 
@@ -138,6 +143,19 @@ Breaking changes from earlier versions. Read `node_modules/next/dist/docs/` befo
 - Headings in document order, no level skips.
 - `lang` set on `<html>`; Devanagari subtrees get `lang="hi"`.
 - Tap targets ≥ 44px (Bahi primary mobile buttons are 52px per spec).
+
+### 8. No unnecessary comments
+
+Write code that reads itself; let names carry the meaning. Do NOT add:
+- JSDoc/banner blocks that just restate the component name or props (`/** BusinessSection — business profile form */`).
+- Section-marker comments inside JSX (`{/* Logo row */}`, `{/* Actions */}`, `{/* Toggles */}`).
+- Narration of what the next line plainly does (`// set the active section`, `// sr-only h1 for heading order`).
+
+KEEP only comments that carry information the code cannot:
+- The mandated `// eslint-disable-next-line no-restricted-syntax -- <one-line justification>` on a sanctioned inline-style exception.
+- A genuinely non-obvious "why" (a workaround for a known upstream bug, a deliberate spec deviation) — rare, and short.
+
+When you remove a comment, make sure the names/structure still make the intent obvious; if they don't, fix the names rather than re-adding the comment.
 
 ## Quality Gates — hard blocking exit criteria (ALL modes)
 

@@ -49,6 +49,6 @@ export const NAV_MAIN = [
 ];
 
 export const NAV_ACCOUNT = [
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
+  { label: "Settings", href: "/settings", icon: Settings },
   { label: "Help", href: "/dashboard/help", icon: Info },
 ];
