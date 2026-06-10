@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Download } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { ExportInvoicesModal } from "@/components/invoices/export-invoices-modal"
-import { INVOICES } from "@/lib/constants/invoices"
+import { Download } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { ExportInvoicesModal } from "@/components/invoices/export-invoices-modal";
+import { INVOICES } from "@/lib/constants/invoices";
 
 export function ExportTrigger() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -22,11 +22,7 @@ export function ExportTrigger() {
         <Download aria-hidden />
         Export
       </PillButton>
-      <ExportInvoicesModal
-        open={open}
-        onClose={() => setOpen(false)}
-        invoices={INVOICES}
-      />
+      <ExportInvoicesModal open={open} onClose={() => setOpen(false)} invoices={INVOICES} />
     </>
-  )
+  );
 }

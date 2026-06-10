@@ -1,7 +1,7 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { LekkaLogo, IndiaFlagStripe } from "@/components/icons"
-import { FOOTER_NAV, FOOTER_LANGS } from "@/lib/constants/home"
+import { LekkaLogo, IndiaFlagStripe } from "@/components/icons";
+import { FOOTER_NAV, FOOTER_LANGS } from "@/lib/constants/home";
 
 function SiteFooter() {
   return (
@@ -23,8 +23,8 @@ function SiteFooter() {
 
             {/* Tagline */}
             <p className="mt-3.5 max-w-80 text-body-sm leading-snug text-card/60">
-              Free invoicing app for India&#39;s small shops, home businesses, and
-              traders. Made with love in Bengaluru.
+              Free invoicing app for India&#39;s small shops, home businesses, and traders. Made
+              with love in Bengaluru.
             </p>
 
             {/* Language pills */}
@@ -73,7 +73,7 @@ function SiteFooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export { SiteFooter }
+export { SiteFooter };

@@ -86,20 +86,16 @@
   --radius-2xl: 24px;
 
   /* shadows — warm-tinted */
-  --shadow-card: 0 1px 2px rgba(63, 40, 16, 0.04),
-    0 4px 14px rgba(63, 40, 16, 0.06);
-  --shadow-float: 0 6px 24px rgba(63, 40, 16, 0.14),
-    0 2px 6px rgba(63, 40, 16, 0.08);
+  --shadow-card: 0 1px 2px rgba(63, 40, 16, 0.04), 0 4px 14px rgba(63, 40, 16, 0.06);
+  --shadow-float: 0 6px 24px rgba(63, 40, 16, 0.14), 0 2px 6px rgba(63, 40, 16, 0.08);
   --shadow-press: 0 1px 0 rgba(63, 40, 16, 0.08);
   --shadow-sheet: 0 -8px 32px rgba(63, 40, 16, 0.18);
   --shadow-coral: 0 4px 14px rgba(244, 106, 57, 0.35);
   --shadow-coral-hero: 0 14px 30px rgba(244, 106, 57, 0.22);
 
   /* fonts */
-  --font-sans:
-    var(--font-jakarta), var(--font-devanagari), system-ui, sans-serif;
-  --font-heading:
-    var(--font-jakarta), var(--font-devanagari), system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), var(--font-devanagari), system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), var(--font-devanagari), system-ui, sans-serif;
   --font-mono: var(--font-jet-mono), ui-monospace, monospace;
 
   /* type — numeric font sizes (1:1 with Lekka --fs-* scale) */
@@ -272,18 +268,29 @@
   /* tabular numerals for money — applied where needed */
   .tabular {
     font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1, "lnum" 1;
+    font-feature-settings:
+      "tnum" 1,
+      "lnum" 1;
   }
 }
 
 @keyframes float-y {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @layer utilities {
-  .animate-float-y         { animation: float-y 6s ease-in-out infinite; }
-  .animate-float-y-reverse { animation: float-y 7s ease-in-out infinite reverse; }
+  .animate-float-y {
+    animation: float-y 6s ease-in-out infinite;
+  }
+  .animate-float-y-reverse {
+    animation: float-y 7s ease-in-out infinite reverse;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .animate-float-y,

@@ -76,7 +76,7 @@ function StepIlSend() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { StepIlSend }
+export { StepIlSend };

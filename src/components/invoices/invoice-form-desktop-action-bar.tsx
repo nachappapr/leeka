@@ -4,24 +4,24 @@
 // InvoiceFormDeleteButton, and InvoiceFormSaveDraftButton each carry their own
 // "use client" boundaries.
 
-import { WhatsApp } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import type { Invoice } from "@/lib/types"
+import { WhatsApp } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import type { Invoice } from "@/lib/types";
 
-import { InvoiceFormDiscardButton } from "./invoice-form-discard-button"
-import { InvoiceFormDeleteButton } from "./invoice-form-delete-button"
-import { InvoiceFormSaveDraftButton } from "./invoice-form-save-draft-button"
+import { InvoiceFormDiscardButton } from "./invoice-form-discard-button";
+import { InvoiceFormDeleteButton } from "./invoice-form-delete-button";
+import { InvoiceFormSaveDraftButton } from "./invoice-form-save-draft-button";
 
 interface InvoiceFormDesktopActionBarProps {
-  canSend: boolean
-  invoice: Invoice
-  onDiscard: () => void
+  canSend: boolean;
+  invoice: Invoice;
+  onDiscard: () => void;
   /** Ghost-button label — "Discard" (create) vs "Discard changes" (edit). */
-  discardLabel?: string
+  discardLabel?: string;
   /** "edit" mode replaces the Discard button with a Delete Invoice button. */
-  mode?: "create" | "edit"
+  mode?: "create" | "edit";
   /** Called when delete is clicked (edit mode only); caller fires the toast. */
-  onDelete?: () => void
+  onDelete?: () => void;
 }
 
 export function InvoiceFormDesktopActionBar({
@@ -41,15 +41,10 @@ export function InvoiceFormDesktopActionBar({
       )}
       <div className="flex-1" />
       <InvoiceFormSaveDraftButton invoice={invoice} />
-      <PillButton
-        tone="whatsapp"
-        type="submit"
-        disabled={!canSend}
-        aria-disabled={!canSend}
-      >
+      <PillButton tone="whatsapp" type="submit" disabled={!canSend} aria-disabled={!canSend}>
         <WhatsApp aria-hidden />
         Send on WhatsApp
       </PillButton>
     </div>
-  )
+  );
 }

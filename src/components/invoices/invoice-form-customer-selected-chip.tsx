@@ -1,18 +1,18 @@
 // No "use client": purely presentational — takes onClear as a prop, owns no hooks.
 // Rides the client boundary of the parent (InvoiceFormCustomerPicker).
 
-import { Edit } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import type { SelectedCustomer } from "@/lib/types/customer"
+import { Edit } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import type { SelectedCustomer } from "@/lib/types/customer";
 
-import { InvoiceFormCustomerAvatar } from "./invoice-form-customer-avatar"
+import { InvoiceFormCustomerAvatar } from "./invoice-form-customer-avatar";
 
 export function InvoiceFormCustomerSelectedChip({
   value,
   onClear,
 }: {
-  value: SelectedCustomer
-  onClear: () => void
+  value: SelectedCustomer;
+  onClear: () => void;
 }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border-[1.5px] border-coral/20 bg-coral-soft px-3.5 py-3">
@@ -29,5 +29,5 @@ export function InvoiceFormCustomerSelectedChip({
         Change
       </PillButton>
     </div>
-  )
+  );
 }

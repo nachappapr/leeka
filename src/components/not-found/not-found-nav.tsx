@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { LekkaLogo } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import Link from "next/link";
+import { LekkaLogo } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
 
 function NotFoundNav() {
   return (
@@ -20,25 +20,17 @@ function NotFoundNav() {
 
         <div className="ml-auto flex items-center gap-2.5">
           <div className="max-mobile:hidden">
-            <PillButton
-              tone="outline"
-              size="md"
-              render={<Link href="/" />}
-            >
+            <PillButton tone="outline" size="md" render={<Link href="/" />}>
               Back to home
             </PillButton>
           </div>
-          <PillButton
-            tone="primary"
-            size="md"
-            render={<Link href="/dashboard" />}
-          >
+          <PillButton tone="primary" size="md" render={<Link href="/dashboard" />}>
             Open dashboard
           </PillButton>
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export { NotFoundNav }
+export { NotFoundNav };

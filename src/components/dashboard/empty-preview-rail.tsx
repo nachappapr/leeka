@@ -1,13 +1,13 @@
-import { IndianRupee, Check, Clock } from "@/components/icons"
-import { cn } from "@/lib/utils"
-import { PREVIEW_TILES } from "@/lib/constants/empty-dashboard"
-import type { PreviewTile } from "@/lib/types/empty-dashboard"
+import { IndianRupee, Check, Clock } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { PREVIEW_TILES } from "@/lib/constants/empty-dashboard";
+import type { PreviewTile } from "@/lib/types/empty-dashboard";
 
 const ICON_MAP = {
   IndianRupee,
   Check,
   Clock,
-} as const
+} as const;
 
 export function EmptyPreviewRail() {
   return (
@@ -25,11 +25,11 @@ export function EmptyPreviewRail() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function PreviewTileRow({ tile }: { tile: PreviewTile }) {
-  const IconComponent = ICON_MAP[tile.icon]
+  const IconComponent = ICON_MAP[tile.icon];
 
   return (
     <div className="flex items-center gap-3 rounded-sm border border-dashed border-line-strong bg-cream px-3.5 py-3">
@@ -50,5 +50,5 @@ function PreviewTileRow({ tile }: { tile: PreviewTile }) {
         —
       </span>
     </div>
-  )
+  );
 }

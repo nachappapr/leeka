@@ -1,13 +1,13 @@
-import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar"
-import { Topbar } from "@/components/ui/custom/topbar"
-import { Card } from "@/components/ui/custom/card"
-import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch"
-import { EmptyTableState } from "@/components/ui/custom/empty-table-state"
-import { InvoiceListActionsProvider } from "@/components/invoices/invoice-list-actions-provider"
-import { InvoiceListActionsTrigger } from "@/components/invoices/invoice-list-actions-trigger"
-import { InvoicesFilterShell } from "@/components/invoices/invoices-filter-shell"
-import { InvoicesPageHeader } from "@/components/invoices/invoices-page-header"
-import { INVOICES } from "@/lib/constants"
+import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
+import { Topbar } from "@/components/ui/custom/topbar";
+import { Card } from "@/components/ui/custom/card";
+import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
+import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
+import { InvoiceListActionsProvider } from "@/components/invoices/invoice-list-actions-provider";
+import { InvoiceListActionsTrigger } from "@/components/invoices/invoice-list-actions-trigger";
+import { InvoicesFilterShell } from "@/components/invoices/invoices-filter-shell";
+import { InvoicesPageHeader } from "@/components/invoices/invoices-page-header";
+import { INVOICES } from "@/lib/constants";
 
 export function InvoicesContainer() {
   return (
@@ -33,16 +33,11 @@ export function InvoicesContainer() {
                 </Card>
               </>
             }
-            populated={
-              <InvoicesFilterShell
-                invoices={INVOICES}
-                header={<InvoicesPageHeader />}
-              />
-            }
+            populated={<InvoicesFilterShell invoices={INVOICES} header={<InvoicesPageHeader />} />}
           />
         </div>
         <MobileTabBar />
       </div>
     </InvoiceListActionsProvider>
-  )
+  );
 }

@@ -11,27 +11,27 @@ export type NotificationTone =
   | "whatsapp"
   | "customer"
   | "draft"
-  | "sent"
+  | "sent";
 
-export type NotificationGroup = "today" | "yesterday" | "week" | "earlier"
+export type NotificationGroup = "today" | "yesterday" | "week" | "earlier";
 
 export type NotificationItemData = {
-  id: string
-  customer: string
-  verb: string
-  amount?: number
-  invoiceNo?: string
-  tone: NotificationTone
+  id: string;
+  customer: string;
+  verb: string;
+  amount?: number;
+  invoiceNo?: string;
+  tone: NotificationTone;
   /** ISO string or Date — formatter in notification-item handles both. */
-  timestamp: string | Date
-  unread?: boolean
-  href?: string
+  timestamp: string | Date;
+  unread?: boolean;
+  href?: string;
   /** Used by the activity page to group items chronologically. */
-  group?: NotificationGroup
-}
+  group?: NotificationGroup;
+};
 
 export type NotificationGroupData = {
-  id: string
-  label: string
-  items: NotificationItemData[]
-}
+  id: string;
+  label: string;
+  items: NotificationItemData[];
+};

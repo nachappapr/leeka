@@ -28,8 +28,7 @@ export function MobileTabBar() {
           );
         }
 
-        const isActive =
-          pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+        const isActive = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
 
         return (
           <Link

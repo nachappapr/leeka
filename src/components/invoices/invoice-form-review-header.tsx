@@ -1,22 +1,22 @@
 // No "use client": presentational, attaches passed-in callbacks only. Rides the
 // parent client boundary (the invoice forms) without needing its own directive.
 
-import type React from "react"
+import type React from "react";
 
-import { ChevronLeft, Download, Edit } from "@/components/icons"
-import { IconButton } from "@/components/ui/custom/icon-button"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { ChevronLeft, Download, Edit } from "@/components/icons";
+import { IconButton } from "@/components/ui/custom/icon-button";
+import { PillButton } from "@/components/ui/custom/pill-button";
 
 interface InvoiceFormReviewHeaderProps {
-  customerName?: string
-  onBack: () => void
+  customerName?: string;
+  onBack: () => void;
   /**
    * Ref to the heading element so the parent can programmatically focus it
    * when entering the review view (WCAG 2.4.3 focus management).
    * tabIndex={-1} is set on the heading so it is programmatically focusable
    * without entering the natural tab order.
    */
-  headingRef?: React.RefObject<HTMLHeadingElement | null>
+  headingRef?: React.RefObject<HTMLHeadingElement | null>;
 }
 
 // Page header shown when the user is in the review (preview) view of the invoice
@@ -58,10 +58,7 @@ export function InvoiceFormReviewHeader({
           </h2>
           <p className="mt-0.5 text-body-sm font-medium text-ink-3">
             This is exactly what{" "}
-            <strong className="font-semibold">
-              {customerName ?? "your customer"}
-            </strong>{" "}
-            will see.
+            <strong className="font-semibold">{customerName ?? "your customer"}</strong> will see.
           </p>
         </div>
       </div>
@@ -78,5 +75,5 @@ export function InvoiceFormReviewHeader({
         </PillButton>
       </div>
     </header>
-  )
+  );
 }

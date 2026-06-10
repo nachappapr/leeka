@@ -1,22 +1,19 @@
-"use client"
+"use client";
 
 // Justified "use client": interactive confirm buttons with onClick handlers.
-import type * as React from "react"
-import { Trash2 } from "@/components/icons"
-import {
-  Sheet,
-  SheetContent,
-} from "@/components/ui/primitives/sheet"
-import type { Customer } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import type * as React from "react";
+import { Trash2 } from "@/components/icons";
+import { Sheet, SheetContent } from "@/components/ui/primitives/sheet";
+import type { Customer } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface CustomerDeleteSheetProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  customer: Customer
-  onDelete: (customer: Customer) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  customer: Customer;
+  onDelete: (customer: Customer) => void;
   /** Ref to restore focus to when the sheet closes without confirming. */
-  finalFocusRef?: React.RefObject<HTMLElement | null>
+  finalFocusRef?: React.RefObject<HTMLElement | null>;
 }
 
 export function CustomerDeleteSheet({
@@ -27,8 +24,8 @@ export function CustomerDeleteSheet({
   finalFocusRef,
 }: CustomerDeleteSheetProps) {
   function handleDelete() {
-    onDelete(customer)
-    onOpenChange(false)
+    onDelete(customer);
+    onOpenChange(false);
   }
 
   return (
@@ -42,9 +39,7 @@ export function CustomerDeleteSheet({
       >
         <div className="mx-auto mt-1.5 mb-3 h-1 w-10 rounded-full bg-line-strong" aria-hidden />
 
-        <p
-          className="px-5.5 pb-2.5 text-kicker uppercase tracking-wider text-ink-3"
-        >
+        <p className="px-5.5 pb-2.5 text-kicker uppercase tracking-wider text-ink-3">
           {customer.name} · actions
         </p>
 
@@ -53,8 +48,8 @@ export function CustomerDeleteSheet({
             Delete this customer?
           </p>
           <p className="text-caption text-ink-2 mb-4 leading-relaxed">
-            Their past invoices stay in your records, but they&apos;ll be removed
-            from your saved customers list.
+            Their past invoices stay in your records, but they&apos;ll be removed from your saved
+            customers list.
           </p>
           <div className="flex gap-2">
             <button
@@ -86,5 +81,5 @@ export function CustomerDeleteSheet({
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

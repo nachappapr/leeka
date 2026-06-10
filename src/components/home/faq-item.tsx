@@ -1,5 +1,5 @@
-import { ChevronDownIcon } from "@/components/icons"
-import type { Faq } from "@/lib/types/home"
+import { ChevronDownIcon } from "@/components/icons";
+import type { Faq } from "@/lib/types/home";
 
 function FaqItem({ faq, defaultOpen = false }: { faq: Faq; defaultOpen?: boolean }) {
   return (
@@ -16,7 +16,7 @@ function FaqItem({ faq, defaultOpen = false }: { faq: Faq; defaultOpen?: boolean
       </summary>
       <p className="px-5.5 pb-4.5 text-15 leading-relaxed text-ink-2">{faq.answer}</p>
     </details>
-  )
+  );
 }
 
-export { FaqItem }
+export { FaqItem };

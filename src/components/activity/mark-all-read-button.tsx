@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Check } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { Check } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
 
 export function MarkAllReadButton() {
   return (
@@ -15,5 +15,5 @@ export function MarkAllReadButton() {
       <Check className="size-4" aria-hidden />
       Mark all read
     </PillButton>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-import { EmptyDashboardHero } from "@/components/dashboard/empty-dashboard-hero"
-import { EmptySetupChecklist } from "@/components/dashboard/empty-setup-checklist"
-import { EmptyPreviewRail } from "@/components/dashboard/empty-preview-rail"
-import { EmptyHelpCard } from "@/components/dashboard/empty-help-card"
-import { EmptyQuickActions } from "@/components/dashboard/empty-quick-actions"
+import { EmptyDashboardHero } from "@/components/dashboard/empty-dashboard-hero";
+import { EmptySetupChecklist } from "@/components/dashboard/empty-setup-checklist";
+import { EmptyPreviewRail } from "@/components/dashboard/empty-preview-rail";
+import { EmptyHelpCard } from "@/components/dashboard/empty-help-card";
+import { EmptyQuickActions } from "@/components/dashboard/empty-quick-actions";
 
 export function EmptyDashboard() {
   return (
@@ -20,5 +20,5 @@ export function EmptyDashboard() {
 
       <EmptyQuickActions />
     </div>
-  )
+  );
 }

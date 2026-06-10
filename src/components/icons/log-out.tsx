@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from "react";
 
 // LogOut icon — paths copied verbatim from design source (not lucide's mirrored variant)
 export function LogOut({
@@ -23,5 +23,5 @@ export function LogOut({
       <path d="M10 17l-5-5 5-5" />
       <path d="M5 12h12" />
     </svg>
-  )
+  );
 }

@@ -1,15 +1,7 @@
-import Link from "next/link"
-import {
-  Plus,
-  Users,
-  Receipt,
-  Bell,
-  IndianRupee,
-  Check,
-  Clock,
-} from "@/components/icons"
-import { cn } from "@/lib/utils"
-import { pillButtonVariants } from "@/components/ui/custom/pill-button"
+import Link from "next/link";
+import { Plus, Users, Receipt, Bell, IndianRupee, Check, Clock } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { pillButtonVariants } from "@/components/ui/custom/pill-button";
 
 const ICON_MAP = {
   Plus,
@@ -19,23 +11,23 @@ const ICON_MAP = {
   IndianRupee,
   Check,
   Clock,
-}
+};
 
-export type EmptyTableIconName = keyof typeof ICON_MAP
+export type EmptyTableIconName = keyof typeof ICON_MAP;
 
 interface ActionConfig {
-  label: string
-  href: string
-  icon?: EmptyTableIconName
+  label: string;
+  href: string;
+  icon?: EmptyTableIconName;
 }
 
 interface EmptyTableStateProps {
-  icon: EmptyTableIconName
-  title: string
-  body: string
-  primary?: ActionConfig
-  secondary?: ActionConfig
-  headingLevel?: 2 | 3
+  icon: EmptyTableIconName;
+  title: string;
+  body: string;
+  primary?: ActionConfig;
+  secondary?: ActionConfig;
+  headingLevel?: 2 | 3;
 }
 
 export function EmptyTableState({
@@ -46,9 +38,9 @@ export function EmptyTableState({
   secondary,
   headingLevel = 2,
 }: EmptyTableStateProps) {
-  const IconComponent = ICON_MAP[icon]
-  const PrimaryIcon = primary?.icon ? ICON_MAP[primary.icon] : null
-  const Heading = `h${headingLevel}` as "h2" | "h3"
+  const IconComponent = ICON_MAP[icon];
+  const PrimaryIcon = primary?.icon ? ICON_MAP[primary.icon] : null;
+  const Heading = `h${headingLevel}` as "h2" | "h3";
 
   return (
     <section
@@ -75,9 +67,7 @@ export function EmptyTableState({
       </div>
 
       <Heading className="text-title font-extrabold tracking-snug text-ink">{title}</Heading>
-      <p className="mt-2 max-w-105 text-body-sm font-medium leading-relaxed text-ink-3">
-        {body}
-      </p>
+      <p className="mt-2 max-w-105 text-body-sm font-medium leading-relaxed text-ink-3">{body}</p>
 
       {(primary || secondary) && (
         <div className="mt-5 flex flex-wrap justify-center gap-2.5 max-mobile:w-full">
@@ -107,5 +97,5 @@ export function EmptyTableState({
         </div>
       )}
     </section>
-  )
+  );
 }

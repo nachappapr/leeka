@@ -1,30 +1,27 @@
-"use client"
+"use client";
 
 // Justified "use client": owns sendOpen state for SendChannelsModal.
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { ChevronLeft, WhatsApp } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal"
-import type { Invoice } from "@/lib/types"
+import { ChevronLeft, WhatsApp } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
+import type { Invoice } from "@/lib/types";
 
-import { InvoiceFormSaveDraftButton } from "./invoice-form-save-draft-button"
+import { InvoiceFormSaveDraftButton } from "./invoice-form-save-draft-button";
 
 interface InvoiceFormReviewDesktopBarProps {
-  invoice: Invoice
-  onBack: () => void
+  invoice: Invoice;
+  onBack: () => void;
 }
 
 // Desktop-only action row that sits beneath the live preview in the review
 // (preview) view. Mirrors the .create-preview-actions design pattern.
 // Hidden on mobile — the mobile sticky bar (InvoiceFormPreviewMobileBar)
 // provides equivalent actions on small screens.
-export function InvoiceFormReviewDesktopBar({
-  invoice,
-  onBack,
-}: InvoiceFormReviewDesktopBarProps) {
-  const [sendOpen, setSendOpen] = useState(false)
+export function InvoiceFormReviewDesktopBar({ invoice, onBack }: InvoiceFormReviewDesktopBarProps) {
+  const [sendOpen, setSendOpen] = useState(false);
 
   return (
     <>
@@ -38,21 +35,13 @@ export function InvoiceFormReviewDesktopBar({
 
         <InvoiceFormSaveDraftButton invoice={invoice} />
 
-        <PillButton
-          tone="whatsapp"
-          type="button"
-          onClick={() => setSendOpen(true)}
-        >
+        <PillButton tone="whatsapp" type="button" onClick={() => setSendOpen(true)}>
           <WhatsApp aria-hidden />
           Send on WhatsApp
         </PillButton>
       </div>
 
-      <SendChannelsModal
-        invoice={invoice}
-        open={sendOpen}
-        onOpenChange={setSendOpen}
-      />
+      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
     </>
-  )
+  );
 }

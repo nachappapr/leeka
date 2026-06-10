@@ -1,8 +1,8 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { Check } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import type { PricingPlan } from "@/lib/types/home"
+import { Check } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import type { PricingPlan } from "@/lib/types/home";
 
 function PricingPlanCard({ plan }: { plan: PricingPlan }) {
   if (!plan.highlighted) {
@@ -49,7 +49,7 @@ function PricingPlanCard({ plan }: { plan: PricingPlan }) {
           </PillButton>
         </div>
       </article>
-    )
+    );
   }
 
   return (
@@ -101,7 +101,7 @@ function PricingPlanCard({ plan }: { plan: PricingPlan }) {
         </PillButton>
       </div>
     </article>
-  )
+  );
 }
 
-export { PricingPlanCard }
+export { PricingPlanCard };

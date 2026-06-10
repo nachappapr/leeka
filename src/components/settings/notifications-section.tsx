@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Card } from "@/components/ui/custom/card"
-import { ToggleSwitch } from "@/components/ui/custom/toggle-switch"
-import { SETTINGS_NOTIFICATION_TOGGLES } from "@/lib/constants/settings"
+import { Card } from "@/components/ui/custom/card";
+import { ToggleSwitch } from "@/components/ui/custom/toggle-switch";
+import { SETTINGS_NOTIFICATION_TOGGLES } from "@/lib/constants/settings";
 
 export function NotificationsSection() {
-  const [toggles, setToggles] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(SETTINGS_NOTIFICATION_TOGGLES.map((t) => [t.id, t.defaultOn])),
-  )
+  const [toggles, setToggles] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(SETTINGS_NOTIFICATION_TOGGLES.map((t) => [t.id, t.defaultOn])),
+  );
 
   function setToggle(id: string, value: boolean) {
-    setToggles((prev) => ({ ...prev, [id]: value }))
+    setToggles((prev) => ({ ...prev, [id]: value }));
   }
 
   return (
@@ -29,5 +29,5 @@ export function NotificationsSection() {
         ))}
       </div>
     </Card>
-  )
+  );
 }

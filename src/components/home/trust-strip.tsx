@@ -1,5 +1,5 @@
-import { Star, IndiaFlagStripe } from "@/components/icons"
-import { TRUST_ITEMS } from "@/lib/constants/home"
+import { Star, IndiaFlagStripe } from "@/components/icons";
+import { TRUST_ITEMS } from "@/lib/constants/home";
 
 function TrustStrip() {
   return (
@@ -12,12 +12,10 @@ function TrustStrip() {
                 key={item.id}
                 className="inline-flex items-center gap-2 max-mobile:flex-col max-mobile:items-center max-mobile:text-center max-mobile:gap-0.5"
               >
-                <strong className="font-extrabold text-ink">
-                  {item.emphasis}
-                </strong>
+                <strong className="font-extrabold text-ink">{item.emphasis}</strong>
                 <span>{item.label}</span>
               </span>
-            )
+            );
           }
 
           if (item.kind === "rating") {
@@ -40,7 +38,7 @@ function TrustStrip() {
                 </span>
                 <span>{item.label}</span>
               </span>
-            )
+            );
           }
 
           // kind === "flag"
@@ -52,11 +50,11 @@ function TrustStrip() {
               <IndiaFlagStripe aria-hidden="true" className="rounded-sm" />
               {item.label}
             </span>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
 
-export { TrustStrip }
+export { TrustStrip };

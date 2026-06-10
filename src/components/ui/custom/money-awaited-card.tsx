@@ -1,13 +1,13 @@
-import type { AgingBucket, AgingTone } from "@/lib/types"
-import { Card } from "@/components/ui/custom/card"
+import type { AgingBucket, AgingTone } from "@/lib/types";
+import { Card } from "@/components/ui/custom/card";
 
 // ── Tone → fill class map ────────────────────────────────────────────────────
 
 const TONE_CLASS: Record<AgingTone, string> = {
-  paid:    "bg-paid",
+  paid: "bg-paid",
   pending: "bg-pending-bar",
   overdue: "bg-overdue",
-}
+};
 
 // ── Private sub-component ────────────────────────────────────────────────────
 
@@ -25,20 +25,14 @@ function AgingBar({ bucket }: { bucket: AgingBucket }) {
           style={{ width: `${bucket.percent}%` }}
         />
       </div>
-      <div className="tabular text-right text-body-sm font-bold text-ink">
-        {bucket.amount}
-      </div>
+      <div className="tabular text-right text-body-sm font-bold text-ink">{bucket.amount}</div>
     </div>
-  )
+  );
 }
 
 // ── Public component ─────────────────────────────────────────────────────────
 
-export function MoneyAwaitedCard({
-  buckets,
-}: {
-  buckets: ReadonlyArray<AgingBucket>
-}) {
+export function MoneyAwaitedCard({ buckets }: { buckets: ReadonlyArray<AgingBucket> }) {
   return (
     <Card title="Money awaited · by age">
       <div className="flex flex-col gap-3 px-6 py-4">
@@ -47,5 +41,5 @@ export function MoneyAwaitedCard({
         ))}
       </div>
     </Card>
-  )
+  );
 }

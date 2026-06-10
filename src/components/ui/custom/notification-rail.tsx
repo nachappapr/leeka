@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
-import type { NotificationTone } from "@/lib/types/notifications"
+import { cn } from "@/lib/utils";
+import type { NotificationTone } from "@/lib/types/notifications";
 
 const TONE_BG: Record<NotificationTone, string> = {
   paid: "bg-paid",
@@ -11,11 +11,11 @@ const TONE_BG: Record<NotificationTone, string> = {
   customer: "bg-coral",
   draft: "bg-draft",
   sent: "bg-pending",
-}
+};
 
 interface NotificationRailProps {
-  tone: NotificationTone
-  className?: string
+  tone: NotificationTone;
+  className?: string;
 }
 
 /**
@@ -33,10 +33,10 @@ function NotificationRail({ tone, className }: NotificationRailProps) {
         "w-1 h-full min-h-10",
         "rounded-full",
         TONE_BG[tone],
-        className
+        className,
       )}
     />
-  )
+  );
 }
 
-export { NotificationRail }
+export { NotificationRail };

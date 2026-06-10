@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
 // Justified "use client": fires brandToast (client-only Sonner call).
 
-import { Trash2 } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { brandToast } from "@/components/ui/custom/brand-toast"
+import { Trash2 } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { brandToast } from "@/components/ui/custom/brand-toast";
 
 interface InvoiceFormDiscardButtonProps {
-  onConfirm: () => void
+  onConfirm: () => void;
   /** Button label — "Discard" (create) or "Discard changes" (edit). */
-  label?: string
+  label?: string;
 }
 
 export function InvoiceFormDiscardButton({
@@ -35,7 +35,7 @@ export function InvoiceFormDiscardButton({
           // No onClick — toast auto-dismisses on any action button press.
         },
       ],
-    })
+    });
   }
 
   return (
@@ -43,5 +43,5 @@ export function InvoiceFormDiscardButton({
       <Trash2 aria-hidden />
       {label}
     </PillButton>
-  )
+  );
 }

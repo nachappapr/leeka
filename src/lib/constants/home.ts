@@ -1,13 +1,7 @@
-import {
-  WhatsApp,
-  CheckCircle2,
-  Bell,
-  Receipt,
-  Monitor,
-} from "@/components/icons"
-import { StepIlSearch } from "@/components/home/step-il-search"
-import { StepIlItems } from "@/components/home/step-il-items"
-import { StepIlSend } from "@/components/home/step-il-send"
+import { WhatsApp, CheckCircle2, Bell, Receipt, Monitor } from "@/components/icons";
+import { StepIlSearch } from "@/components/home/step-il-search";
+import { StepIlItems } from "@/components/home/step-il-items";
+import { StepIlSend } from "@/components/home/step-il-send";
 
 import type {
   Feature,
@@ -19,7 +13,7 @@ import type {
   FooterLang,
   TrustItem,
   HeroMetaItem,
-} from "@/lib/types/home"
+} from "@/lib/types/home";
 
 export const FEATURES: Feature[] = [
   {
@@ -33,7 +27,7 @@ export const FEATURES: Feature[] = [
   {
     id: "mark-as-paid",
     icon: CheckCircle2,
-    title: "One-click \"Mark as paid\"",
+    title: 'One-click "Mark as paid"',
     description:
       "Cash, UPI, bank or other — record any payment method in two clicks. ArthaPatra keeps the ledger straight.",
   },
@@ -58,7 +52,7 @@ export const FEATURES: Feature[] = [
     description:
       "Nothing to install. Sign in on your phone in the morning, switch to your laptop in the afternoon — everything stays in sync. Works on Chrome, Safari, Edge and even older Android browsers.",
   },
-]
+];
 
 export const STEPS: Step[] = [
   {
@@ -85,7 +79,7 @@ export const STEPS: Step[] = [
       "One tap. Your customer gets a professional invoice they can pay right away. You get a notification when it’s viewed.",
     illustration: StepIlSend,
   },
-]
+];
 
 export const TESTIMONIALS: Testimonial[] = [
   {
@@ -118,7 +112,7 @@ export const TESTIMONIALS: Testimonial[] = [
     rating: 5,
     initials: "IA",
   },
-]
+];
 
 export const PRICING_PLANS: PricingPlan[] = [
   {
@@ -155,7 +149,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     ctaHref: "/auth?mode=signup",
     highlighted: true,
   },
-]
+];
 
 export const FAQS: Faq[] = [
   {
@@ -194,7 +188,7 @@ export const FAQS: Faq[] = [
     answer:
       "Your data is yours. We store it encrypted, on servers in India. We never sell it, never share it with advertisers. You can export everything (or delete everything) anytime from Settings.",
   },
-]
+];
 
 export const FOOTER_NAV: FooterNavGroup[] = [
   {
@@ -227,7 +221,7 @@ export const FOOTER_NAV: FooterNavGroup[] = [
       { label: "Privacy", href: "#" },
     ],
   },
-]
+];
 
 export const FOOTER_LANGS: FooterLang[] = [
   { code: "en", label: "English" },
@@ -236,7 +230,7 @@ export const FOOTER_LANGS: FooterLang[] = [
   { code: "bn", label: "বাংলা" },
   { code: "gu", label: "ગુજરાતી" },
   { code: "mr", label: "मराठी" },
-]
+];
 
 export const TRUST_ITEMS: TrustItem[] = [
   {
@@ -263,13 +257,13 @@ export const TRUST_ITEMS: TrustItem[] = [
     kind: "flag",
     label: "Made in India",
   },
-]
+];
 
 export const HERO_META: HeroMetaItem[] = [
   { id: "no-card", label: "No install, no credit card" },
   { id: "cross-device", label: "Works on phone & desktop" },
   { id: "gst", label: "GST-ready" },
-]
+];
 
 export const CTA_BAND = {
   headlineLine1: "Stop chasing payments.",
@@ -277,4 +271,4 @@ export const CTA_BAND = {
   body: "Join 10,400+ vendors who get paid faster, on WhatsApp, with ArthaPatra.",
   primaryCta: { label: "Sign up free", href: "/auth?mode=signup" },
   secondaryCta: { label: "Log in", href: "/auth" },
-} as const
+} as const;

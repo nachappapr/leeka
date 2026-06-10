@@ -12,7 +12,7 @@ function ShowcaseOutstandingCard() {
         <span lang="hi">4 बकाया</span>
       </div>
     </div>
-  )
+  );
 }
 
-export { ShowcaseOutstandingCard }
+export { ShowcaseOutstandingCard };

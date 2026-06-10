@@ -1,24 +1,22 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
+import { useRef, useState } from "react";
 
-import { MoreHorizontal } from "@/components/icons"
-import { InvoiceListActionsSheet } from "@/components/invoices/invoice-list-actions-sheet"
-import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
-import { cn } from "@/lib/utils"
+import { MoreHorizontal } from "@/components/icons";
+import { InvoiceListActionsSheet } from "@/components/invoices/invoice-list-actions-sheet";
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
+import { cn } from "@/lib/utils";
 
-export type ActionsView = "menu" | "sort" | "filter" | null
+export type ActionsView = "menu" | "sort" | "filter" | null;
 
 export function InvoiceListActionsTrigger() {
-  const [view, setView] = useState<ActionsView>(null)
-  const { statuses } = useInvoiceListActions()
+  const [view, setView] = useState<ActionsView>(null);
+  const { statuses } = useInvoiceListActions();
 
-  const triggerRef = useRef<HTMLButtonElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const filtersActive = statuses.length > 0
-  const ariaLabel = filtersActive
-    ? "More actions, filters active"
-    : "More actions"
+  const filtersActive = statuses.length > 0;
+  const ariaLabel = filtersActive ? "More actions, filters active" : "More actions";
 
   return (
     <>
@@ -46,11 +44,7 @@ export function InvoiceListActionsTrigger() {
         )}
       </button>
 
-      <InvoiceListActionsSheet
-        view={view}
-        onViewChange={setView}
-        triggerRef={triggerRef}
-      />
+      <InvoiceListActionsSheet view={view} onViewChange={setView} triggerRef={triggerRef} />
     </>
-  )
+  );
 }

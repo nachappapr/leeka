@@ -1,13 +1,4 @@
-import {
-  Asterisk,
-  Bell,
-  FileText,
-  Home,
-  Info,
-  Plus,
-  Settings,
-  Users,
-} from "@/components/icons";
+import { Asterisk, Bell, FileText, Home, Info, Plus, Settings, Users } from "@/components/icons";
 
 export const NAV_MAIN = [
   {

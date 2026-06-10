@@ -1,49 +1,47 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Bell } from "@/components/icons"
-import { Card } from "@/components/ui/custom/card"
-import { FilterChips } from "@/components/ui/custom/filter-chips"
-import { NotificationGroup } from "@/components/ui/custom/notification-group"
+import { useState } from "react";
+import { Bell } from "@/components/icons";
+import { Card } from "@/components/ui/custom/card";
+import { FilterChips } from "@/components/ui/custom/filter-chips";
+import { NotificationGroup } from "@/components/ui/custom/notification-group";
 import {
   ACTIVITY_FILTER_LABELS,
   ACTIVITY_FILTER_TONES,
   ACTIVITY_GROUP_LABELS,
   ACTIVITY_GROUP_ORDER,
-} from "@/lib/constants/activity"
-import type { ActivityFilterId } from "@/lib/types/activity"
-import type { NotificationItemData } from "@/lib/types/notifications"
+} from "@/lib/constants/activity";
+import type { ActivityFilterId } from "@/lib/types/activity";
+import type { NotificationItemData } from "@/lib/types/notifications";
 
 interface ActivityFeedProps {
-  items: ReadonlyArray<NotificationItemData>
+  items: ReadonlyArray<NotificationItemData>;
 }
 
 export function ActivityFeed({ items }: ActivityFeedProps) {
-  const [activeFilter, setActiveFilter] = useState<ActivityFilterId>("all")
+  const [activeFilter, setActiveFilter] = useState<ActivityFilterId>("all");
 
   const filterItems = (id: ActivityFilterId) =>
-    id === "all"
-      ? items
-      : items.filter((n) => ACTIVITY_FILTER_TONES[id].includes(n.tone))
+    id === "all" ? items : items.filter((n) => ACTIVITY_FILTER_TONES[id].includes(n.tone));
 
-  const filtered = filterItems(activeFilter)
+  const filtered = filterItems(activeFilter);
 
   const groups = ACTIVITY_GROUP_ORDER.map((g) => ({
     id: g,
     label: ACTIVITY_GROUP_LABELS[g],
     items: filtered.filter((n) => n.group === g),
-  })).filter((g) => g.items.length > 0)
+  })).filter((g) => g.items.length > 0);
 
   const liveText =
     groups.length === 0
       ? "No activity for this filter."
-      : `Showing ${filtered.length} activity item${filtered.length !== 1 ? "s" : ""}.`
+      : `Showing ${filtered.length} activity item${filtered.length !== 1 ? "s" : ""}.`;
 
   const chipItems = (Object.keys(ACTIVITY_FILTER_TONES) as ActivityFilterId[]).map((id) => ({
     id,
     label: ACTIVITY_FILTER_LABELS[id],
     count: filterItems(id).length,
-  }))
+  }));
 
   return (
     <Card>
@@ -64,10 +62,7 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
       />
 
       {groups.length === 0 ? (
-        <div
-          className="flex flex-col items-center gap-2 px-6 py-14 text-center"
-          role="status"
-        >
+        <div className="flex flex-col items-center gap-2 px-6 py-14 text-center" role="status">
           <div className="flex size-14 items-center justify-center rounded-full bg-surface-2 text-ink-3">
             <Bell className="size-6" aria-hidden />
           </div>
@@ -84,5 +79,5 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
         </div>
       )}
     </Card>
-  )
+  );
 }

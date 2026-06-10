@@ -1,15 +1,15 @@
-import * as React from "react"
+import * as React from "react";
 
-import { Eye, Plus, WhatsApp } from "@/components/icons"
-import { Card } from "@/components/ui/custom/card"
+import { Eye, Plus, WhatsApp } from "@/components/icons";
+import { Card } from "@/components/ui/custom/card";
 
 interface ActivityEntry {
-  icon: React.ReactNode
-  iconBg: string
-  iconColor: string
-  title: string
-  meta: string
-  isoDateTime: string
+  icon: React.ReactNode;
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  meta: string;
+  isoDateTime: string;
 }
 
 // Static activity timeline — replace with real data once the activity feed
@@ -39,7 +39,7 @@ const ENTRIES: ReadonlyArray<ActivityEntry> = [
     meta: "Today, 11:21 AM",
     isoDateTime: "2026-05-26T11:21",
   },
-]
+];
 
 function TimelineRow({ entry }: { entry: ActivityEntry }) {
   return (
@@ -56,7 +56,7 @@ function TimelineRow({ entry }: { entry: ActivityEntry }) {
         </time>
       </div>
     </li>
-  )
+  );
 }
 
 export function InvoiceActivityCard() {
@@ -68,5 +68,5 @@ export function InvoiceActivityCard() {
         ))}
       </ol>
     </Card>
-  )
+  );
 }

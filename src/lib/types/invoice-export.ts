@@ -1,6 +1,6 @@
 // Types for the Export Invoices modal feature.
 
-export type ExportFormat = "csv" | "pdf"
+export type ExportFormat = "csv" | "pdf";
 
 export type ExportDateRangeId =
   | "this-month"
@@ -8,18 +8,12 @@ export type ExportDateRangeId =
   | "this-quarter"
   | "fy"
   | "all"
-  | "custom"
+  | "custom";
 
-export type ExportStatusId =
-  | "all"
-  | "paid"
-  | "sent"
-  | "viewed"
-  | "overdue"
-  | "draft"
+export type ExportStatusId = "all" | "paid" | "sent" | "viewed" | "overdue" | "draft";
 
 export interface ExportColState {
-  items: boolean
-  tax: boolean
-  notes: boolean
+  items: boolean;
+  tax: boolean;
+  notes: boolean;
 }

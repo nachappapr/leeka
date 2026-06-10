@@ -1,3 +1,3 @@
-type AuthStep = "phone" | "otp" | "profile" | "done"
+type AuthStep = "phone" | "otp" | "profile" | "done";
 
-export type { AuthStep }
+export type { AuthStep };

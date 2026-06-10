@@ -68,31 +68,31 @@ export {
   ListFilter,
   Mail,
   Loader2,
-} from "lucide-react"
+} from "lucide-react";
 
 // Custom SVG icons — paths copied verbatim from design source
-export { WhatsApp } from "./whatsapp"
-export { GoogleIcon } from "./google-icon"
+export { WhatsApp } from "./whatsapp";
+export { GoogleIcon } from "./google-icon";
 
 // Lekka brand / illustration icons
-export { LekkaLogo } from "./lekka-logo"
-export { HeroUnderline } from "./hero-underline"
-export { StepIllustration1 } from "./step-illustration-1"
-export { StepIllustration2 } from "./step-illustration-2"
-export { StepIllustration3 } from "./step-illustration-3"
-export { IndiaFlagStripe } from "./india-flag-stripe"
+export { LekkaLogo } from "./lekka-logo";
+export { HeroUnderline } from "./hero-underline";
+export { StepIllustration1 } from "./step-illustration-1";
+export { StepIllustration2 } from "./step-illustration-2";
+export { StepIllustration3 } from "./step-illustration-3";
+export { IndiaFlagStripe } from "./india-flag-stripe";
 
 // Auth page icons
-export { SparklesIcon } from "./sparkles-icon"
-export { UtensilsCrossedIcon } from "./utensils-crossed-icon"
+export { SparklesIcon } from "./sparkles-icon";
+export { UtensilsCrossedIcon } from "./utensils-crossed-icon";
 
 // App chrome icons
-export { LogOut } from "./log-out"
+export { LogOut } from "./log-out";
 
 // Settings page icons
-export { ImageIcon } from "./image-icon"
-export { CameraIcon } from "./camera-icon"
+export { ImageIcon } from "./image-icon";
+export { CameraIcon } from "./camera-icon";
 
 // 404 page icons
-export { TornDoc } from "./torn-doc"
-export { LinkBroken } from "./link-broken"
+export { TornDoc } from "./torn-doc";
+export { LinkBroken } from "./link-broken";

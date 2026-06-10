@@ -19,9 +19,7 @@ function ShowcaseLaptopTotalsPane() {
 
       {/* Total row */}
       <div className="border-t border-border pt-3.5 flex justify-between items-baseline">
-        <div className="text-12 font-extrabold uppercase tracking-wide text-ink-3">
-          Total
-        </div>
+        <div className="text-12 font-extrabold uppercase tracking-wide text-ink-3">Total</div>
         <div className="tabular text-28 font-extrabold tracking-tight">₹4,725</div>
       </div>
 
@@ -35,7 +33,7 @@ function ShowcaseLaptopTotalsPane() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { ShowcaseLaptopTotalsPane }
+export { ShowcaseLaptopTotalsPane };

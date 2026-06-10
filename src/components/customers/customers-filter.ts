@@ -2,11 +2,7 @@ import { type FilterFn } from "@tanstack/react-table";
 
 import type { Customer } from "@/lib/types";
 
-export const customerFilter: FilterFn<Customer> = (
-  row,
-  _columnId,
-  filterValue: string,
-) => {
+export const customerFilter: FilterFn<Customer> = (row, _columnId, filterValue: string) => {
   const q = filterValue.toLowerCase();
   return (
     row.original.name.toLowerCase().includes(q) ||

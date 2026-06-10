@@ -1,8 +1,8 @@
-import { CameraIcon } from "@/components/icons"
-import { Card } from "@/components/ui/custom/card"
-import { FieldLabel } from "@/components/ui/custom/field-label"
-import { InputField } from "@/components/ui/custom/input-field"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { CameraIcon } from "@/components/icons";
+import { Card } from "@/components/ui/custom/card";
+import { FieldLabel } from "@/components/ui/custom/field-label";
+import { InputField } from "@/components/ui/custom/input-field";
+import { PillButton } from "@/components/ui/custom/pill-button";
 
 export function BusinessSection() {
   return (
@@ -14,7 +14,9 @@ export function BusinessSection() {
             aria-label="Business logo placeholder"
             role="img"
           >
-            <span className="text-money-sm font-extrabold" aria-hidden>RK</span>
+            <span className="text-money-sm font-extrabold" aria-hidden>
+              RK
+            </span>
           </div>
           <PillButton tone="outline" size="md">
             <CameraIcon size={16} aria-hidden />
@@ -62,20 +64,19 @@ export function BusinessSection() {
           </div>
           <div>
             <FieldLabel htmlFor="biz-upi">UPI ID</FieldLabel>
-            <InputField
-              id="biz-upi"
-              defaultValue="rajkumar@oksbi"
-              autoComplete="off"
-              size="web"
-            />
+            <InputField id="biz-upi" defaultValue="rajkumar@oksbi" autoComplete="off" size="web" />
           </div>
         </div>
 
         <div className="mt-5 flex items-center justify-end gap-2.5">
-          <PillButton tone="ghost" size="md" type="button">Cancel</PillButton>
-          <PillButton tone="primary" size="md" type="button">Save changes</PillButton>
+          <PillButton tone="ghost" size="md" type="button">
+            Cancel
+          </PillButton>
+          <PillButton tone="primary" size="md" type="button">
+            Save changes
+          </PillButton>
         </div>
       </div>
     </Card>
-  )
+  );
 }

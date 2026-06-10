@@ -1,18 +1,10 @@
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/primitives/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/primitives/card";
 import { Separator } from "@/components/ui/primitives/separator";
 import { FieldLabel } from "@/components/ui/custom/field-label";
 import { InputField } from "@/components/ui/custom/input-field";
 import { PillButton } from "@/components/ui/custom/pill-button";
-import {
-  StatusPill,
-  type StatusPillStatus,
-} from "@/components/ui/custom/status-pill";
+import { StatusPill, type StatusPillStatus } from "@/components/ui/custom/status-pill";
 
 const STATUSES: StatusPillStatus[] = [
   "draft",
@@ -87,9 +79,7 @@ function Section({
 }) {
   return (
     <section id={id} className="mb-14">
-      <h2 className="mb-1 text-2xl font-extrabold tracking-tight text-ink">
-        {title}
-      </h2>
+      <h2 className="mb-1 text-2xl font-extrabold tracking-tight text-ink">{title}</h2>
       {intro ? (
         <p className="mb-6 max-w-2xl text-body text-ink-2">{intro}</p>
       ) : (
@@ -104,16 +94,11 @@ function ColorSwatches() {
   return (
     <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4">
       {SWATCHES.map((s) => (
-        <div
-          key={s.token}
-          className="overflow-hidden rounded-lg bg-card shadow-card"
-        >
+        <div key={s.token} className="overflow-hidden rounded-lg bg-card shadow-card">
           <div className={`h-20 ${s.cls}`} aria-hidden />
           <div className="px-3.5 py-3">
             <div className="text-body-sm font-extrabold text-ink">{s.label}</div>
-            <div className="mt-0.5 font-mono text-label text-ink-3">
-              {s.token}
-            </div>
+            <div className="mt-0.5 font-mono text-label text-ink-3">{s.token}</div>
             <div className="mt-0.5 font-mono text-label text-ink-2">{s.hex}</div>
           </div>
         </div>
@@ -186,11 +171,7 @@ function InputShowcase() {
       </div>
       <div>
         <FieldLabel htmlFor="gstin">GSTIN · optional</FieldLabel>
-        <InputField
-          id="gstin"
-          size="mobile"
-          placeholder="22AAAAA0000A1Z5"
-        />
+        <InputField id="gstin" size="mobile" placeholder="22AAAAA0000A1Z5" />
       </div>
     </div>
   );
@@ -242,9 +223,7 @@ function AvatarShowcase() {
         <AvatarFallback>PM</AvatarFallback>
       </Avatar>
       <Avatar size="lg" className="bg-primary">
-        <AvatarFallback className="bg-primary text-primary-foreground">
-          B
-        </AvatarFallback>
+        <AvatarFallback className="bg-primary text-primary-foreground">B</AvatarFallback>
       </Avatar>
     </div>
   );
@@ -255,21 +234,15 @@ function TypographyShowcase() {
     <div className="rounded-xl bg-card p-7 shadow-card">
       <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
         <div className="text-label text-ink-3">
-          <div className="mb-1 text-body-sm font-extrabold text-ink">
-            Display · money
-          </div>
+          <div className="mb-1 text-body-sm font-extrabold text-ink">Display · money</div>
           <div>Plus Jakarta · 800</div>
           <div className="font-mono">48 / 1 · tnum lnum</div>
         </div>
-        <div className="tabular text-h1 font-extrabold tracking-tight text-primary">
-          ₹68,200
-        </div>
+        <div className="tabular text-h1 font-extrabold tracking-tight text-primary">₹68,200</div>
       </div>
       <div className="grid items-baseline gap-6 border-b border-line py-5 md:grid-cols-[200px_1fr]">
         <div className="text-label text-ink-3">
-          <div className="mb-1 text-body-sm font-extrabold text-ink">
-            Heading · h1
-          </div>
+          <div className="mb-1 text-body-sm font-extrabold text-ink">Heading · h1</div>
           <div>Plus Jakarta · 800</div>
           <div className="font-mono">28 / 1.1</div>
         </div>
@@ -292,9 +265,7 @@ function TypographyShowcase() {
           <div className="mb-1 text-body-sm font-extrabold text-ink">Devanagari</div>
           <div>Noto Sans Devanagari · 700</div>
         </div>
-        <div className="text-2xl font-bold text-ink">
-          नमस्ते, राज · कुल बकाया ₹26,400
-        </div>
+        <div className="text-2xl font-bold text-ink">नमस्ते, राज · कुल बकाया ₹26,400</div>
       </div>
     </div>
   );
@@ -311,9 +282,8 @@ export function DesignSystemContainer() {
           Lekka — a warm, chat-app-simple invoicing tool.
         </h1>
         <p className="mt-4 max-w-2xl text-title-sm text-ink-2">
-          Warm coral on cream. Soft, friendly, the opposite of cold corporate
-          fintech. This page exercises every token and reusable primitive
-          currently in the design system.
+          Warm coral on cream. Soft, friendly, the opposite of cold corporate fintech. This page
+          exercises every token and reusable primitive currently in the design system.
         </p>
       </header>
 

@@ -1,13 +1,13 @@
-import { cn } from "@/lib/utils"
-import type { AuthStep } from "@/lib/types/auth"
+import { cn } from "@/lib/utils";
+import type { AuthStep } from "@/lib/types/auth";
 
 interface AuthProgressDotsProps {
-  step: AuthStep
+  step: AuthStep;
 }
 
 function AuthProgressDots({ step }: AuthProgressDotsProps) {
-  const steps: AuthStep[] = ["phone", "otp", "profile"]
-  const active = steps.indexOf(step)
+  const steps: AuthStep[] = ["phone", "otp", "profile"];
+  const active = steps.indexOf(step);
 
   return (
     <div className="mb-6 flex items-center gap-2" aria-label={`Step ${active + 1} of 3`}>
@@ -25,11 +25,9 @@ function AuthProgressDots({ step }: AuthProgressDotsProps) {
           aria-hidden="true"
         />
       ))}
-      <span className="ml-1 text-label font-bold text-ink-3">
-        Step {active + 1} of 3
-      </span>
+      <span className="ml-1 text-label font-bold text-ink-3">Step {active + 1} of 3</span>
     </div>
-  )
+  );
 }
 
-export { AuthProgressDots }
+export { AuthProgressDots };

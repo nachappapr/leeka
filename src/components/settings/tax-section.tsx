@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Card } from "@/components/ui/custom/card"
-import { FieldLabel } from "@/components/ui/custom/field-label"
-import { InputField } from "@/components/ui/custom/input-field"
-import { ToggleSwitch } from "@/components/ui/custom/toggle-switch"
-import { SETTINGS_TAX_TOGGLES } from "@/lib/constants/settings"
+import { Card } from "@/components/ui/custom/card";
+import { FieldLabel } from "@/components/ui/custom/field-label";
+import { InputField } from "@/components/ui/custom/input-field";
+import { ToggleSwitch } from "@/components/ui/custom/toggle-switch";
+import { SETTINGS_TAX_TOGGLES } from "@/lib/constants/settings";
 
 export function TaxSection() {
-  const [toggles, setToggles] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(SETTINGS_TAX_TOGGLES.map((t) => [t.id, t.defaultOn])),
-  )
+  const [toggles, setToggles] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(SETTINGS_TAX_TOGGLES.map((t) => [t.id, t.defaultOn])),
+  );
 
   function setToggle(id: string, value: boolean) {
-    setToggles((prev) => ({ ...prev, [id]: value }))
+    setToggles((prev) => ({ ...prev, [id]: value }));
   }
 
   return (
@@ -44,5 +44,5 @@ export function TaxSection() {
         </div>
       </div>
     </Card>
-  )
+  );
 }

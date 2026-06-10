@@ -1,18 +1,11 @@
 import { cookies } from "next/headers";
 
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/primitives/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/primitives/sidebar";
 import { AppSidebar } from "@/components/ui/custom/sidebar";
 import { EmptyStateProvider } from "@/components/ui/custom/empty-state-provider";
 import { EmptyStateToggle } from "@/components/ui/custom/empty-state-toggle";
 
-export default async function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
@@ -21,7 +14,9 @@ export default async function AppLayout({
       <SidebarProvider
         defaultOpen={defaultOpen}
         // eslint-disable-next-line no-restricted-syntax
-        style={{ "--sidebar-width": "15rem", "--sidebar-width-icon": "4.75rem" } as React.CSSProperties}
+        style={
+          { "--sidebar-width": "15rem", "--sidebar-width-icon": "4.75rem" } as React.CSSProperties
+        }
         className="bg-background"
       >
         <a

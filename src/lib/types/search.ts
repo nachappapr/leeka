@@ -1,7 +1,7 @@
 export type RecentSearchEntry = {
-  label: string
-  type: "invoice" | "customer"
-  id: string
-}
+  label: string;
+  type: "invoice" | "customer";
+  id: string;
+};
 
-export type SearchScope = "all" | "invoices" | "customers"
+export type SearchScope = "all" | "invoices" | "customers";

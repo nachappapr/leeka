@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from "react";
 
 // India flag stripe — rendered as a small SVG component.
 // Design pattern from Bahi Home.html (~lines 977, 1471):
@@ -19,5 +19,5 @@ export function IndiaFlagStripe(props: React.SVGProps<SVGSVGElement>) {
       <rect x="0" y="4" width="18" height="4" fill="#ffffff" />
       <rect x="0" y="8" width="18" height="4" fill="#138808" rx="2" />
     </svg>
-  )
+  );
 }

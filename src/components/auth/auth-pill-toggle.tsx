@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-type AuthMode = "login" | "signup"
+type AuthMode = "login" | "signup";
 
 interface AuthPillToggleProps {
-  mode: AuthMode
-  onModeChange?: (mode: AuthMode) => void
+  mode: AuthMode;
+  onModeChange?: (mode: AuthMode) => void;
 }
 
 function AuthPillToggle({ mode, onModeChange }: AuthPillToggleProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   function handleSelect(selected: AuthMode) {
-    if (selected === mode) return
+    if (selected === mode) return;
     if (onModeChange) {
-      onModeChange(selected)
+      onModeChange(selected);
     } else {
       if (selected === "signup") {
-        router.replace("/auth?mode=signup")
+        router.replace("/auth?mode=signup");
       } else {
-        router.replace("/auth")
+        router.replace("/auth");
       }
     }
   }
@@ -62,8 +62,8 @@ function AuthPillToggle({ mode, onModeChange }: AuthPillToggleProps) {
         Create account
       </button>
     </div>
-  )
+  );
 }
 
-export { AuthPillToggle }
-export type { AuthMode }
+export { AuthPillToggle };
+export type { AuthMode };

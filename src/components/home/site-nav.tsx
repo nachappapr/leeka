@@ -3,12 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 
-import {
-  LekkaLogo,
-  Menu,
-  Plus,
-  Globe,
-} from "@/components/icons";
+import { LekkaLogo, Menu, Plus, Globe } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { MobileDrawer } from "@/components/home/mobile-drawer";
 
@@ -76,11 +71,7 @@ function SiteNav() {
 
             {/* Log in — hidden on mobile */}
             <div className="max-mobile:hidden">
-              <PillButton
-                tone="outline"
-                size="md"
-                render={<Link href="/auth" />}
-              >
+              <PillButton tone="outline" size="md" render={<Link href="/auth" />}>
                 Log in
               </PillButton>
             </div>
@@ -93,9 +84,7 @@ function SiteNav() {
               className="max-mobile:size-10 max-mobile:p-0"
             >
               <Plus className="size-5 min-mobile:hidden" aria-hidden="true" />
-              <span className="sr-only min-mobile:not-sr-only">
-                Get started free
-              </span>
+              <span className="sr-only min-mobile:not-sr-only">Get started free</span>
             </PillButton>
 
             {/* Mobile menu button — only on mobile */}

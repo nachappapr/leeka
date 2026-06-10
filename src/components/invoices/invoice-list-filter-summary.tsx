@@ -1,30 +1,28 @@
-"use client"
+"use client";
 
-import { ArrowUpDown, XIcon } from "@/components/icons"
-import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
-import { INVOICE_STATUS_OPTIONS, STATUS_DOT_CLASS } from "@/lib/constants/invoices"
-import { cn } from "@/lib/utils"
+import { ArrowUpDown, XIcon } from "@/components/icons";
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
+import { INVOICE_STATUS_OPTIONS, STATUS_DOT_CLASS } from "@/lib/constants/invoices";
+import { cn } from "@/lib/utils";
 
 // Fix #12: chip border border-line → border-ink-3
 const CHIP_CLASS =
-  "inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-surface-2 border border-ink-3 text-caption font-bold text-ink-2"
+  "inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-surface-2 border border-ink-3 text-caption font-bold text-ink-2";
 
 export function InvoiceListFilterSummary() {
-  const { sort, statuses, setSort, setStatuses, sortLabel } = useInvoiceListActions()
+  const { sort, statuses, setSort, setStatuses, sortLabel } = useInvoiceListActions();
 
-  const hasActiveSort = sort !== "newest"
-  const hasActiveFilters = statuses.length > 0
+  const hasActiveSort = sort !== "newest";
+  const hasActiveFilters = statuses.length > 0;
 
-  if (!hasActiveSort && !hasActiveFilters) return null
+  if (!hasActiveSort && !hasActiveFilters) return null;
 
   function removeStatus(status: string) {
-    setStatuses(
-      statuses.filter((s) => s !== status) as Parameters<typeof setStatuses>[0],
-    )
+    setStatuses(statuses.filter((s) => s !== status) as Parameters<typeof setStatuses>[0]);
   }
 
   function getStatusLabel(statusId: string): string {
-    return INVOICE_STATUS_OPTIONS.find((s) => s.id === statusId)?.label ?? statusId
+    return INVOICE_STATUS_OPTIONS.find((s) => s.id === statusId)?.label ?? statusId;
   }
 
   return (
@@ -61,8 +59,8 @@ export function InvoiceListFilterSummary() {
       <button
         type="button"
         onClick={() => {
-          setSort("newest")
-          setStatuses([])
+          setSort("newest");
+          setStatuses([]);
         }}
         aria-label="Clear all filters and sort"
         className="inline-flex items-center h-7 px-3 rounded-full text-caption font-bold text-coral-ink transition-colors hover:bg-coral-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press"
@@ -70,5 +68,5 @@ export function InvoiceListFilterSummary() {
         Clear
       </button>
     </div>
-  )
+  );
 }

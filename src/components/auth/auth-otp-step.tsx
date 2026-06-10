@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { padTime } from "@/lib/utils/auth-phone"
-import { Info, ArrowRight } from "@/components/icons"
-import { OtpInput } from "@/components/auth/otp-input"
-import { AuthProgressDots } from "@/components/auth/auth-progress-dots"
-import type { AuthMode } from "@/components/auth/auth-pill-toggle"
+import { padTime } from "@/lib/utils/auth-phone";
+import { Info, ArrowRight } from "@/components/icons";
+import { OtpInput } from "@/components/auth/otp-input";
+import { AuthProgressDots } from "@/components/auth/auth-progress-dots";
+import type { AuthMode } from "@/components/auth/auth-pill-toggle";
 
 interface AuthOtpStepProps {
-  mode: AuthMode
-  phone: string
-  otp: string
-  resend: number
-  onOtpChange: (v: string) => void
-  onChangeNumber: () => void
-  onResend: () => void
-  onSubmit: () => void
+  mode: AuthMode;
+  phone: string;
+  otp: string;
+  resend: number;
+  onOtpChange: (v: string) => void;
+  onChangeNumber: () => void;
+  onResend: () => void;
+  onSubmit: () => void;
 }
 
 function AuthOtpStep({
@@ -27,7 +27,7 @@ function AuthOtpStep({
   onResend,
   onSubmit,
 }: AuthOtpStepProps) {
-  const isDisabled = otp.length < 6
+  const isDisabled = otp.length < 6;
 
   return (
     <div className="flex flex-col gap-0">
@@ -64,8 +64,7 @@ function AuthOtpStep({
       <p className="mt-4 text-center text-body-sm text-ink-3">
         {resend > 0 ? (
           <>
-            Resend in{" "}
-            <span className="font-bold text-ink">00:{padTime(resend)}</span>
+            Resend in <span className="font-bold text-ink">00:{padTime(resend)}</span>
           </>
         ) : (
           <button
@@ -96,7 +95,7 @@ function AuthOtpStep({
         Use a different number
       </button>
     </div>
-  )
+  );
 }
 
-export { AuthOtpStep }
+export { AuthOtpStep };

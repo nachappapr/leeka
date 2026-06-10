@@ -8,9 +8,7 @@ export function DashboardGreeting() {
         <h2 className="text-h2 font-black text-ink">
           <span lang="hi">Namaste</span>, Raj <span aria-hidden="true">👋</span>
         </h2>
-        <p className="mt-0.5 text-body-sm text-ink-2">
-          Here&apos;s how your shop is doing today.
-        </p>
+        <p className="mt-0.5 text-body-sm text-ink-2">Here&apos;s how your shop is doing today.</p>
       </div>
       <div className="flex shrink-0 items-center gap-3 max-mobile:hidden">
         <PillButton tone="outline">

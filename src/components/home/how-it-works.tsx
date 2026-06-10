@@ -1,12 +1,9 @@
-import { STEPS } from "@/lib/constants/home"
-import { StepCard } from "@/components/home/step-card"
+import { STEPS } from "@/lib/constants/home";
+import { StepCard } from "@/components/home/step-card";
 
 function HowItWorks() {
   return (
-    <section
-      id="how"
-      className="scroll-mt-20 py-22 max-tablet:py-16 max-mobile:py-12"
-    >
+    <section id="how" className="scroll-mt-20 py-22 max-tablet:py-16 max-mobile:py-12">
       <div className="mx-auto max-w-7xl px-8 max-mobile:px-5">
         {/* Section head */}
         <div className="mx-auto mb-14 max-w-180 text-center">
@@ -17,8 +14,7 @@ function HowItWorks() {
             Three clicks, you&apos;re done.
           </h2>
           <p className="mt-3.5 text-18 leading-snug text-ink-2 max-mobile:text-body">
-            Most invoices go out in under 60 seconds — even for first-time
-            users.
+            Most invoices go out in under 60 seconds — even for first-time users.
           </p>
         </div>
 
@@ -30,7 +26,7 @@ function HowItWorks() {
         </ol>
       </div>
     </section>
-  )
+  );
 }
 
-export { HowItWorks }
+export { HowItWorks };

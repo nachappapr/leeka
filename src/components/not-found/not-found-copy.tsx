@@ -1,8 +1,8 @@
-import Link from "next/link"
-import { Home, ArrowRight } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { FourOhFour } from "@/components/not-found/four-oh-four"
-import { HelpLinks } from "@/components/not-found/help-links"
+import Link from "next/link";
+import { Home, ArrowRight } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { FourOhFour } from "@/components/not-found/four-oh-four";
+import { HelpLinks } from "@/components/not-found/help-links";
 
 function NotFoundCopy() {
   return (
@@ -22,25 +22,16 @@ function NotFoundCopy() {
       </h1>
 
       <p className="mt-4.5 text-lead font-medium text-ink-2 max-w-115">
-        The link you followed is missing, renamed, or never existed — a bit like
-        an invoice filed under the wrong customer. Your bills and payments are
-        safe and sound back on the dashboard.
+        The link you followed is missing, renamed, or never existed — a bit like an invoice filed
+        under the wrong customer. Your bills and payments are safe and sound back on the dashboard.
       </p>
 
       <div className="mt-8 flex gap-3 items-center flex-wrap max-mobile:flex-col max-mobile:items-stretch">
-        <PillButton
-          tone="primary"
-          size="lg"
-          render={<Link href="/" />}
-        >
+        <PillButton tone="primary" size="lg" render={<Link href="/" />}>
           <Home className="size-5" aria-hidden="true" />
           Take me home
         </PillButton>
-        <PillButton
-          tone="outline"
-          size="lg"
-          render={<Link href="/dashboard" />}
-        >
+        <PillButton tone="outline" size="lg" render={<Link href="/dashboard" />}>
           <ArrowRight className="size-5" aria-hidden="true" />
           Go to dashboard
         </PillButton>
@@ -48,7 +39,7 @@ function NotFoundCopy() {
 
       <HelpLinks />
     </div>
-  )
+  );
 }
 
-export { NotFoundCopy }
+export { NotFoundCopy };

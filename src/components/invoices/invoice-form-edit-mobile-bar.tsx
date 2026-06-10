@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
 // Justified "use client": owns moreOpen state + moreRef for focus-restore.
 
-import type React from "react"
-import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import type React from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { ChevronLeft, ChevronRight, Edit, MoreHorizontal, Trash2 } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import type { Invoice } from "@/lib/types"
+import { ChevronLeft, ChevronRight, Edit, MoreHorizontal, Trash2 } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import type { Invoice } from "@/lib/types";
 
-import { fireDraftSavedToast } from "./invoice-form-save-draft-button"
-import type { InvoiceFormSheetItem } from "./invoice-form-mobile-sheet"
-import { InvoiceFormMobileSheet } from "./invoice-form-mobile-sheet"
+import { fireDraftSavedToast } from "./invoice-form-save-draft-button";
+import type { InvoiceFormSheetItem } from "./invoice-form-mobile-sheet";
+import { InvoiceFormMobileSheet } from "./invoice-form-mobile-sheet";
 
 interface InvoiceFormEditMobileBarProps {
-  canPreview: boolean
-  previewDisabledMsg?: string
-  onPreview: () => void
-  onDiscard: () => void
+  canPreview: boolean;
+  previewDisabledMsg?: string;
+  onPreview: () => void;
+  onDiscard: () => void;
   /** Fires the delete confirm toast (edit mode only — omit in create mode). */
-  onDelete?: () => void
-  invoice: Invoice
+  onDelete?: () => void;
+  invoice: Invoice;
   /**
    * Ref to the "Preview invoice" CTA so the parent can restore focus to it
    * when the user returns from the review view (WCAG 2.4.3 focus management).
    */
-  buttonRef?: React.RefObject<HTMLButtonElement | null>
+  buttonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 // Sticky mobile action bar shown while the user is editing an invoice (before
@@ -40,25 +40,25 @@ export function InvoiceFormEditMobileBar({
   invoice,
   buttonRef,
 }: InvoiceFormEditMobileBarProps) {
-  const router = useRouter()
-  const [moreOpen, setMoreOpen] = useState(false)
-  const moreRef = useRef<HTMLButtonElement>(null)
+  const router = useRouter();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLButtonElement>(null);
 
   const sheetItems: InvoiceFormSheetItem[] = [
     {
       label: "Save as draft",
       icon: <Edit className="size-4.5" aria-hidden />,
       onClick: () => {
-        setMoreOpen(false)
-        fireDraftSavedToast(invoice, () => router.push("/invoices"))
+        setMoreOpen(false);
+        fireDraftSavedToast(invoice, () => router.push("/invoices"));
       },
     },
     {
       label: "Discard & go back",
       icon: <ChevronLeft className="size-4.5" aria-hidden />,
       onClick: () => {
-        setMoreOpen(false)
-        onDiscard()
+        setMoreOpen(false);
+        onDiscard();
       },
     },
     ...(onDelete
@@ -68,13 +68,13 @@ export function InvoiceFormEditMobileBar({
             icon: <Trash2 className="size-4.5" aria-hidden />,
             danger: true,
             onClick: () => {
-              setMoreOpen(false)
-              onDelete()
+              setMoreOpen(false);
+              onDelete();
             },
           } satisfies InvoiceFormSheetItem,
         ]
       : []),
-  ]
+  ];
 
   return (
     <>
@@ -99,12 +99,10 @@ export function InvoiceFormEditMobileBar({
             className="flex-1 rounded-lg! aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
             aria-disabled={!canPreview}
             aria-describedby={
-              !canPreview && previewDisabledMsg
-                ? "edit-bar-preview-hint"
-                : undefined
+              !canPreview && previewDisabledMsg ? "edit-bar-preview-hint" : undefined
             }
             onClick={() => {
-              if (canPreview) onPreview()
+              if (canPreview) onPreview();
             }}
           >
             Preview invoice
@@ -139,5 +137,5 @@ export function InvoiceFormEditMobileBar({
         triggerRef={moreRef}
       />
     </>
-  )
+  );
 }

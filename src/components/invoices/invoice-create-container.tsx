@@ -1,14 +1,14 @@
-import { Topbar } from "@/components/ui/custom/topbar"
+import { Topbar } from "@/components/ui/custom/topbar";
 
-import { InvoiceCreateForm } from "./invoice-create-form"
+import { InvoiceCreateForm } from "./invoice-create-form";
 
 export function InvoiceCreateContainer() {
-  const today = new Date()
-  const due = new Date(today)
-  due.setDate(due.getDate() + 30)
+  const today = new Date();
+  const due = new Date(today);
+  due.setDate(due.getDate() + 30);
 
-  const isoDate = today.toISOString().split("T")[0]
-  const dueIsoDate = due.toISOString().split("T")[0]
+  const isoDate = today.toISOString().split("T")[0];
+  const dueIsoDate = due.toISOString().split("T")[0];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -17,5 +17,5 @@ export function InvoiceCreateContainer() {
         <InvoiceCreateForm isoDate={isoDate} dueIsoDate={dueIsoDate} />
       </div>
     </div>
-  )
+  );
 }

@@ -1,18 +1,15 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { SETTINGS_SECTIONS } from "@/lib/constants/settings"
-import type { SettingsSectionId } from "@/lib/types/settings"
+import { cn } from "@/lib/utils";
+import { SETTINGS_SECTIONS } from "@/lib/constants/settings";
+import type { SettingsSectionId } from "@/lib/types/settings";
 
 interface SettingsSectionTabsProps {
-  activeSection: SettingsSectionId
-  onSectionChange: (id: SettingsSectionId) => void
+  activeSection: SettingsSectionId;
+  onSectionChange: (id: SettingsSectionId) => void;
 }
 
-export function SettingsSectionTabs({
-  activeSection,
-  onSectionChange,
-}: SettingsSectionTabsProps) {
+export function SettingsSectionTabs({ activeSection, onSectionChange }: SettingsSectionTabsProps) {
   return (
     <nav
       aria-label="Settings sections, mobile navigation"
@@ -20,8 +17,8 @@ export function SettingsSectionTabs({
     >
       <ul className="m-0 flex list-none gap-2 p-0">
         {SETTINGS_SECTIONS.map((s) => {
-          const Icon = s.icon
-          const isActive = s.id === activeSection
+          const Icon = s.icon;
+          const isActive = s.id === activeSection;
           return (
             <li key={s.id}>
               <button
@@ -40,9 +37,9 @@ export function SettingsSectionTabs({
                 {s.label}
               </button>
             </li>
-          )
+          );
         })}
       </ul>
     </nav>
-  )
+  );
 }

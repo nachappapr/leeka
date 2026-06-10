@@ -1,5 +1,5 @@
-import { NotFoundNav } from "@/components/not-found/not-found-nav"
-import { NotFoundStage } from "@/components/not-found/not-found-stage"
+import { NotFoundNav } from "@/components/not-found/not-found-nav";
+import { NotFoundStage } from "@/components/not-found/not-found-stage";
 
 function NotFoundContainer() {
   return (
@@ -7,7 +7,7 @@ function NotFoundContainer() {
       <NotFoundNav />
       <NotFoundStage />
     </div>
-  )
+  );
 }
 
-export { NotFoundContainer }
+export { NotFoundContainer };

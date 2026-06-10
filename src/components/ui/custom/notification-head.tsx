@@ -1,17 +1,13 @@
-import { NotificationCount } from "@/components/ui/custom/notification-count"
+import { NotificationCount } from "@/components/ui/custom/notification-count";
 
 interface NotificationHeadProps {
-  unreadCount: number
+  unreadCount: number;
   /** Mark-all-read button (rendered to the left of the close button). */
-  markAllSlot?: React.ReactNode
-  closeSlot: React.ReactNode
+  markAllSlot?: React.ReactNode;
+  closeSlot: React.ReactNode;
 }
 
-function NotificationHead({
-  unreadCount,
-  markAllSlot,
-  closeSlot,
-}: NotificationHeadProps) {
+function NotificationHead({ unreadCount, markAllSlot, closeSlot }: NotificationHeadProps) {
   return (
     <header className="flex items-center justify-between gap-3 border-b border-border pl-5 pr-2.5 pt-3.5 pb-3 shrink-0">
       <div className="flex items-center gap-2 min-w-0">
@@ -28,7 +24,7 @@ function NotificationHead({
         {closeSlot}
       </div>
     </header>
-  )
+  );
 }
 
-export { NotificationHead }
+export { NotificationHead };

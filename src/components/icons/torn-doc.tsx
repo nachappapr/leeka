@@ -1,9 +1,9 @@
-import type React from "react"
+import type React from "react";
 
 interface TornDocProps extends React.SVGProps<SVGSVGElement> {
-  strokeColor?: string
-  accentColor?: string
-  softColor?: string
+  strokeColor?: string;
+  accentColor?: string;
+  softColor?: string;
 }
 
 export function TornDoc({
@@ -13,12 +13,7 @@ export function TornDoc({
   ...props
 }: TornDocProps) {
   return (
-    <svg
-      viewBox="0 0 132 150"
-      fill="none"
-      aria-hidden="true"
-      {...props}
-    >
+    <svg viewBox="0 0 132 150" fill="none" aria-hidden="true" {...props}>
       <path
         d="M14 8 h104 a6 6 0 0 1 6 6 v52 l-9 4 l-9 -4 l-9 4 l-9 -4 l-9 4 l-9 -4 l-9 4 l-9 -4 l-9 4 l-9 -4 l-9 4 l-2 -1 v-58 a6 6 0 0 1 6 -6 z"
         fill="#fff"
@@ -42,5 +37,5 @@ export function TornDoc({
         <rect x="84" y="116" width="20" height="16" rx="4" fill={softColor} />
       </g>
     </svg>
-  )
+  );
 }

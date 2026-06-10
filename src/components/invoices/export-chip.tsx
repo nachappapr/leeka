@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface ExportChipProps {
-  active: boolean
-  onClick: () => void
-  children: ReactNode
-  ariaPressed?: boolean
-  "aria-expanded"?: boolean
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+  ariaPressed?: boolean;
+  "aria-expanded"?: boolean;
 }
 
 export function ExportChip({
@@ -36,5 +36,5 @@ export function ExportChip({
     >
       {children}
     </button>
-  )
+  );
 }

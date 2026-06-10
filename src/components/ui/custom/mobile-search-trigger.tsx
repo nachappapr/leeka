@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Search } from "@/components/icons"
-import { MobileSearchSheet } from "@/components/ui/custom/mobile-search-sheet"
+import { Search } from "@/components/icons";
+import { MobileSearchSheet } from "@/components/ui/custom/mobile-search-sheet";
 
 export function MobileSearchTrigger() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
     <>
       <button
@@ -19,5 +19,5 @@ export function MobileSearchTrigger() {
       </button>
       <MobileSearchSheet open={open} onClose={() => setOpen(false)} />
     </>
-  )
+  );
 }

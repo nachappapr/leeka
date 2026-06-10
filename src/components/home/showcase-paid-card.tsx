@@ -1,4 +1,4 @@
-import { Check } from "@/components/icons"
+import { Check } from "@/components/icons";
 
 function ShowcasePaidCard() {
   return (
@@ -12,14 +12,10 @@ function ShowcasePaidCard() {
       <div className="text-11 font-extrabold text-paid-ink uppercase tracking-wide">
         Paid · via UPI
       </div>
-      <div className="tabular text-22 font-extrabold text-paid tracking-tight mt-0.5">
-        + ₹4,725
-      </div>
-      <div className="text-11 text-ink-3 font-semibold mt-0.5">
-        From Sharma Sweets
-      </div>
+      <div className="tabular text-22 font-extrabold text-paid tracking-tight mt-0.5">+ ₹4,725</div>
+      <div className="text-11 text-ink-3 font-semibold mt-0.5">From Sharma Sweets</div>
     </div>
-  )
+  );
 }
 
-export { ShowcasePaidCard }
+export { ShowcasePaidCard };

@@ -1,4 +1,4 @@
-import type { ComponentType } from "react"
+import type { ComponentType } from "react";
 import {
   LayoutDashboard,
   FileText,
@@ -8,7 +8,7 @@ import {
   BarChart2,
   Settings,
   LekkaLogo,
-} from "@/components/icons"
+} from "@/components/icons";
 
 function SideItem({
   icon: Icon,
@@ -16,10 +16,10 @@ function SideItem({
   active,
   badge,
 }: {
-  icon: ComponentType<{ className?: string; strokeWidth?: number }>
-  label: string
-  active?: boolean
-  badge?: string
+  icon: ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  active?: boolean;
+  badge?: string;
 }) {
   return (
     <div
@@ -38,7 +38,7 @@ function SideItem({
         </span>
       )}
     </div>
-  )
+  );
 }
 
 function BrowserSidebar() {
@@ -70,7 +70,7 @@ function BrowserSidebar() {
       <div className="text-kicker text-ink-3 px-2 pt-2 pb-1 mt-1.5">Account</div>
       <SideItem icon={Settings} label="Settings" />
     </aside>
-  )
+  );
 }
 
-export { BrowserSidebar }
+export { BrowserSidebar };

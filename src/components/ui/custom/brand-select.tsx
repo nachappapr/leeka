@@ -62,11 +62,7 @@ export function BrandSelect({
 
       {/* Popup */}
       <Select.Portal>
-        <Select.Positioner
-          sideOffset={6}
-          align="start"
-          className="isolate z-90"
-        >
+        <Select.Positioner sideOffset={6} align="start" className="isolate z-90">
           <Select.Popup className="min-w-(--anchor-width) bg-surface border border-line-strong rounded-md shadow-float p-1.5 max-h-65 overflow-y-auto">
             <Select.List>
               {options.map((opt) => (
@@ -86,12 +82,7 @@ export function BrandSelect({
                     {opt.label}
                   </Select.ItemText>
                   <Select.ItemIndicator>
-                    <Check
-                      size={15}
-                      strokeWidth={2.6}
-                      className="text-coral-press"
-                      aria-hidden
-                    />
+                    <Check size={15} strokeWidth={2.6} className="text-coral-press" aria-hidden />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}

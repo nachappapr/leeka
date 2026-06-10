@@ -1,18 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Card } from "@/components/ui/custom/card"
-import { LanguageTile } from "@/components/settings/language-tile"
-import { SETTINGS_LANGUAGES } from "@/lib/constants/settings"
+import { Card } from "@/components/ui/custom/card";
+import { LanguageTile } from "@/components/settings/language-tile";
+import { SETTINGS_LANGUAGES } from "@/lib/constants/settings";
 
 export function LanguageSection() {
-  const [selected, setSelected] = useState("hi")
+  const [selected, setSelected] = useState("hi");
 
   return (
     <Card headingLevel={3}>
       <div className="p-6">
-        <h3 id="language-label" className="mb-0 text-title-sm font-extrabold text-ink">Language</h3>
+        <h3 id="language-label" className="mb-0 text-title-sm font-extrabold text-ink">
+          Language
+        </h3>
         <p className="mb-4 mt-1 text-body-sm text-ink-2">
           Choose the language for the app and invoices.
         </p>
@@ -32,5 +34,5 @@ export function LanguageSection() {
         </div>
       </div>
     </Card>
-  )
+  );
 }

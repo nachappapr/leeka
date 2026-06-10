@@ -35,11 +35,7 @@ function Modal({ ...props }: DialogPrimitive.Root.Props) {
 }
 
 // ── Backdrop + Popup (the main chrome) ───────────────────────────────────────
-function ModalContent({
-  className,
-  children,
-  ...props
-}: DialogPrimitive.Popup.Props) {
+function ModalContent({ className, children, ...props }: DialogPrimitive.Popup.Props) {
   return (
     <DialogPortal>
       {/* Backdrop: warm ink tint + blur */}
@@ -111,10 +107,7 @@ function ModalTitle({ className, ...props }: DialogPrimitive.Title.Props) {
 }
 
 // ── Description ───────────────────────────────────────────────────────────────
-function ModalDescription({
-  className,
-  ...props
-}: DialogPrimitive.Description.Props) {
+function ModalDescription({ className, ...props }: DialogPrimitive.Description.Props) {
   return (
     <DialogDescription
       data-slot="modal-description"
@@ -125,11 +118,7 @@ function ModalDescription({
 }
 
 // ── Close button ──────────────────────────────────────────────────────────────
-function ModalClose({
-  className,
-  children,
-  ...props
-}: DialogPrimitive.Close.Props) {
+function ModalClose({ className, children, ...props }: DialogPrimitive.Close.Props) {
   return (
     <DialogClose
       data-slot="modal-close"

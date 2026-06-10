@@ -1,90 +1,91 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { createPortal } from "react-dom"
-import { useRouter } from "next/navigation"
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
-import { Search, XIcon, ChevronRight, Receipt, Users, Plus } from "@/components/icons"
-import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
-import { StatusPill } from "@/components/ui/custom/status-pill"
-import { INVOICES } from "@/lib/constants/invoices"
-import { CUSTOMERS } from "@/lib/constants/customers"
-import { JUMP_ITEMS } from "@/lib/constants/search"
-import { cn, initials, loadRecentSearches, saveRecentSearches } from "@/lib/utils"
-import type { RecentSearchEntry, SearchScope } from "@/lib/types/search"
+import { Search, XIcon, ChevronRight, Receipt, Users, Plus } from "@/components/icons";
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import { StatusPill } from "@/components/ui/custom/status-pill";
+import { INVOICES } from "@/lib/constants/invoices";
+import { CUSTOMERS } from "@/lib/constants/customers";
+import { JUMP_ITEMS } from "@/lib/constants/search";
+import { cn, initials, loadRecentSearches, saveRecentSearches } from "@/lib/utils";
+import type { RecentSearchEntry, SearchScope } from "@/lib/types/search";
 
 interface MobileSearchSheetProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }
 
 export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
-  const [query, setQuery] = useState("")
-  const [scope, setScope] = useState<SearchScope>("all")
-  const [recents, setRecents] = useState<RecentSearchEntry[]>([])
-  const inputRef = useRef<HTMLInputElement>(null)
-  const router = useRouter()
+  const [query, setQuery] = useState("");
+  const [scope, setScope] = useState<SearchScope>("all");
+  const [recents, setRecents] = useState<RecentSearchEntry[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
     // Capture the element that opened the dialog so focus can be restored on close
-    const prevFocus = document.activeElement as HTMLElement
+    const prevFocus = document.activeElement as HTMLElement;
     const t = setTimeout(() => {
-      setQuery("")
-      setScope("all")
-      setRecents(loadRecentSearches())
-      inputRef.current?.focus()
-    }, 0)
+      setQuery("");
+      setScope("all");
+      setRecents(loadRecentSearches());
+      inputRef.current?.focus();
+    }, 0);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { onClose(); return }
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
       // Tab trap — keep focus inside the dialog
-      if (e.key !== "Tab") return
-      const dialog = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Search"]')
-      if (!dialog) return
+      if (e.key !== "Tab") return;
+      const dialog = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Search"]');
+      if (!dialog) return;
       const focusable = Array.from(
         dialog.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
-      ).filter((el) => el.offsetParent !== null)
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
+      ).filter((el) => el.offsetParent !== null);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
+        e.preventDefault();
+        last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
+        e.preventDefault();
+        first.focus();
       }
-    }
-    document.addEventListener("keydown", onKey)
-    document.body.style.overflow = "hidden"
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
     return () => {
-      clearTimeout(t)
-      document.removeEventListener("keydown", onKey)
-      document.body.style.overflow = ""
-      prevFocus?.focus()
-    }
-  }, [open, onClose])
+      clearTimeout(t);
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+      prevFocus?.focus();
+    };
+  }, [open, onClose]);
 
   // Render to document.body — the Topbar <header> uses backdrop-filter, which
   // establishes a containing block for fixed descendants, so an in-place
   // `fixed inset-0` would resolve to the header strip, not the viewport.
   // (open is always false during SSR, so this stays hydration-safe.)
-  if (!open) return null
+  if (!open) return null;
 
-  const q = query.trim().toLowerCase()
-  const normPhone = (s: string) => s.replace(/\D/g, "")
-  const qPhone = normPhone(q)
+  const q = query.trim().toLowerCase();
+  const normPhone = (s: string) => s.replace(/\D/g, "");
+  const qPhone = normPhone(q);
 
   const invMatches =
     q && scope !== "customers"
       ? INVOICES.filter(
-          (i) =>
-            i.customer.toLowerCase().includes(q) ||
-            i.id.toLowerCase().includes(q),
+          (i) => i.customer.toLowerCase().includes(q) || i.id.toLowerCase().includes(q),
         )
-      : []
+      : [];
   const custMatches =
     q && scope !== "invoices"
       ? CUSTOMERS.filter(
@@ -92,66 +93,66 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
             c.name.toLowerCase().includes(q) ||
             (qPhone.length >= 3 && normPhone(c.phone).includes(qPhone)),
         )
-      : []
+      : [];
 
-  const noQuery = q.length === 0
-  const noData = INVOICES.length === 0 && CUSTOMERS.length === 0
+  const noQuery = q.length === 0;
+  const noData = INVOICES.length === 0 && CUSTOMERS.length === 0;
 
   const countBy = (status: string) => {
     if (status === "sent")
-      return INVOICES.filter(
-        (i) => i.status === "sent" || i.status === "viewed",
-      ).length
-    return INVOICES.filter((i) => i.status === status).length
-  }
+      return INVOICES.filter((i) => i.status === "sent" || i.status === "viewed").length;
+    return INVOICES.filter((i) => i.status === status).length;
+  };
 
-  const hasResults = invMatches.length > 0 || custMatches.length > 0
+  const hasResults = invMatches.length > 0 || custMatches.length > 0;
 
   // Live announcement for result count changes
   const liveAnnouncement = (() => {
-    if (noQuery) return ""
-    if (!hasResults) return `No results for "${query}"`
-    const parts: string[] = []
-    if (invMatches.length) parts.push(`${invMatches.length} invoice${invMatches.length === 1 ? "" : "s"}`)
-    if (custMatches.length) parts.push(`${custMatches.length} customer${custMatches.length === 1 ? "" : "s"}`)
-    return parts.join(" and ") + " found"
-  })()
+    if (noQuery) return "";
+    if (!hasResults) return `No results for "${query}"`;
+    const parts: string[] = [];
+    if (invMatches.length)
+      parts.push(`${invMatches.length} invoice${invMatches.length === 1 ? "" : "s"}`);
+    if (custMatches.length)
+      parts.push(`${custMatches.length} customer${custMatches.length === 1 ? "" : "s"}`);
+    return parts.join(" and ") + " found";
+  })();
 
   const recordRecent = (entry: RecentSearchEntry) => {
     const next = [
       entry,
       ...recents.filter((r) => !(r.id === entry.id && r.type === entry.type)),
-    ].slice(0, 5)
-    setRecents(next)
-    saveRecentSearches(next)
-  }
+    ].slice(0, 5);
+    setRecents(next);
+    saveRecentSearches(next);
+  };
 
   const openInvoice = (id: string, customer: string) => {
-    recordRecent({ label: customer, type: "invoice", id })
-    router.push(`/invoices/${encodeURIComponent(id)}`)
-    onClose()
-  }
+    recordRecent({ label: customer, type: "invoice", id });
+    router.push(`/invoices/${encodeURIComponent(id)}`);
+    onClose();
+  };
   const openCustomer = (id: string, name: string) => {
-    recordRecent({ label: name, type: "customer", id })
-    router.push("/customers")
-    onClose()
-  }
+    recordRecent({ label: name, type: "customer", id });
+    router.push("/customers");
+    onClose();
+  };
   const openRecent = (r: RecentSearchEntry) => {
     if (r.type === "invoice") {
-      router.push(`/invoices/${encodeURIComponent(r.id)}`)
+      router.push(`/invoices/${encodeURIComponent(r.id)}`);
     } else {
-      router.push("/customers")
+      router.push("/customers");
     }
-    onClose()
-  }
+    onClose();
+  };
   const jumpFilter = (filter: string) => {
-    router.push(`/invoices?filter=${filter}`)
-    onClose()
-  }
+    router.push(`/invoices?filter=${filter}`);
+    onClose();
+  };
   const clearRecents = () => {
-    setRecents([])
-    saveRecentSearches([])
-  }
+    setRecents([]);
+    saveRecentSearches([]);
+  };
 
   return createPortal(
     <div
@@ -240,19 +241,24 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
             </div>
             <p className="text-title-sm font-black text-ink">Nothing to search yet</p>
             <p className="mt-1 text-body-sm text-ink-3">
-              Create an invoice or add a customer — they&apos;ll show up here when you
-              search.
+              Create an invoice or add a customer — they&apos;ll show up here when you search.
             </p>
             <div className="mt-5 flex w-full gap-2">
               <button
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-coral px-4 py-3 text-body-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-                onClick={() => { onClose(); router.push("/invoices/new") }}
+                onClick={() => {
+                  onClose();
+                  router.push("/invoices/new");
+                }}
               >
                 <Plus className="size-4" /> Create invoice
               </button>
               <button
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-body-sm font-bold text-ink-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-                onClick={() => { onClose(); router.push("/customers") }}
+                onClick={() => {
+                  onClose();
+                  router.push("/customers");
+                }}
               >
                 <Users className="size-4" /> Add customer
               </button>
@@ -286,9 +292,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                     ) : (
                       <Users className="size-5 text-ink-3" aria-hidden />
                     )}
-                    <span className="flex-1 text-body font-semibold text-ink">
-                      {r.label}
-                    </span>
+                    <span className="flex-1 text-body font-semibold text-ink">{r.label}</span>
                     <ChevronRight className="size-5 text-ink-3" aria-hidden />
                   </button>
                 ))}
@@ -304,7 +308,7 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
               </div>
               <div className="grid grid-cols-2 gap-2.5 px-3.5 pb-3.5">
                 {JUMP_ITEMS.map((j) => {
-                  const count = countBy(j.filter)
+                  const count = countBy(j.filter);
                   return (
                     <button
                       key={j.filter}
@@ -316,15 +320,11 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                         style={{ background: j.color }}
                       />
                       <span className="min-w-0 flex-1">
-                        <strong className="block text-body-sm font-bold text-ink">
-                          {j.label}
-                        </strong>
-                        <small className="block text-label text-ink-3">
-                          {j.sub(count)}
-                        </small>
+                        <strong className="block text-body-sm font-bold text-ink">{j.label}</strong>
+                        <small className="block text-label text-ink-3">{j.sub(count)}</small>
                       </span>
                     </button>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -348,7 +348,10 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
             {invMatches.length > 0 && (
               <div role="group" aria-labelledby="ms-inv-lbl" className="py-3.5">
                 <div className="mb-2.5 flex items-center justify-between px-4.5">
-                  <span id="ms-inv-lbl" className="text-kicker font-black uppercase tracking-wider text-ink-3">
+                  <span
+                    id="ms-inv-lbl"
+                    className="text-kicker font-black uppercase tracking-wider text-ink-3"
+                  >
                     Invoices
                   </span>
                   <span className="rounded-full border border-border bg-surface px-2 py-0.5 text-label font-bold text-ink-3">
@@ -367,15 +370,16 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-body font-bold text-ink">
-                        {inv.customer}
-                      </div>
+                      <div className="truncate text-body font-bold text-ink">{inv.customer}</div>
                       <div className="mt-1 text-caption text-ink-3">
-                        {inv.id} · {inv.isoDate} ·{" "}
-                        <span className="font-bold">{inv.amount}</span>
+                        {inv.id} · {inv.isoDate} · <span className="font-bold">{inv.amount}</span>
                       </div>
                     </div>
-                    <StatusPill status={inv.status} size="sm" className="self-start mt-0.5 shrink-0" />
+                    <StatusPill
+                      status={inv.status}
+                      size="sm"
+                      className="self-start mt-0.5 shrink-0"
+                    />
                   </button>
                 ))}
               </div>
@@ -387,7 +391,10 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
                 className={cn("py-3.5", invMatches.length > 0 && "border-t border-border")}
               >
                 <div className="mb-2.5 flex items-center justify-between px-4.5">
-                  <span id="ms-cust-lbl" className="text-kicker font-black uppercase tracking-wider text-ink-3">
+                  <span
+                    id="ms-cust-lbl"
+                    className="text-kicker font-black uppercase tracking-wider text-ink-3"
+                  >
                     Customers
                   </span>
                   <span className="rounded-full border border-border bg-surface px-2 py-0.5 text-label font-bold text-ink-3">
@@ -429,5 +436,5 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
       </div>
     </div>,
     document.body,
-  )
+  );
 }

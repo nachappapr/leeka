@@ -1,6 +1,6 @@
-import { Check, Sparkles } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { SETTINGS_PLAN_FEATURES } from "@/lib/constants/settings"
+import { Check, Sparkles } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { SETTINGS_PLAN_FEATURES } from "@/lib/constants/settings";
 
 export function PlanSection() {
   return (
@@ -21,7 +21,10 @@ export function PlanSection() {
         <span className="text-body-sm font-semibold opacity-70"> / month</span>
       </div>
 
-      <ul className="mt-4.5 flex list-none flex-col gap-2.5 p-0 text-body-sm" aria-label="Plan features">
+      <ul
+        className="mt-4.5 flex list-none flex-col gap-2.5 p-0 text-body-sm"
+        aria-label="Plan features"
+      >
         {SETTINGS_PLAN_FEATURES.map((feature) => (
           <li key={feature} className="flex items-center gap-2.5">
             <Check size={18} strokeWidth={2.4} className="shrink-0 text-coral" aria-hidden />
@@ -34,5 +37,5 @@ export function PlanSection() {
         Upgrade now
       </PillButton>
     </div>
-  )
+  );
 }

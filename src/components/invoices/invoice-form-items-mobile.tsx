@@ -1,37 +1,28 @@
-"use client"
+"use client";
 
-import type { UseFormRegister } from "react-hook-form"
+import type { UseFormRegister } from "react-hook-form";
 
-import { Trash2 } from "@/components/icons"
-import { FieldLabel } from "@/components/ui/custom/field-label"
-import { IconButton } from "@/components/ui/custom/icon-button"
-import { InputField } from "@/components/ui/custom/input-field"
-import type { InvoiceEditFormData } from "@/lib/schema/invoice"
-import { formatRupees } from "@/lib/utils"
+import { Trash2 } from "@/components/icons";
+import { FieldLabel } from "@/components/ui/custom/field-label";
+import { IconButton } from "@/components/ui/custom/icon-button";
+import { InputField } from "@/components/ui/custom/input-field";
+import type { InvoiceEditFormData } from "@/lib/schema/invoice";
+import { formatRupees } from "@/lib/utils";
 
 interface InvoiceFormItemsMobileProps {
-  fields: Array<{ id: string; name: string; qty: number; price: number }>
-  register: UseFormRegister<InvoiceEditFormData>
-  remove: (index: number) => void
+  fields: Array<{ id: string; name: string; qty: number; price: number }>;
+  register: UseFormRegister<InvoiceEditFormData>;
+  remove: (index: number) => void;
 }
 
-export function InvoiceFormItemsMobile({
-  fields,
-  register,
-  remove,
-}: InvoiceFormItemsMobileProps) {
+export function InvoiceFormItemsMobile({ fields, register, remove }: InvoiceFormItemsMobileProps) {
   return (
     <div className="min-mobile:hidden flex flex-col gap-3">
       {fields.map((field, index) => (
-        <div
-          key={field.id}
-          className="rounded-2xl bg-background border border-border p-3.5 pb-4"
-        >
+        <div key={field.id} className="rounded-2xl bg-background border border-border p-3.5 pb-4">
           {/* Card head */}
           <div className="flex items-center justify-between mb-2.5">
-            <div className="text-kicker uppercase text-coral-press">
-              Item {index + 1}
-            </div>
+            <div className="text-kicker uppercase text-coral-press">Item {index + 1}</div>
             <IconButton
               type="button"
               tone="destructive"
@@ -85,9 +76,7 @@ export function InvoiceFormItemsMobile({
 
             {/* Total — read-only display, not an input; plain label to avoid orphan <label> */}
             <div>
-              <p className="mb-1.5 text-label font-bold text-ink-2">
-                Total
-              </p>
+              <p className="mb-1.5 text-label font-bold text-ink-2">Total</p>
               <div className="flex h-11 items-center justify-end rounded-nav-item bg-coral-soft px-3.5 text-title-sm font-extrabold text-coral-ink tabular">
                 {formatRupees((field.qty || 0) * (field.price || 0))}
               </div>
@@ -96,5 +85,5 @@ export function InvoiceFormItemsMobile({
         </div>
       ))}
     </div>
-  )
+  );
 }

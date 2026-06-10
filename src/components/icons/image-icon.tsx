@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from "react";
 
 export function ImageIcon({
   size = 20,
@@ -22,5 +22,5 @@ export function ImageIcon({
       <circle cx="8.5" cy="9.5" r="1.5" />
       <path d="M4 17l5-5 5 4 3-2 3 3" />
     </svg>
-  )
+  );
 }

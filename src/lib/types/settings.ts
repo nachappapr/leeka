@@ -1,4 +1,4 @@
-import type { ComponentType } from "react"
+import type { ComponentType } from "react";
 
 export type SettingsSectionId =
   | "business"
@@ -6,17 +6,17 @@ export type SettingsSectionId =
   | "tax"
   | "notifications"
   | "language"
-  | "plan"
+  | "plan";
 
 export interface SettingsSectionDef {
-  id: SettingsSectionId
-  label: string
-  icon: ComponentType<{ size?: number; className?: string; "aria-hidden"?: boolean }>
+  id: SettingsSectionId;
+  label: string;
+  icon: ComponentType<{ size?: number; className?: string; "aria-hidden"?: boolean }>;
 }
 
 export interface LanguageOption {
-  id: string
-  label: string
-  sub: string
-  lang?: string
+  id: string;
+  label: string;
+  sub: string;
+  lang?: string;
 }

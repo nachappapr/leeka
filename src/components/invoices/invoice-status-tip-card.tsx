@@ -1,19 +1,19 @@
-import * as React from "react"
+import * as React from "react";
 
-import { Check, Clock, Info } from "@/components/icons"
-import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
+import { Check, Clock, Info } from "@/components/icons";
+import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 
 interface InvoiceStatusTipCardProps {
-  status: StatusPillStatus
+  status: StatusPillStatus;
 }
 
 interface Tone {
-  cardBg: string
-  iconBg: string
-  text: string
-  icon: React.ReactNode
-  title: string
-  body: string
+  cardBg: string;
+  iconBg: string;
+  text: string;
+  icon: React.ReactNode;
+  title: string;
+  body: string;
 }
 
 function toneFor(status: StatusPillStatus): Tone {
@@ -25,7 +25,7 @@ function toneFor(status: StatusPillStatus): Tone {
       icon: <Check className="size-5" strokeWidth={2.4} aria-hidden />,
       title: "Paid in full",
       body: "Payment received. Send a thank-you receipt to your customer.",
-    }
+    };
   }
   if (status === "overdue") {
     return {
@@ -35,7 +35,7 @@ function toneFor(status: StatusPillStatus): Tone {
       icon: <Clock className="size-5" aria-hidden />,
       title: "Overdue · 3 days",
       body: "Send a friendly nudge — most customers pay within a day of a reminder.",
-    }
+    };
   }
   if (status === "draft") {
     return {
@@ -45,7 +45,7 @@ function toneFor(status: StatusPillStatus): Tone {
       icon: <Info className="size-5" aria-hidden />,
       title: "Not sent yet",
       body: "Send this invoice to your customer to start the payment clock.",
-    }
+    };
   }
   return {
     cardBg: "bg-pending-soft",
@@ -54,11 +54,11 @@ function toneFor(status: StatusPillStatus): Tone {
     icon: <Info className="size-5" aria-hidden />,
     title: "Due in 7 days",
     body: "Send a gentle reminder 2 days before to nudge prompt payment.",
-  }
+  };
 }
 
 export function InvoiceStatusTipCard({ status }: InvoiceStatusTipCardProps) {
-  const tone = toneFor(status)
+  const tone = toneFor(status);
   return (
     <aside
       aria-label="Invoice status tip"
@@ -76,5 +76,5 @@ export function InvoiceStatusTipCard({ status }: InvoiceStatusTipCardProps) {
         </div>
       </div>
     </aside>
-  )
+  );
 }

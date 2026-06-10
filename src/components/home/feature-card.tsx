@@ -1,7 +1,7 @@
-import type { Feature } from "@/lib/types/home"
+import type { Feature } from "@/lib/types/home";
 
 function FeatureCard({ feature }: { feature: Feature }) {
-  const { icon: Icon, title, description, tone } = feature
+  const { icon: Icon, title, description, tone } = feature;
 
   if (tone === "lg") {
     return (
@@ -12,7 +12,7 @@ function FeatureCard({ feature }: { feature: Feature }) {
         <h3 className="text-19 font-extrabold text-card">{title}</h3>
         <p className="mt-2 text-15 leading-relaxed text-card/70">{description}</p>
       </article>
-    )
+    );
   }
 
   return (
@@ -23,7 +23,7 @@ function FeatureCard({ feature }: { feature: Feature }) {
       <h3 className="text-19 font-extrabold">{title}</h3>
       <p className="mt-2 text-15 leading-relaxed text-ink-2">{description}</p>
     </article>
-  )
+  );
 }
 
-export { FeatureCard }
+export { FeatureCard };

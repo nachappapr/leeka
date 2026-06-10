@@ -1,12 +1,12 @@
-import Link from "next/link"
-import { Check, ChevronRight } from "@/components/icons"
-import { cn } from "@/lib/utils"
-import { pillButtonVariants } from "@/components/ui/custom/pill-button"
-import { SETUP_STEPS } from "@/lib/constants/empty-dashboard"
+import Link from "next/link";
+import { Check, ChevronRight } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { pillButtonVariants } from "@/components/ui/custom/pill-button";
+import { SETUP_STEPS } from "@/lib/constants/empty-dashboard";
 
 export function EmptySetupChecklist() {
-  const completedCount = SETUP_STEPS.filter((s) => s.done).length
-  const pct = Math.round((completedCount / SETUP_STEPS.length) * 100)
+  const completedCount = SETUP_STEPS.filter((s) => s.done).length;
+  const pct = Math.round((completedCount / SETUP_STEPS.length) * 100);
 
   return (
     <div className="rounded-xl bg-card p-6 shadow-card">
@@ -59,11 +59,7 @@ export function EmptySetupChecklist() {
                   : "border-2 border-line-strong bg-surface text-ink-2",
               )}
             >
-              {step.done ? (
-                <Check className="size-4.5" aria-hidden />
-              ) : (
-                <span>{i + 1}</span>
-              )}
+              {step.done ? <Check className="size-4.5" aria-hidden /> : <span>{i + 1}</span>}
             </span>
 
             <div className="min-w-0 flex-1">
@@ -99,5 +95,5 @@ export function EmptySetupChecklist() {
         ))}
       </ol>
     </div>
-  )
+  );
 }

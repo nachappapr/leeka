@@ -1,5 +1,5 @@
-import { ShowcaseOutstandingCard } from "@/components/home/showcase-outstanding-card"
-import { ShowcaseBillCard } from "@/components/home/showcase-bill-card"
+import { ShowcaseOutstandingCard } from "@/components/home/showcase-outstanding-card";
+import { ShowcaseBillCard } from "@/components/home/showcase-bill-card";
 
 function ShowcasePhoneOverlay() {
   return (
@@ -56,7 +56,7 @@ function ShowcasePhoneOverlay() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { ShowcasePhoneOverlay }
+export { ShowcasePhoneOverlay };

@@ -1,7 +1,9 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+
 <!-- END:nextjs-agent-rules -->
 
 ---
@@ -11,6 +13,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### 1. No global CSS without explicit approval
 
 Do NOT add anything to these files without the user explicitly saying so:
+
 - `src/app/globals.css` — app-level base styles, Tailwind tokens, theme variables
 - Any `@layer base`, `@layer components`, or `@layer utilities` block
 
@@ -19,6 +22,7 @@ If you think a global class is needed, **stop and ask**. The answer is almost al
 ### 2. Component styles stay in the component — Tailwind only
 
 All styling for a component must live in that component's `className` strings using Tailwind utilities. Do not:
+
 - Extract component-specific styles to `globals.css`
 - Add a `.my-component { ... }` rule to globals.css
 - Create a `.module.css` or sibling CSS file for a component
@@ -32,6 +36,7 @@ If a pattern repeats across 3+ unrelated components and has a clear semantic nam
 ### 3. Design token discipline
 
 Before adding a new token to `src/app/globals.css` (`@theme` block or CSS variables):
+
 - Check if an existing token already covers it
 - Check if a Tailwind canonical class covers it (`px ÷ 4 = Tailwind number`, e.g. 460px → `max-w-115`)
 - Only tokens where the **name carries semantic meaning across the entire app** justify a shared token
@@ -88,6 +93,7 @@ The route file (`src/app/<feature>/page.tsx`) is **route plumbing**. It owns rou
 **When this rule kicks in:** the moment a page composes **2 or more sub-components** OR does **any data fetching**, it MUST delegate to a container. Trivial single-component pages (e.g. a route that renders one `<FeatureContainer />` already, or a placeholder rendering one component) are exempt — but the threshold is low and the default is "use a container."
 
 **Page (`src/app/<feature>/page.tsx`) — allowed to do:**
+
 - `export const metadata` / `generateMetadata`
 - destructure `params` / `searchParams`
 - auth/redirect guards (e.g. `redirect()`, `notFound()`)
@@ -95,12 +101,14 @@ The route file (`src/app/<feature>/page.tsx`) is **route plumbing**. It owns rou
 - render exactly one `<FeatureContainer />`
 
 **Page MUST NOT:**
+
 - import sub-components from `src/components/<feature>/` other than the container
 - import UI primitives from `src/components/ui/` (those belong in the container or its children)
 - arrange layout (no flex/grid wrappers, no `<div className="...">` shells around the container)
 - fetch data, define hooks, hold state, or define inline sub-components
 
 **Container (`src/components/<feature>/<feature>-container.tsx`):**
+
 - Filename = `<feature>-container.tsx` (kebab-case), exported as `<Feature>Container`
 - Owns the layout shell, sub-component composition, and data fetching (Server Component by default — only `"use client"` when the container itself needs interactivity at its root)
 - Imports sub-components from the same feature folder
@@ -163,10 +171,10 @@ Ambiguous which lane?                                                 → ask on
 
 **Implementer routing (inside `prd-build-orchestrator`, and for direct delegation):**
 
-| Unit shape | Implementer |
-|---|---|
-| UI / component / page / data-**read** layer wired into TypeScript | `frontend-engineer` |
-| DB **write path**: migration, RPC, RLS policy, trigger, Edge Function, write-path Server Action / route handler | `backend-engineer` |
+| Unit shape                                                                                                      | Implementer         |
+| --------------------------------------------------------------------------------------------------------------- | ------------------- |
+| UI / component / page / data-**read** layer wired into TypeScript                                               | `frontend-engineer` |
+| DB **write path**: migration, RPC, RLS policy, trigger, Edge Function, write-path Server Action / route handler | `backend-engineer`  |
 
 **Gates (read-only, never write code):** `reviewer` runs on every implemented unit (semantic non-negotiables). `accessibility-auditor` runs after the reviewer PASSes **only when the unit touches consumer-facing UI** (always-on in the design-fidelity pipeline; conditional in prd-build). Both feed the orchestrator's internal fix loop — a Critical/High from either blocks human review. Lint/tsc are the implementer's own gate; for DB units `backend-engineer`'s Supabase-MCP evidence is the gate (lint/tsc are blind to SQL).
 

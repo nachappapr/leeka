@@ -26,12 +26,14 @@ function StepIlItems() {
 
         {/* Total row */}
         <div className="flex items-center gap-2 rounded-lg bg-coral px-2.5 py-1.5 text-card">
-          <span className="flex-1 text-9 font-extrabold uppercase tracking-wide opacity-90">Total</span>
+          <span className="flex-1 text-9 font-extrabold uppercase tracking-wide opacity-90">
+            Total
+          </span>
           <span className="text-14 font-extrabold tabular-nums">₹4,725</span>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { StepIlItems }
+export { StepIlItems };

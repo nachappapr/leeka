@@ -1,29 +1,27 @@
-"use client"
+"use client";
 
 // Justified "use client": owns query/open/activeIndex/addNewMode/addNewPrefill
 // state, outside-click document event listener effect, scroll-active-option
 // effect, and multiple refs (boxRef, inputRef, listboxRef).
 
-import * as React from "react"
+import * as React from "react";
 
-import { Search, XIcon } from "@/components/icons"
-import { IconButton } from "@/components/ui/custom/icon-button"
-import { CUSTOMERS } from "@/lib/constants/customers"
-import type { FilteredCustomer, SelectedCustomer } from "@/lib/types/customer"
-import { cn } from "@/lib/utils"
+import { Search, XIcon } from "@/components/icons";
+import { IconButton } from "@/components/ui/custom/icon-button";
+import { CUSTOMERS } from "@/lib/constants/customers";
+import type { FilteredCustomer, SelectedCustomer } from "@/lib/types/customer";
+import { cn } from "@/lib/utils";
 
-import { InvoiceFormCustomerAddNewPanel } from "./invoice-form-customer-add-new-panel"
-import { InvoiceFormCustomerComboboxDropdown } from "./invoice-form-customer-combobox-dropdown"
+import { InvoiceFormCustomerAddNewPanel } from "./invoice-form-customer-add-new-panel";
+import { InvoiceFormCustomerComboboxDropdown } from "./invoice-form-customer-combobox-dropdown";
 
 // ── Private helper ─────────────────────────────────────────────────────────
 
 function filterCustomers(q: string): FilteredCustomer[] {
-  if (!q) return Array.from(CUSTOMERS.slice(0, 5))
+  if (!q) return Array.from(CUSTOMERS.slice(0, 5));
   return CUSTOMERS.filter(
-    (c) =>
-      c.name.toLowerCase().includes(q) ||
-      c.phone.replace(/\s/g, "").includes(q),
-  )
+    (c) => c.name.toLowerCase().includes(q) || c.phone.replace(/\s/g, "").includes(q),
+  );
 }
 
 // ── Export ─────────────────────────────────────────────────────────────────
@@ -31,79 +29,79 @@ function filterCustomers(q: string): FilteredCustomer[] {
 export function InvoiceFormCustomerSearchCombobox({
   onSelect,
 }: {
-  onSelect: (c: SelectedCustomer) => void
+  onSelect: (c: SelectedCustomer) => void;
 }) {
-  const [query, setQuery] = React.useState("")
-  const [open, setOpen] = React.useState(false)
-  const [activeIndex, setActiveIndex] = React.useState(-1)
-  const [addNewMode, setAddNewMode] = React.useState(false)
-  const [addNewPrefill, setAddNewPrefill] = React.useState("")
+  const [query, setQuery] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const [addNewMode, setAddNewMode] = React.useState(false);
+  const [addNewPrefill, setAddNewPrefill] = React.useState("");
 
-  const boxRef = React.useRef<HTMLDivElement>(null)
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const listboxRef = React.useRef<HTMLUListElement>(null)
+  const boxRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const listboxRef = React.useRef<HTMLUListElement>(null);
 
-  const q = query.trim().toLowerCase()
-  const matches = filterCustomers(q)
+  const q = query.trim().toLowerCase();
+  const matches = filterCustomers(q);
 
   // Outside-click closes dropdown
   React.useEffect(() => {
-    if (!open) return
+    if (!open) return;
     const onDoc = (e: MouseEvent) => {
       if (boxRef.current && !boxRef.current.contains(e.target as Node)) {
-        setOpen(false)
-        setActiveIndex(-1)
+        setOpen(false);
+        setActiveIndex(-1);
       }
-    }
-    document.addEventListener("mousedown", onDoc)
-    return () => document.removeEventListener("mousedown", onDoc)
-  }, [open])
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
 
   // Scroll active option into view
   React.useEffect(() => {
-    if (activeIndex < 0 || !listboxRef.current) return
+    if (activeIndex < 0 || !listboxRef.current) return;
     listboxRef.current
       .querySelector<HTMLElement>(`#cp-opt-${activeIndex}`)
-      ?.scrollIntoView({ block: "nearest" })
-  }, [activeIndex])
+      ?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex]);
 
   function selectOption(i: number) {
-    const c = matches[i]
-    if (!c) return
-    onSelect({ name: c.name, phone: c.phone })
-    setOpen(false)
-    setQuery("")
-    setActiveIndex(-1)
+    const c = matches[i];
+    if (!c) return;
+    onSelect({ name: c.name, phone: c.phone });
+    setOpen(false);
+    setQuery("");
+    setActiveIndex(-1);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!open) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-        setOpen(true)
-        setActiveIndex(0)
-        e.preventDefault()
+        setOpen(true);
+        setActiveIndex(0);
+        e.preventDefault();
       }
-      return
+      return;
     }
     if (e.key === "ArrowDown") {
-      e.preventDefault()
-      setActiveIndex((i) => Math.min(i + 1, matches.length - 1))
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, matches.length - 1));
     } else if (e.key === "ArrowUp") {
-      e.preventDefault()
-      setActiveIndex((i) => Math.max(i - 1, 0))
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter") {
-      e.preventDefault()
-      selectOption(activeIndex)
+      e.preventDefault();
+      selectOption(activeIndex);
     } else if (e.key === "Escape") {
-      setOpen(false)
-      setActiveIndex(-1)
+      setOpen(false);
+      setActiveIndex(-1);
     }
   }
 
   function returnToSearch() {
-    setAddNewMode(false)
-    setAddNewPrefill("")
-    requestAnimationFrame(() => inputRef.current?.focus())
+    setAddNewMode(false);
+    setAddNewPrefill("");
+    requestAnimationFrame(() => inputRef.current?.focus());
   }
 
   if (addNewMode) {
@@ -112,11 +110,11 @@ export function InvoiceFormCustomerSearchCombobox({
         initialName={addNewPrefill}
         onBack={returnToSearch}
         onSave={(c) => {
-          onSelect(c)
-          setAddNewMode(false)
+          onSelect(c);
+          setAddNewMode(false);
         }}
       />
-    )
+    );
   }
 
   return (
@@ -126,8 +124,8 @@ export function InvoiceFormCustomerSearchCombobox({
       onBlur={(e) => {
         // Close when focus leaves the whole widget (e.g. Tab-out)
         if (!boxRef.current?.contains(e.relatedTarget as Node)) {
-          setOpen(false)
-          setActiveIndex(-1)
+          setOpen(false);
+          setActiveIndex(-1);
         }
       }}
     >
@@ -154,7 +152,11 @@ export function InvoiceFormCustomerSearchCombobox({
           placeholder="Search saved customers..."
           className="min-w-0 flex-1 border-0 bg-transparent text-body font-medium text-ink outline-none placeholder:font-medium placeholder:text-ink-3"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); setActiveIndex(-1) }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+            setActiveIndex(-1);
+          }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           type="text"
@@ -167,7 +169,11 @@ export function InvoiceFormCustomerSearchCombobox({
             size="sm"
             aria-label="Clear search"
             type="button"
-            onClick={() => { setQuery(""); setActiveIndex(-1); inputRef.current?.focus() }}
+            onClick={() => {
+              setQuery("");
+              setActiveIndex(-1);
+              inputRef.current?.focus();
+            }}
           >
             <XIcon className="size-3.5" aria-hidden />
           </IconButton>
@@ -183,9 +189,12 @@ export function InvoiceFormCustomerSearchCombobox({
           onSelect={selectOption}
           onSetActive={setActiveIndex}
           onClearActive={() => setActiveIndex(-1)}
-          onEnterAddNew={() => { setAddNewPrefill(query); setAddNewMode(true) }}
+          onEnterAddNew={() => {
+            setAddNewPrefill(query);
+            setAddNewMode(true);
+          }}
         />
       )}
     </div>
-  )
+  );
 }

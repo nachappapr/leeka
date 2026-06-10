@@ -2,27 +2,27 @@
 // InvoiceFormReviewDesktopBar (client) and InvoiceFormLivePreview (client) are
 // composed here; their own boundaries are sufficient.
 
-import type { Invoice } from "@/lib/types"
+import type { Invoice } from "@/lib/types";
 
-import { InvoiceFormLivePreview } from "./invoice-form-live-preview"
-import { InvoiceFormReviewDesktopBar } from "./invoice-form-review-desktop-bar"
+import { InvoiceFormLivePreview } from "./invoice-form-live-preview";
+import { InvoiceFormReviewDesktopBar } from "./invoice-form-review-desktop-bar";
 
 // Props union: InvoiceFormLivePreview's props + the invoice object for the
 // send modal and the onBack callback for the desktop bar.
 interface InvoiceFormReviewStageProps {
   // InvoiceFormLivePreview props
-  invoiceIdNoHash: string
-  customerName: string
-  phone: string
-  items: ReadonlyArray<{ name: string; qty: number; price: number }>
-  subtotal: number
-  tax: number
-  total: number
-  isoDate: string
-  dueIsoDate: string
+  invoiceIdNoHash: string;
+  customerName: string;
+  phone: string;
+  items: ReadonlyArray<{ name: string; qty: number; price: number }>;
+  subtotal: number;
+  tax: number;
+  total: number;
+  isoDate: string;
+  dueIsoDate: string;
   // Review-stage-specific props
-  invoice: Invoice
-  onBack: () => void
+  invoice: Invoice;
+  onBack: () => void;
 }
 
 // Centered column that hosts the live preview + desktop action bar in the
@@ -58,5 +58,5 @@ export function InvoiceFormReviewStage({
 
       <InvoiceFormReviewDesktopBar invoice={invoice} onBack={onBack} />
     </div>
-  )
+  );
 }

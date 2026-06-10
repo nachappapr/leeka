@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface ToggleSwitchProps {
-  label: string
-  checked: boolean
-  onCheckedChange: (checked: boolean) => void
-  id?: string
-  className?: string
+  label: string;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+  id?: string;
+  className?: string;
 }
 
 export function ToggleSwitch({
@@ -19,20 +19,12 @@ export function ToggleSwitch({
   id: externalId,
   className,
 }: ToggleSwitchProps) {
-  const innerId = React.useId()
-  const id = externalId ?? innerId
+  const innerId = React.useId();
+  const id = externalId ?? innerId;
 
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between border-b border-line py-3.5",
-        className,
-      )}
-    >
-      <label
-        htmlFor={id}
-        className="cursor-pointer text-body-sm font-semibold text-ink"
-      >
+    <div className={cn("flex items-center justify-between border-b border-line py-3.5", className)}>
+      <label htmlFor={id} className="cursor-pointer text-body-sm font-semibold text-ink">
         {label}
       </label>
 
@@ -57,5 +49,5 @@ export function ToggleSwitch({
         />
       </button>
     </div>
-  )
+  );
 }

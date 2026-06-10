@@ -1,39 +1,37 @@
-import { notFound } from "next/navigation"
+import { notFound } from "next/navigation";
 
-import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar"
-import { Topbar } from "@/components/ui/custom/topbar"
-import { CustomerDetailHeader } from "@/components/customers/customer-detail-header"
-import { CustomerContactCard } from "@/components/customers/customer-contact-card"
-import { CustomerStatTile } from "@/components/customers/customer-stat-tile"
-import { CustomerInvoicesCard } from "@/components/customers/customer-invoices-card"
-import { findCustomer, customerInvoiceSummary } from "@/lib/constants"
+import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
+import { Topbar } from "@/components/ui/custom/topbar";
+import { CustomerDetailHeader } from "@/components/customers/customer-detail-header";
+import { CustomerContactCard } from "@/components/customers/customer-contact-card";
+import { CustomerStatTile } from "@/components/customers/customer-stat-tile";
+import { CustomerInvoicesCard } from "@/components/customers/customer-invoices-card";
+import { findCustomer, customerInvoiceSummary } from "@/lib/constants";
 
 interface CustomerDetailContainerProps {
-  id: string
+  id: string;
 }
 
 function parseAmount(s: string | null | undefined): number {
-  if (!s) return 0
-  return parseInt(s.replace(/[₹,]/g, ""), 10) || 0
+  if (!s) return 0;
+  return parseInt(s.replace(/[₹,]/g, ""), 10) || 0;
 }
 
 export function CustomerDetailContainer({ id }: CustomerDetailContainerProps) {
-  const customer = findCustomer(id)
-  if (!customer) notFound()
+  const customer = findCustomer(id);
+  if (!customer) notFound();
 
-  const summary = customerInvoiceSummary(customer.name)
-  const invoiceCount = summary.invoices.length
+  const summary = customerInvoiceSummary(customer.name);
+  const invoiceCount = summary.invoices.length;
 
-  const paid = customer.paid ?? "₹0"
+  const paid = customer.paid ?? "₹0";
 
-  const outstandingAmount = parseAmount(summary.outstanding)
-  const outstandingValue = outstandingAmount > 0 ? (summary.outstanding ?? "—") : "—"
-  const outstandingTone =
-    outstandingAmount > 0 ? ("overdue" as const) : ("ink-3" as const)
-  const outstandingMeta =
-    outstandingAmount > 0 ? "Across open invoices" : "All clear"
+  const outstandingAmount = parseAmount(summary.outstanding);
+  const outstandingValue = outstandingAmount > 0 ? (summary.outstanding ?? "—") : "—";
+  const outstandingTone = outstandingAmount > 0 ? ("overdue" as const) : ("ink-3" as const);
+  const outstandingMeta = outstandingAmount > 0 ? "Across open invoices" : "All clear";
 
-  const totalBilledMeta = `${invoiceCount} invoice${invoiceCount !== 1 ? "s" : ""}`
+  const totalBilledMeta = `${invoiceCount} invoice${invoiceCount !== 1 ? "s" : ""}`;
 
   return (
     <div className="flex flex-1 flex-col">
@@ -58,12 +56,7 @@ export function CustomerDetailContainer({ id }: CustomerDetailContainerProps) {
                 meta={totalBilledMeta}
                 tone="ink"
               />
-              <CustomerStatTile
-                label="Paid"
-                value={paid}
-                meta="Lifetime"
-                tone="paid"
-              />
+              <CustomerStatTile label="Paid" value={paid} meta="Lifetime" tone="paid" />
               <CustomerStatTile
                 label="Outstanding"
                 value={outstandingValue}
@@ -73,15 +66,12 @@ export function CustomerDetailContainer({ id }: CustomerDetailContainerProps) {
             </div>
 
             {/* Invoices card */}
-            <CustomerInvoicesCard
-              customerName={customer.name}
-              invoices={summary.invoices}
-            />
+            <CustomerInvoicesCard customerName={customer.name} invoices={summary.invoices} />
           </div>
         </div>
       </div>
 
       <MobileTabBar />
     </div>
-  )
+  );
 }

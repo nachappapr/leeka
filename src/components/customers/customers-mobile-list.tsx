@@ -1,11 +1,11 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
-import type { Customer } from "@/lib/types"
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import type { Customer } from "@/lib/types";
 
 interface CustomersMobileListProps {
-  customers: ReadonlyArray<Customer>
+  customers: ReadonlyArray<Customer>;
 }
 
 export function CustomersMobileList({ customers }: CustomersMobileListProps) {
@@ -16,7 +16,7 @@ export function CustomersMobileList({ customers }: CustomersMobileListProps) {
           .split(" ")
           .map((w) => w[0])
           .join("")
-          .slice(0, 2)
+          .slice(0, 2);
 
         return (
           <li key={cust.id}>
@@ -38,15 +38,11 @@ export function CustomersMobileList({ customers }: CustomersMobileListProps) {
               <div className="flex flex-col gap-2 border-t border-border px-4 py-3">
                 <div className="flex items-center justify-between">
                   <span className="text-body-sm text-ink-2">Invoices</span>
-                  <span className="text-body-sm font-medium text-ink">
-                    {cust.invoiceCount}
-                  </span>
+                  <span className="text-body-sm font-medium text-ink">{cust.invoiceCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-body-sm text-ink-2">Total Billed</span>
-                  <span className="tabular text-body font-bold text-ink">
-                    {cust.totalBilled}
-                  </span>
+                  <span className="tabular text-body font-bold text-ink">{cust.totalBilled}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-body-sm text-ink-2">Outstanding</span>
@@ -62,8 +58,8 @@ export function CustomersMobileList({ customers }: CustomersMobileListProps) {
               </div>
             </Link>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }

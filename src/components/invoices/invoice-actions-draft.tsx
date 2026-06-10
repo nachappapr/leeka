@@ -1,12 +1,12 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { Check, Download, Edit, WhatsApp } from "@/components/icons"
-import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button"
-import { cn } from "@/lib/utils"
+import { Check, Download, Edit, WhatsApp } from "@/components/icons";
+import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
+import { cn } from "@/lib/utils";
 
 interface InvoiceActionsDraftProps {
-  invoiceId: string
-  onSend: () => void
+  invoiceId: string;
+  onSend: () => void;
 }
 
 export function InvoiceActionsDraft({ invoiceId, onSend }: InvoiceActionsDraftProps) {
@@ -35,5 +35,5 @@ export function InvoiceActionsDraft({ invoiceId, onSend }: InvoiceActionsDraftPr
         </PillButton>
       </div>
     </>
-  )
+  );
 }

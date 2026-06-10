@@ -1,15 +1,15 @@
-import { forwardRef } from "react"
+import { forwardRef } from "react";
 
-import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
-import { STATUS_DOT_CLASS } from "@/lib/constants/invoices"
-import { cn } from "@/lib/utils"
+import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
+import { STATUS_DOT_CLASS } from "@/lib/constants/invoices";
+import { cn } from "@/lib/utils";
 
 interface StatusToggleChipProps {
-  status: StatusPillStatus
-  label: string
-  count: number
-  active: boolean
-  onClick: () => void
+  status: StatusPillStatus;
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
 }
 
 export const StatusToggleChip = forwardRef<HTMLButtonElement, StatusToggleChipProps>(
@@ -53,6 +53,6 @@ export const StatusToggleChip = forwardRef<HTMLButtonElement, StatusToggleChipPr
           {count}
         </span>
       </button>
-    )
+    );
   },
-)
+);

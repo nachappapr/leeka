@@ -1,17 +1,17 @@
-import { notFound } from "next/navigation"
+import { notFound } from "next/navigation";
 
-import { Topbar } from "@/components/ui/custom/topbar"
-import { findInvoiceDetail } from "@/lib/constants"
+import { Topbar } from "@/components/ui/custom/topbar";
+import { findInvoiceDetail } from "@/lib/constants";
 
-import { InvoiceEditForm } from "./invoice-edit-form"
+import { InvoiceEditForm } from "./invoice-edit-form";
 
 interface InvoiceEditContainerProps {
-  id: string
+  id: string;
 }
 
 export function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
-  const invoice = findInvoiceDetail(id)
-  if (!invoice) notFound()
+  const invoice = findInvoiceDetail(id);
+  if (!invoice) notFound();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -20,5 +20,5 @@ export function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
         <InvoiceEditForm invoice={invoice} />
       </div>
     </div>
-  )
+  );
 }

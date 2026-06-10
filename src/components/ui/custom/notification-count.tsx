@@ -1,20 +1,16 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface NotificationCountProps {
-  count: number
-  max?: number
-  className?: string
+  count: number;
+  max?: number;
+  className?: string;
 }
 
-function NotificationCount({
-  count,
-  max = 99,
-  className,
-}: NotificationCountProps) {
-  if (count <= 0) return null
+function NotificationCount({ count, max = 99, className }: NotificationCountProps) {
+  if (count <= 0) return null;
 
-  const displayCount = count > max ? `${max}+` : `${count}`
-  const label = `${displayCount} new`
+  const displayCount = count > max ? `${max}+` : `${count}`;
+  const label = `${displayCount} new`;
 
   return (
     <span
@@ -26,12 +22,12 @@ function NotificationCount({
         "bg-coral-soft text-coral-ink",
         "font-sans font-bold",
         "text-kicker leading-none align-middle",
-        className
+        className,
       )}
     >
       {label}
     </span>
-  )
+  );
 }
 
-export { NotificationCount }
+export { NotificationCount };

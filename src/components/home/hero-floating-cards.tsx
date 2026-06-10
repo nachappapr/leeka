@@ -1,4 +1,4 @@
-import { Check, WhatsApp } from "@/components/icons"
+import { Check, WhatsApp } from "@/components/icons";
 
 function HeroFloatingCards() {
   return (
@@ -25,7 +25,7 @@ function HeroFloatingCards() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { HeroFloatingCards }
+export { HeroFloatingCards };

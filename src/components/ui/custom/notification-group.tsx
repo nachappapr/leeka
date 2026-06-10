@@ -1,13 +1,13 @@
-import { NotificationItem } from "@/components/ui/custom/notification-item"
-import type { NotificationItemData } from "@/lib/types/notifications"
+import { NotificationItem } from "@/components/ui/custom/notification-item";
+import type { NotificationItemData } from "@/lib/types/notifications";
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
 interface NotificationGroupProps {
-  label: string
-  items: NotificationItemData[]
+  label: string;
+  items: NotificationItemData[];
 }
 
 // ---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ function NotificationGroup({ label, items }: NotificationGroupProps) {
         ))}
       </ul>
     </section>
-  )
+  );
 }
 
-export { NotificationGroup }
+export { NotificationGroup };

@@ -11,16 +11,11 @@ export function HeroGrid() {
         <div className="text-label font-black uppercase tracking-wide leading-tight text-white">
           Total outstanding
         </div>
-        <div className="tabular mt-2.5 text-h1 font-black text-white">
-          ₹13,200
-        </div>
+        <div className="tabular mt-2.5 text-h1 font-black text-white">₹13,200</div>
         <div className="mt-3.5 flex items-center gap-3 text-caption font-semibold text-white">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-black/18 px-2.5 py-1">
-            <span
-              className="size-1.5 rounded-full bg-pending-bright"
-              aria-hidden="true"
-            />
-            3 unpaid invoices
+            <span className="size-1.5 rounded-full bg-pending-bright" aria-hidden="true" />3 unpaid
+            invoices
           </span>
           <span className="text-white">1 overdue · 2 sent</span>
         </div>
@@ -35,30 +30,22 @@ export function HeroGrid() {
             <IndianRupee className="size-4 text-paid" aria-hidden />
           </div>
         </div>
-        <div className="tabular text-money-sm text-paid-ink">
-          ₹68,200
-        </div>
+        <div className="tabular text-money-sm text-paid-ink">₹68,200</div>
         <div className="mt-1.5 text-caption text-ink-2">↗12% vs last month</div>
       </div>
 
       <div className="rounded-xl bg-card p-6 shadow-card max-mobile:p-4">
         <div className="flex items-start justify-between gap-2">
-          <div className="text-label font-black uppercase tracking-wide text-ink-3">
-            Overdue
-          </div>
+          <div className="text-label font-black uppercase tracking-wide text-ink-3">Overdue</div>
           <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-md bg-coral-soft">
             <Clock className="size-4 text-coral" aria-hidden />
           </div>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="tabular text-money-sm text-overdue-ink">
-            1
-          </span>
+          <span className="tabular text-money-sm text-overdue-ink">1</span>
           <span className="text-body font-semibold text-ink-2">· ₹2,400</span>
         </div>
-        <div className="mt-1.5 text-caption text-overdue">
-          Send a friendly nudge?
-        </div>
+        <div className="mt-1.5 text-caption text-overdue">Send a friendly nudge?</div>
       </div>
     </div>
   );

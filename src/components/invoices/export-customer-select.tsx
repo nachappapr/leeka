@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Users } from "@/components/icons"
-import { BrandSelect } from "@/components/ui/custom/brand-select"
-import type { BrandSelectOption } from "@/components/ui/custom/brand-select"
+import { Users } from "@/components/icons";
+import { BrandSelect } from "@/components/ui/custom/brand-select";
+import type { BrandSelectOption } from "@/components/ui/custom/brand-select";
 
 interface ExportCustomerSelectProps {
-  customer: string
-  setCustomer: (v: string) => void
-  uniqueCustomers: string[]
+  customer: string;
+  setCustomer: (v: string) => void;
+  uniqueCustomers: string[];
 }
 
 export function ExportCustomerSelect({
@@ -18,7 +18,7 @@ export function ExportCustomerSelect({
   const options: BrandSelectOption[] = [
     { value: "all", label: `All customers (${uniqueCustomers.length})` },
     ...uniqueCustomers.map((name) => ({ value: name, label: name })),
-  ]
+  ];
 
   return (
     <BrandSelect
@@ -28,5 +28,5 @@ export function ExportCustomerSelect({
       leadingIcon={<Users size={16} aria-hidden />}
       ariaLabel="Filter by customer"
     />
-  )
+  );
 }

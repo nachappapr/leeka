@@ -39,9 +39,9 @@ function AuthMarketingPanel() {
           <span className="rounded-sm bg-white/25 px-1">Get paid faster.</span>
         </h1>
         <p className="mt-4.5 max-w-115 text-17 leading-relaxed text-white/80 max-tablet:mt-3 max-tablet:max-w-135 max-tablet:text-body max-mobile:max-w-none max-mobile:text-15">
-          Free web invoicing for India&apos;s small shops, home bakers, tailors
-          and traders. Open it on your phone in the morning, switch to your
-          laptop in the afternoon — same data, same login.
+          Free web invoicing for India&apos;s small shops, home bakers, tailors and traders. Open it
+          on your phone in the morning, switch to your laptop in the afternoon — same data, same
+          login.
         </p>
 
         {/* Mini browser preview — hidden at tablet + mobile */}

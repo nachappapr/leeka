@@ -1,6 +1,6 @@
-import { ShowcasePhoneOverlay } from "@/components/home/showcase-phone-overlay"
-import { ShowcasePaidCard } from "@/components/home/showcase-paid-card"
-import { ShowcaseLaptopFrame } from "@/components/home/showcase-laptop-frame"
+import { ShowcasePhoneOverlay } from "@/components/home/showcase-phone-overlay";
+import { ShowcasePaidCard } from "@/components/home/showcase-paid-card";
+import { ShowcaseLaptopFrame } from "@/components/home/showcase-laptop-frame";
 
 function ShowcaseLaptop() {
   return (
@@ -18,15 +18,13 @@ function ShowcaseLaptop() {
             From the chai shop on your phone to the godown on your laptop.
           </h2>
           <p className="mt-3.5 text-18 leading-snug text-ink-2 max-mobile:text-body">
-            ArthaPatra adapts to whatever device you have on hand. Same data, same
-            login — big readable type, big tap targets, never confusing. We test
-            with shop owners every week.
+            ArthaPatra adapts to whatever device you have on hand. Same data, same login — big
+            readable type, big tap targets, never confusing. We test with shop owners every week.
           </p>
         </div>
 
         {/* Showcase stage — laptop with absolute floating overlays */}
         <div className="relative max-w-270 mx-auto pb-15 max-mobile:pb-0">
-
           {/* Floating "Paid" card — top-left, decorative */}
           <ShowcasePaidCard />
 
@@ -39,16 +37,13 @@ function ShowcaseLaptop() {
           </div>
 
           {/* Phone overlay — right side, decorative, hidden on mobile */}
-          <div
-            className="absolute -right-5 bottom-3.5 z-10 max-mobile:hidden"
-            aria-hidden="true"
-          >
+          <div className="absolute -right-5 bottom-3.5 z-10 max-mobile:hidden" aria-hidden="true">
             <ShowcasePhoneOverlay />
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export { ShowcaseLaptop }
+export { ShowcaseLaptop };

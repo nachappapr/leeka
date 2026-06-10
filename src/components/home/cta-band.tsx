@@ -1,8 +1,8 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { ArrowRight } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { CTA_BAND } from "@/lib/constants/home"
+import { ArrowRight } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { CTA_BAND } from "@/lib/constants/home";
 
 function CtaBand() {
   return (
@@ -40,7 +40,7 @@ function CtaBand() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export { CtaBand }
+export { CtaBand };

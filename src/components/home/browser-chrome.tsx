@@ -1,20 +1,15 @@
-import type React from "react"
-import { Lock } from "@/components/icons"
-import { cn } from "@/lib/utils"
+import type React from "react";
+import { Lock } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 interface BrowserChromeProps {
-  host: string
-  path: string
-  leadingIcon?: React.ReactNode
-  pathTone?: "ink" | "overdue"
+  host: string;
+  path: string;
+  leadingIcon?: React.ReactNode;
+  pathTone?: "ink" | "overdue";
 }
 
-function BrowserChrome({
-  host,
-  path,
-  leadingIcon,
-  pathTone = "ink",
-}: BrowserChromeProps) {
+function BrowserChrome({ host, path, leadingIcon, pathTone = "ink" }: BrowserChromeProps) {
   return (
     <div className="flex items-center gap-3 h-9.5 px-3.5 bg-surface-2 border-b border-border">
       <svg
@@ -35,10 +30,12 @@ function BrowserChrome({
           <Lock className="size-2.5 text-paid shrink-0" strokeWidth={2.4} aria-hidden="true" />
         )}
         <span className="text-ink-3">{host}</span>
-        <span className={cn(pathTone === "overdue" ? "text-overdue font-bold" : "text-ink")}>{path}</span>
+        <span className={cn(pathTone === "overdue" ? "text-overdue font-bold" : "text-ink")}>
+          {path}
+        </span>
       </div>
     </div>
-  )
+  );
 }
 
-export { BrowserChrome }
+export { BrowserChrome };

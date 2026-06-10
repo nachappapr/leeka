@@ -2,15 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import {
-  Copy,
-  Download,
-  Edit,
-  MoreVertical,
-  Share,
-  Trash2,
-  WhatsApp,
-} from "@/components/icons";
+import { Copy, Download, Edit, MoreVertical, Share, Trash2, WhatsApp } from "@/components/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,8 +33,7 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
   const whatsappDisabled = status === "paid";
   const payLinkDisabled = status === "draft" || status === "paid";
 
-  const whatsappHint =
-    whatsappDisabled ? "Already paid — nothing left to collect" : undefined;
+  const whatsappHint = whatsappDisabled ? "Already paid — nothing left to collect" : undefined;
 
   const payLinkHint = payLinkDisabled
     ? status === "draft"
@@ -64,102 +55,98 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
     <>
       <div className="flex items-center justify-end gap-1">
         <DropdownMenu onOpenChangeComplete={handleMenuOpenChangeComplete}>
-        <DropdownMenuTrigger
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-          aria-label="Invoice actions"
-          className="relative z-10 inline-flex size-8 items-center justify-center rounded-lg bg-transparent text-ink-3 outline-none transition-colors hover:bg-background hover:text-ink data-popup-open:bg-background data-popup-open:text-ink focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-        >
-          <MoreVertical className="size-4" aria-hidden />
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent
-          align="end"
-          onClick={(e) => e.stopPropagation()}
-          className="w-55 rounded-md bg-card p-1.5 ring-1 ring-border shadow-md"
-        >
-          {/* 1. Send on WhatsApp */}
-          <DropdownMenuItem
-            disabled={whatsappDisabled}
-            title={whatsappDisabled ? whatsappHint : undefined}
-            aria-describedby={whatsappDisabled ? `${hintId}-whatsapp` : undefined}
-            onClick={() => {
-              if (!whatsappDisabled) {
-                // Signal intent — the modal opens in onOpenChangeComplete,
-                // after the menu's close animation has fully finished.
-                pendingSendRef.current = true;
-              }
-            }}
-            className="gap-2 rounded-sm px-2 py-1.5 bg-paid-soft text-paid-ink hover:bg-paid-soft focus:bg-paid-soft focus:text-paid-ink data-disabled:cursor-not-allowed"
+          <DropdownMenuTrigger
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            aria-label="Invoice actions"
+            className="relative z-10 inline-flex size-8 items-center justify-center rounded-lg bg-transparent text-ink-3 outline-none transition-colors hover:bg-background hover:text-ink data-popup-open:bg-background data-popup-open:text-ink focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
           >
-            <WhatsApp className="size-3.5 text-whatsapp-icon" aria-hidden />
-            <span className="text-body-sm font-bold">Send on WhatsApp</span>
-            {whatsappDisabled && (
-              <span id={`${hintId}-whatsapp`} className="sr-only">
-                {whatsappHint}
-              </span>
-            )}
-          </DropdownMenuItem>
+            <MoreVertical className="size-4" aria-hidden />
+          </DropdownMenuTrigger>
 
-          {/* 2. Copy pay link */}
-          <DropdownMenuItem
-            disabled={payLinkDisabled}
-            title={payLinkDisabled ? payLinkHint : undefined}
-            aria-describedby={payLinkDisabled ? `${hintId}-paylink` : undefined}
-            className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background data-disabled:cursor-not-allowed"
+          <DropdownMenuContent
+            align="end"
+            onClick={(e) => e.stopPropagation()}
+            className="w-55 rounded-md bg-card p-1.5 ring-1 ring-border shadow-md"
           >
-            <Share className="size-3.5 text-ink-3" aria-hidden />
-            <span className="text-body-sm font-bold">Copy pay link</span>
-            {payLinkDisabled && (
-              <span id={`${hintId}-paylink`} className="sr-only">
-                {payLinkHint}
-              </span>
-            )}
-          </DropdownMenuItem>
+            {/* 1. Send on WhatsApp */}
+            <DropdownMenuItem
+              disabled={whatsappDisabled}
+              title={whatsappDisabled ? whatsappHint : undefined}
+              aria-describedby={whatsappDisabled ? `${hintId}-whatsapp` : undefined}
+              onClick={() => {
+                if (!whatsappDisabled) {
+                  // Signal intent — the modal opens in onOpenChangeComplete,
+                  // after the menu's close animation has fully finished.
+                  pendingSendRef.current = true;
+                }
+              }}
+              className="gap-2 rounded-sm px-2 py-1.5 bg-paid-soft text-paid-ink hover:bg-paid-soft focus:bg-paid-soft focus:text-paid-ink data-disabled:cursor-not-allowed"
+            >
+              <WhatsApp className="size-3.5 text-whatsapp-icon" aria-hidden />
+              <span className="text-body-sm font-bold">Send on WhatsApp</span>
+              {whatsappDisabled && (
+                <span id={`${hintId}-whatsapp`} className="sr-only">
+                  {whatsappHint}
+                </span>
+              )}
+            </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+            {/* 2. Copy pay link */}
+            <DropdownMenuItem
+              disabled={payLinkDisabled}
+              title={payLinkDisabled ? payLinkHint : undefined}
+              aria-describedby={payLinkDisabled ? `${hintId}-paylink` : undefined}
+              className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background data-disabled:cursor-not-allowed"
+            >
+              <Share className="size-3.5 text-ink-3" aria-hidden />
+              <span className="text-body-sm font-bold">Copy pay link</span>
+              {payLinkDisabled && (
+                <span id={`${hintId}-paylink`} className="sr-only">
+                  {payLinkHint}
+                </span>
+              )}
+            </DropdownMenuItem>
 
-          {/* 3. Edit invoice — real anchor via render prop */}
-          <DropdownMenuItem
-            render={<Link href={`/invoices/${invoice.id.replace("#", "")}/edit`} />}
-            className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background"
-          >
-            <Edit className="size-3.5 text-ink-3" aria-hidden />
-            <span className="text-body-sm font-bold">Edit invoice</span>
-          </DropdownMenuItem>
+            <DropdownMenuSeparator />
 
-          {/* 4. Duplicate */}
-          <DropdownMenuItem className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background">
-            <Copy className="size-3.5 text-ink-3" aria-hidden />
-            <span className="text-body-sm font-bold">Duplicate</span>
-          </DropdownMenuItem>
+            {/* 3. Edit invoice — real anchor via render prop */}
+            <DropdownMenuItem
+              render={<Link href={`/invoices/${invoice.id.replace("#", "")}/edit`} />}
+              className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background"
+            >
+              <Edit className="size-3.5 text-ink-3" aria-hidden />
+              <span className="text-body-sm font-bold">Edit invoice</span>
+            </DropdownMenuItem>
 
-          {/* 5. Download PDF */}
-          <DropdownMenuItem className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background">
-            <Download className="size-3.5 text-ink-3" aria-hidden />
-            <span className="text-body-sm font-bold">Download PDF</span>
-          </DropdownMenuItem>
+            {/* 4. Duplicate */}
+            <DropdownMenuItem className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background">
+              <Copy className="size-3.5 text-ink-3" aria-hidden />
+              <span className="text-body-sm font-bold">Duplicate</span>
+            </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+            {/* 5. Download PDF */}
+            <DropdownMenuItem className="gap-2 rounded-sm px-2 py-1.5 focus:bg-background">
+              <Download className="size-3.5 text-ink-3" aria-hidden />
+              <span className="text-body-sm font-bold">Download PDF</span>
+            </DropdownMenuItem>
 
-          {/* 6. Delete */}
-          <DropdownMenuItem
-            variant="destructive"
-            className="gap-2 rounded-sm px-2 py-1.5 text-overdue-ink hover:bg-overdue-soft focus:bg-overdue-soft focus:text-overdue-ink"
-          >
-            <Trash2 className="size-3.5 text-overdue" aria-hidden />
-            <span className="text-body-sm font-bold">Delete</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+            <DropdownMenuSeparator />
+
+            {/* 6. Delete */}
+            <DropdownMenuItem
+              variant="destructive"
+              className="gap-2 rounded-sm px-2 py-1.5 text-overdue-ink hover:bg-overdue-soft focus:bg-overdue-soft focus:text-overdue-ink"
+            >
+              <Trash2 className="size-3.5 text-overdue" aria-hidden />
+              <span className="text-body-sm font-bold">Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
       {/* Send on WhatsApp modal — portaled, DOM position irrelevant */}
-      <SendChannelsModal
-        invoice={invoice}
-        open={sendOpen}
-        onOpenChange={setSendOpen}
-      />
+      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
     </>
   );
 }

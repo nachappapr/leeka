@@ -1,23 +1,16 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface CustomerStatTileProps {
-  label: string
-  value: string
-  meta: string
-  tone?: "ink" | "paid" | "overdue" | "ink-3"
+  label: string;
+  value: string;
+  meta: string;
+  tone?: "ink" | "paid" | "overdue" | "ink-3";
 }
 
-export function CustomerStatTile({
-  label,
-  value,
-  meta,
-  tone = "ink",
-}: CustomerStatTileProps) {
+export function CustomerStatTile({ label, value, meta, tone = "ink" }: CustomerStatTileProps) {
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
-      <div className="text-kicker font-extrabold uppercase tracking-wider text-ink-3">
-        {label}
-      </div>
+      <div className="text-kicker font-extrabold uppercase tracking-wider text-ink-3">{label}</div>
       <div
         className={cn(
           "tabular mt-1.5 text-money-sm font-extrabold",
@@ -31,5 +24,5 @@ export function CustomerStatTile({
       </div>
       <div className="mt-1 text-label text-ink-3">{meta}</div>
     </div>
-  )
+  );
 }

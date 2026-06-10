@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { StatusToggleChip } from "@/components/invoices/status-toggle-chip"
-import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
-import { INVOICE_STATUS_OPTIONS } from "@/lib/constants/invoices"
-import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { StatusToggleChip } from "@/components/invoices/status-toggle-chip";
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
+import { INVOICE_STATUS_OPTIONS } from "@/lib/constants/invoices";
+import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 
 interface InvoiceFilterViewProps {
   /** Called when the user applies a filter or cancels. */
-  onClose: () => void
+  onClose: () => void;
 }
 
 /**
@@ -19,25 +19,25 @@ interface InvoiceFilterViewProps {
  * the committed statuses value (no setState-in-effect needed).
  */
 export function InvoiceFilterView({ onClose }: InvoiceFilterViewProps) {
-  const { statuses, setStatuses, invoices } = useInvoiceListActions()
-  const [draft, setDraft] = useState<StatusPillStatus[]>([...statuses])
+  const { statuses, setStatuses, invoices } = useInvoiceListActions();
+  const [draft, setDraft] = useState<StatusPillStatus[]>([...statuses]);
 
   // Ref to the first chip button for focus management
-  const firstChipRef = useRef<HTMLButtonElement | null>(null)
+  const firstChipRef = useRef<HTMLButtonElement | null>(null);
 
   // Move focus to the first chip when this view mounts
   useEffect(() => {
-    firstChipRef.current?.focus()
-  }, []) // intentionally empty — fire only on mount
+    firstChipRef.current?.focus();
+  }, []); // intentionally empty — fire only on mount
 
   function toggle(status: StatusPillStatus) {
     setDraft((prev) =>
       prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status],
-    )
+    );
   }
 
   const countBy = (status: StatusPillStatus) =>
-    invoices.filter((inv) => inv.status === status).length
+    invoices.filter((inv) => inv.status === status).length;
 
   const matched = useMemo(
     () =>
@@ -45,11 +45,11 @@ export function InvoiceFilterView({ onClose }: InvoiceFilterViewProps) {
         ? invoices.length
         : invoices.filter((inv) => draft.includes(inv.status)).length,
     [draft, invoices],
-  )
+  );
 
   function handleApply() {
-    setStatuses(draft)
-    onClose()
+    setStatuses(draft);
+    onClose();
   }
 
   return (
@@ -92,12 +92,7 @@ export function InvoiceFilterView({ onClose }: InvoiceFilterViewProps) {
       </p>
 
       {/* Live count — announced by screen reader */}
-      <p
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+      <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {matched} invoice{matched === 1 ? "" : "s"} match
       </p>
 
@@ -122,5 +117,5 @@ export function InvoiceFilterView({ onClose }: InvoiceFilterViewProps) {
         </PillButton>
       </div>
     </>
-  )
+  );
 }

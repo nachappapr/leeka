@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useEmptyState } from "@/components/ui/custom/empty-state-provider"
-import { cn } from "@/lib/utils"
+import { useEmptyState } from "@/components/ui/custom/empty-state-provider";
+import { cn } from "@/lib/utils";
 
 export function EmptyStateToggle() {
-  const { isEmpty, toggle } = useEmptyState()
+  const { isEmpty, toggle } = useEmptyState();
 
   return (
     <button
@@ -22,12 +22,9 @@ export function EmptyStateToggle() {
     >
       <span
         aria-hidden="true"
-        className={cn(
-          "size-2 rounded-full transition-colors",
-          isEmpty ? "bg-ink" : "bg-ink-3",
-        )}
+        className={cn("size-2 rounded-full transition-colors", isEmpty ? "bg-ink" : "bg-ink-3")}
       />
       <span>Empty state: {isEmpty ? "On" : "Off"}</span>
     </button>
-  )
+  );
 }

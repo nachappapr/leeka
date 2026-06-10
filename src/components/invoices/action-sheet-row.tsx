@@ -1,15 +1,15 @@
-import { forwardRef } from "react"
-import type React from "react"
+import { forwardRef } from "react";
+import type React from "react";
 
-import { ChevronRight } from "@/components/icons"
-import { cn } from "@/lib/utils"
+import { ChevronRight } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 interface ActionSheetRowProps {
-  icon: React.ReactNode
-  label: string
-  subtitle?: string
-  badge?: number
-  onClick: () => void
+  icon: React.ReactNode;
+  label: string;
+  subtitle?: string;
+  badge?: number;
+  onClick: () => void;
 }
 
 export const ActionSheetRow = forwardRef<HTMLButtonElement, ActionSheetRowProps>(
@@ -30,9 +30,7 @@ export const ActionSheetRow = forwardRef<HTMLButtonElement, ActionSheetRowProps>
         <span className="min-w-0 flex-1">
           <span className="block text-15 font-semibold text-ink">{label}</span>
           {subtitle && (
-            <span className="block truncate text-label font-semibold text-ink-3">
-              {subtitle}
-            </span>
+            <span className="block truncate text-label font-semibold text-ink-3">{subtitle}</span>
           )}
         </span>
 
@@ -52,6 +50,6 @@ export const ActionSheetRow = forwardRef<HTMLButtonElement, ActionSheetRowProps>
         {/* Chevron */}
         <ChevronRight className="size-4 shrink-0 text-ink-3" aria-hidden />
       </button>
-    )
+    );
   },
-)
+);

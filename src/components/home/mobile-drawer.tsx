@@ -100,9 +100,7 @@ function MobileDrawer({ open, onClose, triggerRef }: MobileDrawerProps) {
         aria-hidden="true"
         className={cn(
           "fixed inset-0 z-40 transition-colors duration-300 motion-reduce:transition-none",
-          open
-            ? "bg-ink/50 pointer-events-auto"
-            : "bg-transparent pointer-events-none",
+          open ? "bg-ink/50 pointer-events-auto" : "bg-transparent pointer-events-none",
         )}
         onClick={onClose}
       />
@@ -163,9 +161,7 @@ function MobileDrawer({ open, onClose, triggerRef }: MobileDrawerProps) {
           {/* Language row */}
           <div className="flex items-center gap-2 rounded-xl bg-background px-3 py-2.5">
             <Globe className="size-4 text-ink-2" />
-            <span className="flex-1 text-body-sm font-bold text-ink-2">
-              Language
-            </span>
+            <span className="flex-1 text-body-sm font-bold text-ink-2">Language</span>
             <span className="font-extrabold text-coral-press">
               EN / <span lang="hi">हिं</span>
             </span>

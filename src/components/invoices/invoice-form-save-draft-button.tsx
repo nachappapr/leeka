@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
 // Justified "use client": owns saving/saved state machine, useRouter for
 // "Open drafts" navigation, and fires brandToast (client-only).
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { Check, Edit, FileText, Loader2 } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { brandToast } from "@/components/ui/custom/brand-toast"
-import type { Invoice } from "@/lib/types"
-import { cn } from "@/lib/utils"
+import { Check, Edit, FileText, Loader2 } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { brandToast } from "@/components/ui/custom/brand-toast";
+import type { Invoice } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 // ── Shared toast helper ───────────────────────────────────────────────────────
 // Exported so mobile-sheet rows can fire the same toast without the inline
@@ -26,41 +26,41 @@ export function fireDraftSavedToast(invoice: Invoice, onOpenDrafts: () => void) 
         onClick: onOpenDrafts,
       },
     ],
-  })
+  });
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 interface InvoiceFormSaveDraftButtonProps {
-  invoice: Invoice
-  fullWidth?: boolean
-  className?: string
+  invoice: Invoice;
+  fullWidth?: boolean;
+  className?: string;
 }
 
-type SaveState = null | "saving" | "saved"
+type SaveState = null | "saving" | "saved";
 
 export function InvoiceFormSaveDraftButton({
   invoice,
   fullWidth,
   className,
 }: InvoiceFormSaveDraftButtonProps) {
-  const router = useRouter()
-  const [saveState, setSaveState] = useState<SaveState>(null)
+  const router = useRouter();
+  const [saveState, setSaveState] = useState<SaveState>(null);
 
   async function handleSave() {
     // Guard against double-fire while in-flight
-    if (saveState !== null) return
+    if (saveState !== null) return;
 
-    setSaveState("saving")
-    await new Promise<void>((r) => setTimeout(r, 600))
-    setSaveState("saved")
+    setSaveState("saving");
+    await new Promise<void>((r) => setTimeout(r, 600));
+    setSaveState("saved");
 
-    fireDraftSavedToast(invoice, () => router.push("/invoices"))
+    fireDraftSavedToast(invoice, () => router.push("/invoices"));
 
-    setTimeout(() => setSaveState(null), 2400)
+    setTimeout(() => setSaveState(null), 2400);
   }
 
-  const isSaving = saveState === "saving"
-  const isSaved = saveState === "saved"
+  const isSaving = saveState === "saving";
+  const isSaved = saveState === "saved";
 
   return (
     <>
@@ -97,5 +97,5 @@ export function InvoiceFormSaveDraftButton({
         {isSaving ? "Saving draft…" : isSaved ? "Draft saved" : ""}
       </span>
     </>
-  )
+  );
 }

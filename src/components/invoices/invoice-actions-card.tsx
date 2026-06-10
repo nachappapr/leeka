@@ -29,10 +29,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           {isPaid ? (
             <InvoiceActionsPaid onSend={() => setSendOpen(true)} />
           ) : isDraft ? (
-            <InvoiceActionsDraft
-              invoiceId={invoiceId}
-              onSend={() => setSendOpen(true)}
-            />
+            <InvoiceActionsDraft invoiceId={invoiceId} onSend={() => setSendOpen(true)} />
           ) : (
             <InvoiceActionsOpen
               invoiceId={invoiceId}
@@ -42,11 +39,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           )}
         </div>
       </Card>
-      <SendChannelsModal
-        invoice={invoice}
-        open={sendOpen}
-        onOpenChange={setSendOpen}
-      />
+      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
     </>
   );
 }

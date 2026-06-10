@@ -16,9 +16,7 @@ interface InvoiceDetailMobileFooterProps {
 
 // Sticky bottom action bar on mobile. Sits directly at the bottom of the
 // viewport — MobileTabBar is removed from invoice detail pages.
-export function InvoiceDetailMobileFooter({
-  invoice,
-}: InvoiceDetailMobileFooterProps) {
+export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooterProps) {
   const [sendOpen, setSendOpen] = useState(false);
   const invoiceId = invoice.id;
   const status = invoice.status;

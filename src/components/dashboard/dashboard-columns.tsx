@@ -15,18 +15,14 @@ export const dashboardColumns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "customer",
     header: "Customer",
-    cell: ({ row }) => (
-      <CustomerCell customer={row.original.customer} city={row.original.city} />
-    ),
+    cell: ({ row }) => <CustomerCell customer={row.original.customer} city={row.original.city} />,
   },
   {
     accessorKey: "id",
     header: "Invoice #",
     enableSorting: false,
     cell: ({ getValue }) => (
-      <span className="text-body-sm font-medium text-ink-2">
-        {getValue<string>()}
-      </span>
+      <span className="text-body-sm font-medium text-ink-2">{getValue<string>()}</span>
     ),
   },
   {
@@ -42,19 +38,14 @@ export const dashboardColumns: ColumnDef<Invoice>[] = [
     accessorKey: "status",
     header: "Status",
     enableSorting: false,
-    cell: ({ getValue }) => (
-      <StatusPill status={getValue<Invoice["status"]>()} />
-    ),
+    cell: ({ getValue }) => <StatusPill status={getValue<Invoice["status"]>()} />,
   },
   {
     accessorKey: "amount",
     header: "Amount",
-    sortingFn: (a, b) =>
-      parseAmount(a.original.amount) - parseAmount(b.original.amount),
+    sortingFn: (a, b) => parseAmount(a.original.amount) - parseAmount(b.original.amount),
     cell: ({ getValue }) => (
-      <span className="tabular text-body-sm font-bold text-ink">
-        {getValue<string>()}
-      </span>
+      <span className="tabular text-body-sm font-bold text-ink">{getValue<string>()}</span>
     ),
   },
   {

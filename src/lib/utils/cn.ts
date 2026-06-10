@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from "clsx"
-import { extendTailwindMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { extendTailwindMerge } from "tailwind-merge";
 
 // The design system defines its own font-size scale in globals.css `@theme`
 // (numeric `text-9`…`text-64` + semantic `text-body`, `text-label`, …).
@@ -13,17 +13,49 @@ const twMerge = extendTailwindMerge({
       "font-size": [
         {
           text: [
-            "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-            "20", "22", "24", "26", "28", "32", "36", "40", "44", "48", "56",
-            "64", "kicker", "label", "caption", "body-sm", "body", "title-sm",
-            "lead", "title", "h2", "h1", "money", "money-sm", "display",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28",
+            "32",
+            "36",
+            "40",
+            "44",
+            "48",
+            "56",
+            "64",
+            "kicker",
+            "label",
+            "caption",
+            "body-sm",
+            "body",
+            "title-sm",
+            "lead",
+            "title",
+            "h2",
+            "h1",
+            "money",
+            "money-sm",
+            "display",
           ],
         },
       ],
     },
   },
-})
+});
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }

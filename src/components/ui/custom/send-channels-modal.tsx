@@ -9,15 +9,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useRef, useState } from "react";
-import {
-  Check,
-  Edit,
-  Info,
-  Loader2,
-  Share,
-  WhatsApp,
-  XIcon,
-} from "@/components/icons";
+import { Check, Edit, Info, Loader2, Share, WhatsApp, XIcon } from "@/components/icons";
 import {
   Modal,
   ModalBody,
@@ -43,11 +35,7 @@ interface SendChannelsModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function SendChannelsModal({
-  invoice,
-  open,
-  onOpenChange,
-}: SendChannelsModalProps) {
+export function SendChannelsModal({ invoice, open, onOpenChange }: SendChannelsModalProps) {
   const [channel, setChannel] = useState<SendChannel>("whatsapp");
   const [sendState, setSendState] = useState<SendState>("idle");
   const [noteOpen, setNoteOpen] = useState(false);
@@ -170,8 +158,8 @@ export function SendChannelsModal({
               Send {invoice.id} to {firstName}?
             </ModalTitle>
             <ModalDescription>
-              We&apos;ll generate a fresh payment link and send it on {channelName}{" "}
-              with the invoice PDF.
+              We&apos;ll generate a fresh payment link and send it on {channelName} with the invoice
+              PDF.
             </ModalDescription>
           </div>
           <ModalClose />
@@ -195,18 +183,12 @@ export function SendChannelsModal({
               <strong className="font-extrabold text-ink">
                 Payment link is created when you tap send.
               </strong>{" "}
-              Customer taps &rarr; pays on the hosted page &rarr; we mark it paid
-              automatically.
+              Customer taps &rarr; pays on the hosted page &rarr; we mark it paid automatically.
             </p>
           </div>
 
           {noteOpen && (
-            <SendNoteField
-              note={note}
-              onChange={setNote}
-              disabled={isBusy}
-              textareaRef={noteRef}
-            />
+            <SendNoteField note={note} onChange={setNote} disabled={isBusy} textareaRef={noteRef} />
           )}
         </ModalBody>
 
@@ -276,12 +258,7 @@ export function SendChannelsModal({
               The "sent" success is announced by Sonner's own aria-live region (the
               toast) — adding a second announcement here would double-announce it.
               This live region is intentionally silent on sendState === "sent". */}
-          <p
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            className="sr-only"
-          >
+          <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
             {sendState === "sending" ? "Sending invoice…" : ""}
           </p>
         </ModalFooter>

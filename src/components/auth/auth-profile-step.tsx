@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { BIZ_TYPES } from "@/lib/constants/auth"
-import type { BizTypeId } from "@/lib/constants/auth"
-import { Check, Store, UserRound } from "@/components/icons"
-import { AuthProgressDots } from "@/components/auth/auth-progress-dots"
+import { cn } from "@/lib/utils";
+import { BIZ_TYPES } from "@/lib/constants/auth";
+import type { BizTypeId } from "@/lib/constants/auth";
+import { Check, Store, UserRound } from "@/components/icons";
+import { AuthProgressDots } from "@/components/auth/auth-progress-dots";
 
 interface AuthProfileStepProps {
-  bizName: string
-  yourName: string
-  bizType: BizTypeId | null
-  onBizNameChange: (v: string) => void
-  onYourNameChange: (v: string) => void
-  onBizTypeChange: (v: BizTypeId) => void
-  onSubmit: () => void
+  bizName: string;
+  yourName: string;
+  bizType: BizTypeId | null;
+  onBizNameChange: (v: string) => void;
+  onYourNameChange: (v: string) => void;
+  onBizTypeChange: (v: BizTypeId) => void;
+  onSubmit: () => void;
 }
 
 function AuthProfileStep({
@@ -25,15 +25,13 @@ function AuthProfileStep({
   onBizTypeChange,
   onSubmit,
 }: AuthProfileStepProps) {
-  const isDisabled = !bizName.trim() || !yourName.trim() || bizType === null
+  const isDisabled = !bizName.trim() || !yourName.trim() || bizType === null;
 
   return (
     <div className="flex flex-col gap-0">
       <AuthProgressDots step="profile" />
 
-      <p className="text-kicker font-extrabold uppercase tracking-widest text-coral">
-        Almost done
-      </p>
+      <p className="text-kicker font-extrabold uppercase tracking-widest text-coral">Almost done</p>
 
       <h2 className="mt-1.5 text-h2 font-extrabold leading-tight tracking-tight text-ink">
         Tell us about your business
@@ -106,7 +104,7 @@ function AuthProfileStep({
         Finish &amp; open ArthaPatra
       </button>
     </div>
-  )
+  );
 }
 
-export { AuthProfileStep }
+export { AuthProfileStep };

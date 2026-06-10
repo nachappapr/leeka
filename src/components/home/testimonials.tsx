@@ -1,5 +1,5 @@
-import { TESTIMONIALS } from "@/lib/constants/home"
-import { TestimonialCard } from "@/components/home/testimonial-card"
+import { TESTIMONIALS } from "@/lib/constants/home";
+import { TestimonialCard } from "@/components/home/testimonial-card";
 
 function Testimonials() {
   return (
@@ -23,7 +23,7 @@ function Testimonials() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export { Testimonials }
+export { Testimonials };

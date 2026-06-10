@@ -1,17 +1,17 @@
-import { cn } from "@/lib/utils"
-import { LekkaLogo } from "@/components/icons"
+import { cn } from "@/lib/utils";
+import { LekkaLogo } from "@/components/icons";
 
 interface BrandBadgeProps {
-  size?: number
-  svgSize?: string
-  color?: string
+  size?: number;
+  svgSize?: string;
+  color?: string;
   /**
    * Accessible name. Omit when the badge is paired with visible brand text
    * (default — the tile is then decorative and hidden from assistive tech).
    * Provide when the badge stands alone as the sole brand mark.
    */
-  label?: string
-  className?: string
+  label?: string;
+  className?: string;
 }
 
 export function BrandBadge({
@@ -26,10 +26,7 @@ export function BrandBadge({
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
-      className={cn(
-        "flex shrink-0 items-center justify-center rounded-md shadow-coral",
-        className,
-      )}
+      className={cn("flex shrink-0 items-center justify-center rounded-md shadow-coral", className)}
       style={{
         width: `${size}px`,
         height: `${size}px`,
@@ -38,5 +35,5 @@ export function BrandBadge({
     >
       <LekkaLogo style={{ width: svgSize, height: svgSize }} />
     </div>
-  )
+  );
 }

@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import type { Dispatch, SetStateAction } from "react"
+import type { Dispatch, SetStateAction } from "react";
 
-import { Check } from "@/components/icons"
-import { cn } from "@/lib/utils"
-import { EXPORT_COL_OPTS } from "@/lib/constants/invoice-export"
-import type { ExportColState } from "@/lib/types/invoice-export"
+import { Check } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { EXPORT_COL_OPTS } from "@/lib/constants/invoice-export";
+import type { ExportColState } from "@/lib/types/invoice-export";
 
 interface ExportColumnChipsProps {
-  cols: ExportColState
-  setCols: Dispatch<SetStateAction<ExportColState>>
+  cols: ExportColState;
+  setCols: Dispatch<SetStateAction<ExportColState>>;
 }
 
 export function ExportColumnChips({ cols, setCols }: ExportColumnChipsProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {EXPORT_COL_OPTS.map((c) => {
-        const checked = cols[c.id]
+        const checked = cols[c.id];
         return (
           <label
             key={c.id}
@@ -31,9 +31,7 @@ export function ExportColumnChips({ cols, setCols }: ExportColumnChipsProps) {
             <input
               type="checkbox"
               checked={checked}
-              onChange={(e) =>
-                setCols((prev) => ({ ...prev, [c.id]: e.target.checked }))
-              }
+              onChange={(e) => setCols((prev) => ({ ...prev, [c.id]: e.target.checked }))}
               className="sr-only"
             />
             <span
@@ -43,14 +41,12 @@ export function ExportColumnChips({ cols, setCols }: ExportColumnChipsProps) {
                 checked ? "bg-primary border-primary" : "bg-card border-line-strong",
               )}
             >
-              {checked && (
-                <Check size={12} strokeWidth={3} className="text-white" aria-hidden />
-              )}
+              {checked && <Check size={12} strokeWidth={3} className="text-white" aria-hidden />}
             </span>
             <span className="text-caption font-semibold">{c.label}</span>
           </label>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

@@ -47,7 +47,7 @@ function BrowserPreviewCard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { BrowserPreviewCard }
+export { BrowserPreviewCard };

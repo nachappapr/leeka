@@ -11,13 +11,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsUpDown,
-} from "@/components/icons";
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsUpDown } from "@/components/icons";
 import {
   DataBody,
   DataCell,
@@ -26,10 +20,7 @@ import {
   DataRow,
   DataTable,
 } from "@/components/ui/custom/data-table";
-import {
-  FilterChips,
-  type FilterChipsItem,
-} from "@/components/ui/custom/filter-chips";
+import { FilterChips, type FilterChipsItem } from "@/components/ui/custom/filter-chips";
 import { DashboardInvoicesMobileList } from "@/components/dashboard/dashboard-invoices-mobile-list";
 import { dashboardColumns } from "./dashboard-columns";
 import { INVOICES_FILTER_CHIPS } from "@/lib/constants";
@@ -42,9 +33,7 @@ interface DashboardInvoicesShellProps {
   invoices: ReadonlyArray<Invoice>;
 }
 
-export function DashboardInvoicesShell({
-  invoices,
-}: DashboardInvoicesShellProps) {
+export function DashboardInvoicesShell({ invoices }: DashboardInvoicesShellProps) {
   // Desktop independent state (mobile sort/filter lives in DashboardInvoicesMobileList)
   const [filter, setFilter] = useState<InvoiceStatusFilter>("all");
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -67,10 +56,7 @@ export function DashboardInvoicesShell({
   );
 
   const filteredInvoices = useMemo(
-    () =>
-      filter === "all"
-        ? invoices
-        : invoices.filter((inv) => inv.status === filter),
+    () => (filter === "all" ? invoices : invoices.filter((inv) => inv.status === filter)),
     [invoices, filter],
   );
 
@@ -116,10 +102,7 @@ export function DashboardInvoicesShell({
         <DataTable aria-label="Recent invoices" className="table-fixed">
           <DataHeader>
             {table.getHeaderGroups().map((hg) => (
-              <DataRow
-                key={hg.id}
-                className="cursor-default hover:bg-background"
-              >
+              <DataRow key={hg.id} className="cursor-default hover:bg-background">
                 {hg.headers.map((header, i) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
@@ -136,11 +119,7 @@ export function DashboardInvoicesShell({
                         canSort && "cursor-pointer select-none",
                       )}
                       aria-hidden={isLast || undefined}
-                      onClick={
-                        canSort
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
-                      }
+                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                       aria-sort={
                         sorted === "asc"
                           ? "ascending"
@@ -153,10 +132,7 @@ export function DashboardInvoicesShell({
                     >
                       {!isLast && (
                         <span className="inline-flex items-center gap-1">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                           {canSort && (
                             <span aria-hidden className="text-ink-3">
                               {sorted === "asc" ? (
@@ -190,10 +166,7 @@ export function DashboardInvoicesShell({
                         isLast && "pr-6 text-center",
                       )}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </DataCell>
                   );
                 })}

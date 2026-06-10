@@ -17,9 +17,7 @@ interface DashboardInvoicesMobileListProps {
  * invoice list actions context (the ⋯ bottom sheet); the summary chips + Clear
  * surface the active selection. Desktop uses the table in the shell instead.
  */
-export function DashboardInvoicesMobileList({
-  invoices,
-}: DashboardInvoicesMobileListProps) {
+export function DashboardInvoicesMobileList({ invoices }: DashboardInvoicesMobileListProps) {
   const { sort, statuses } = useInvoiceListActions();
 
   const mobileInvoices = useMemo(

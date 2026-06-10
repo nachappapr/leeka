@@ -1,12 +1,12 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
-import { StatusPill } from "@/components/ui/custom/status-pill"
-import type { Invoice } from "@/lib/types"
-import { formatInvoiceDate } from "@/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import { StatusPill } from "@/components/ui/custom/status-pill";
+import type { Invoice } from "@/lib/types";
+import { formatInvoiceDate } from "@/lib/utils";
 
 export interface DataListRowProps {
-  invoice: Invoice
+  invoice: Invoice;
 }
 
 export function DataListRow({ invoice }: DataListRowProps) {
@@ -14,8 +14,8 @@ export function DataListRow({ invoice }: DataListRowProps) {
     .split(" ")
     .map((w) => w[0])
     .join("")
-    .slice(0, 2)
-  const href = `/invoices/${invoice.id.replace("#", "")}`
+    .slice(0, 2);
+  const href = `/invoices/${invoice.id.replace("#", "")}`;
 
   return (
     <li className="rounded-2xl bg-card shadow-card transition-colors hover:bg-coral/5 active:bg-coral/5">
@@ -31,15 +31,11 @@ export function DataListRow({ invoice }: DataListRowProps) {
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-body-sm font-bold text-ink">
-              {invoice.customer}
-            </div>
+            <div className="truncate text-body-sm font-bold text-ink">{invoice.customer}</div>
             <div className="mt-0.5 flex items-center gap-1.5 text-label text-ink-3">
               <span>{invoice.id}</span>
               <span aria-hidden>·</span>
-              <time dateTime={invoice.isoDate}>
-                {formatInvoiceDate(invoice.isoDate)}
-              </time>
+              <time dateTime={invoice.isoDate}>{formatInvoiceDate(invoice.isoDate)}</time>
             </div>
           </div>
         </div>
@@ -50,12 +46,10 @@ export function DataListRow({ invoice }: DataListRowProps) {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-label font-semibold text-ink-3">Amount</span>
-            <span className="tabular text-title-sm font-bold text-ink">
-              {invoice.amount}
-            </span>
+            <span className="tabular text-title-sm font-bold text-ink">{invoice.amount}</span>
           </div>
         </div>
       </Link>
     </li>
-  )
+  );
 }

@@ -1,16 +1,9 @@
-import type React from "react"
+import type React from "react";
 
 // Google "G" logo — paths copied from official Google brand guidelines SVG.
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      aria-hidden="true"
-      {...props}
-    >
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
       <path
         d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z"
         fill="#4285F4"
@@ -28,7 +21,7 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
         fill="#EA4335"
       />
     </svg>
-  )
+  );
 }
 
-export { GoogleIcon }
+export { GoogleIcon };

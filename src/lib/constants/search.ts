@@ -1,11 +1,11 @@
-import type { StatusPillStatus } from "@/components/ui/custom/status-pill"
+import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 
 export type JumpItem = {
-  filter: StatusPillStatus | "sent"
-  label: string
-  sub: (count: number) => string
-  color: string
-}
+  filter: StatusPillStatus | "sent";
+  label: string;
+  sub: (count: number) => string;
+  color: string;
+};
 
 export const JUMP_ITEMS: ReadonlyArray<JumpItem> = [
   {
@@ -32,4 +32,4 @@ export const JUMP_ITEMS: ReadonlyArray<JumpItem> = [
     sub: (n) => `${n} receipts`,
     color: "var(--color-paid)",
   },
-]
+];

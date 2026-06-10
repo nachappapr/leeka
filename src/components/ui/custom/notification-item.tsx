@@ -1,23 +1,23 @@
-import { cn, formatAmount, relTime } from "@/lib/utils"
-import { NotificationRail } from "@/components/ui/custom/notification-rail"
-import { NotificationIcon } from "@/components/ui/custom/notification-icon"
-import { NotificationDot } from "@/components/ui/custom/notification-dot"
-import type { NotificationTone } from "@/lib/types/notifications"
+import { cn, formatAmount, relTime } from "@/lib/utils";
+import { NotificationRail } from "@/components/ui/custom/notification-rail";
+import { NotificationIcon } from "@/components/ui/custom/notification-icon";
+import { NotificationDot } from "@/components/ui/custom/notification-dot";
+import type { NotificationTone } from "@/lib/types/notifications";
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
 export interface NotificationItemProps {
-  customer: string
-  verb: string
-  amount?: number
-  invoiceNo?: string
-  tone: NotificationTone
-  timestamp: string | Date
-  unread?: boolean
+  customer: string;
+  verb: string;
+  amount?: number;
+  invoiceNo?: string;
+  tone: NotificationTone;
+  timestamp: string | Date;
+  unread?: boolean;
   /** Accepted for API compatibility; wired in Unit 12. */
-  href?: string
+  href?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ function NotificationItem({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   href: _href,
 }: NotificationItemProps) {
-  const timeLabel = relTime(timestamp)
+  const timeLabel = relTime(timestamp);
   const ariaLabel = [
     `${customer} ${verb}`,
     amount !== undefined ? `₹${formatAmount(amount)}` : null,
@@ -43,7 +43,7 @@ function NotificationItem({
     timeLabel,
   ]
     .filter(Boolean)
-    .join(", ")
+    .join(", ");
 
   return (
     <button
@@ -72,22 +72,22 @@ function NotificationItem({
       {/* Body copy */}
       <div className="min-w-0 flex-1 self-center">
         <p className="text-caption text-ink-2 leading-snug">
-          <span className="font-bold text-ink">{customer}</span>{" "}
-          {verb}
+          <span className="font-bold text-ink">{customer}</span> {verb}
           {amount !== undefined && (
-            <>{" "}<span className="font-bold text-ink tabular-nums">₹{formatAmount(amount)}</span></>
+            <>
+              {" "}
+              <span className="font-bold text-ink tabular-nums">₹{formatAmount(amount)}</span>
+            </>
           )}
         </p>
-        {invoiceNo && (
-          <p className="text-label text-ink-3 mt-1">{invoiceNo}</p>
-        )}
+        {invoiceNo && <p className="text-label text-ink-3 mt-1">{invoiceNo}</p>}
         <p className="text-label text-ink-3 mt-0.5">{timeLabel}</p>
       </div>
 
       {/* Unread indicator — self-start prevents stretch distortion */}
       {unread && <NotificationDot withHalo className="self-start mt-2" />}
     </button>
-  )
+  );
 }
 
-export { NotificationItem }
+export { NotificationItem };

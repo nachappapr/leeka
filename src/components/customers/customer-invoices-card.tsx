@@ -1,21 +1,21 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
-import { Card } from "@/components/ui/custom/card"
-import { StatusPill } from "@/components/ui/custom/status-pill"
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import { Card } from "@/components/ui/custom/card";
+import { StatusPill } from "@/components/ui/custom/status-pill";
 import {
   DataTable,
   DataHeader,
   DataHead,
   DataBody,
   DataCell,
-} from "@/components/ui/custom/data-table"
-import { formatInvoiceDate } from "@/lib/utils"
-import type { Invoice } from "@/lib/types"
+} from "@/components/ui/custom/data-table";
+import { formatInvoiceDate } from "@/lib/utils";
+import type { Invoice } from "@/lib/types";
 
 interface CustomerInvoicesCardProps {
-  customerName: string
-  invoices: Invoice[]
+  customerName: string;
+  invoices: Invoice[];
 }
 
 function getInitials(name: string): string {
@@ -23,25 +23,20 @@ function getInitials(name: string): string {
     .split(" ")
     .map((w) => w[0])
     .join("")
-    .slice(0, 2)
+    .slice(0, 2);
 }
 
 function invoiceHref(id: string): string {
   // IDs like "#INV-1040" → strip the # for URL safety
-  return `/invoices/${id.replace(/^#/, "")}`
+  return `/invoices/${id.replace(/^#/, "")}`;
 }
 
-export function CustomerInvoicesCard({
-  customerName,
-  invoices,
-}: CustomerInvoicesCardProps) {
+export function CustomerInvoicesCard({ customerName, invoices }: CustomerInvoicesCardProps) {
   return (
     <Card title="Invoices" headingLevel={3}>
       {invoices.length === 0 ? (
         <div className="px-6 py-8 text-center">
-          <div className="text-body-sm font-bold text-ink-2">
-            No invoices yet
-          </div>
+          <div className="text-body-sm font-bold text-ink-2">No invoices yet</div>
           <div className="mt-1 text-caption text-ink-3">
             Send your first invoice to {customerName}.
           </div>
@@ -71,9 +66,7 @@ export function CustomerInvoicesCard({
                         href={invoiceHref(inv.id)}
                         className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-coral-press focus-visible:after:ring-inset"
                       >
-                        <span className="text-body-sm font-semibold text-ink">
-                          {inv.id}
-                        </span>
+                        <span className="text-body-sm font-semibold text-ink">{inv.id}</span>
                       </Link>
                     </DataCell>
                     <DataCell>
@@ -85,9 +78,7 @@ export function CustomerInvoicesCard({
                       <StatusPill status={inv.status} />
                     </DataCell>
                     <DataCell className="pr-6 text-right">
-                      <span className="tabular text-body-sm font-bold text-ink">
-                        {inv.amount}
-                      </span>
+                      <span className="tabular text-body-sm font-bold text-ink">{inv.amount}</span>
                     </DataCell>
                   </tr>
                 ))}
@@ -101,7 +92,7 @@ export function CustomerInvoicesCard({
             className="flex flex-col min-mobile:hidden"
           >
             {invoices.map((inv) => {
-              const initials = getInitials(inv.customer)
+              const initials = getInitials(inv.customer);
               return (
                 <li key={inv.id} className="border-t border-border first:border-t-0">
                   <Link
@@ -114,26 +105,22 @@ export function CustomerInvoicesCard({
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <div className="text-body-sm font-semibold text-ink">
-                        {inv.customer}
-                      </div>
+                      <div className="text-body-sm font-semibold text-ink">{inv.customer}</div>
                       <div className="mt-0.5 text-label text-ink-3">
                         {inv.id} · {formatInvoiceDate(inv.isoDate)}
                       </div>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1">
-                      <span className="tabular text-body-sm font-bold text-ink">
-                        {inv.amount}
-                      </span>
+                      <span className="tabular text-body-sm font-bold text-ink">{inv.amount}</span>
                       <StatusPill status={inv.status} size="sm" />
                     </div>
                   </Link>
                 </li>
-              )
+              );
             })}
           </ul>
         </>
       )}
     </Card>
-  )
+  );
 }

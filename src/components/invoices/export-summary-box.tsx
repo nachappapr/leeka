@@ -1,19 +1,15 @@
-"use client"
+"use client";
 
-import { Download } from "@/components/icons"
-import { formatRupees } from "@/lib/utils/format-currency"
+import { Download } from "@/components/icons";
+import { formatRupees } from "@/lib/utils/format-currency";
 
 interface ExportSummaryBoxProps {
-  matchCount: number
-  totalAmt: number
-  filename: string
+  matchCount: number;
+  totalAmt: number;
+  filename: string;
 }
 
-export function ExportSummaryBox({
-  matchCount,
-  totalAmt,
-  filename,
-}: ExportSummaryBoxProps) {
+export function ExportSummaryBox({ matchCount, totalAmt, filename }: ExportSummaryBoxProps) {
   return (
     <div className="flex items-center gap-3.5 px-4 py-3.5 bg-background border border-dashed border-line-strong rounded-lg mt-1.5 mb-4">
       <div className="flex-1 min-w-0">
@@ -41,5 +37,5 @@ export function ExportSummaryBox({
         </span>
       )}
     </div>
-  )
+  );
 }

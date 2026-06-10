@@ -12,13 +12,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsUpDown,
-} from "@/components/icons";
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsUpDown } from "@/components/icons";
 import {
   DataBody,
   DataCell,
@@ -119,18 +113,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                           onClick={header.column.getToggleSortingHandler()}
                           className="inline-flex select-none items-center gap-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
                         >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                           {sortIcon}
                         </button>
                       ) : (
                         <span className="inline-flex items-center gap-1">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                         </span>
                       ))}
                   </DataHead>
@@ -169,10 +157,7 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
                         isLast && "pr-6 text-center",
                       )}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </DataCell>
                   );
                 })}

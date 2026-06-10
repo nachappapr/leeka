@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
 // Justified "use client": owns newName/newPhone/newGstin state via useState.
 
-import * as React from "react"
+import * as React from "react";
 
-import { Check, ChevronLeft } from "@/components/icons"
-import { FieldLabel } from "@/components/ui/custom/field-label"
-import { IconButton } from "@/components/ui/custom/icon-button"
-import { InputField } from "@/components/ui/custom/input-field"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import type { SelectedCustomer } from "@/lib/types/customer"
+import { Check, ChevronLeft } from "@/components/icons";
+import { FieldLabel } from "@/components/ui/custom/field-label";
+import { IconButton } from "@/components/ui/custom/icon-button";
+import { InputField } from "@/components/ui/custom/input-field";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import type { SelectedCustomer } from "@/lib/types/customer";
 
 export function InvoiceFormCustomerAddNewPanel({
   initialName,
   onBack,
   onSave,
 }: {
-  initialName: string
-  onBack: () => void
-  onSave: (c: SelectedCustomer) => void
+  initialName: string;
+  onBack: () => void;
+  onSave: (c: SelectedCustomer) => void;
 }) {
-  const [newName, setNewName] = React.useState(initialName)
-  const [newPhone, setNewPhone] = React.useState("")
-  const [newGstin, setNewGstin] = React.useState("")
-  const canSave = newName.trim().length > 0 && newPhone.trim().length > 0
+  const [newName, setNewName] = React.useState(initialName);
+  const [newPhone, setNewPhone] = React.useState("");
+  const [newGstin, setNewGstin] = React.useState("");
+  const canSave = newName.trim().length > 0 && newPhone.trim().length > 0;
 
   return (
     <div className="rounded-2xl border-[1.5px] border-dashed border-line-strong bg-background p-3.5">
@@ -85,7 +85,7 @@ export function InvoiceFormCustomerAddNewPanel({
           disabled={!canSave}
           onClick={() => {
             if (canSave)
-              onSave({ name: newName.trim(), phone: newPhone.trim(), last: "New customer" })
+              onSave({ name: newName.trim(), phone: newPhone.trim(), last: "New customer" });
           }}
         >
           <Check className="size-3.5" strokeWidth={2.6} aria-hidden />
@@ -93,5 +93,5 @@ export function InvoiceFormCustomerAddNewPanel({
         </PillButton>
       </div>
     </div>
-  )
+  );
 }

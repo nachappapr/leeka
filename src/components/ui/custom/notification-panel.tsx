@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/primitives/popover"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/primitives/sheet"
-import { Button } from "@/components/ui/primitives/button"
-import { Bell, XIcon } from "@/components/icons"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { NotificationHead } from "@/components/ui/custom/notification-head"
-import { NotificationFooter } from "@/components/ui/custom/notification-footer"
-import { NotificationGroup } from "@/components/ui/custom/notification-group"
-import { NotificationEmpty } from "@/components/ui/custom/notification-empty"
-import type { NotificationGroupData } from "@/lib/types/notifications"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/primitives/popover";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/primitives/sheet";
+import { Button } from "@/components/ui/primitives/button";
+import { Bell, XIcon } from "@/components/icons";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { NotificationHead } from "@/components/ui/custom/notification-head";
+import { NotificationFooter } from "@/components/ui/custom/notification-footer";
+import { NotificationGroup } from "@/components/ui/custom/notification-group";
+import { NotificationEmpty } from "@/components/ui/custom/notification-empty";
+import type { NotificationGroupData } from "@/lib/types/notifications";
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
 export interface NotificationPanelProps {
-  groups: NotificationGroupData[]
-  onMarkAllRead?: () => void
-  viewAllHref?: string
+  groups: NotificationGroupData[];
+  onMarkAllRead?: () => void;
+  viewAllHref?: string;
 }
 
 const TRIGGER_CLASSES =
-  "flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:bg-surface-2 max-mobile:size-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
+  "flex size-10 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:bg-surface-2 max-mobile:size-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2";
 
 // ---------------------------------------------------------------------------
 // Private PanelBody — defined outside the parent to avoid the
@@ -32,12 +32,12 @@ const TRIGGER_CLASSES =
 // ---------------------------------------------------------------------------
 
 interface PanelBodyProps {
-  groups: NotificationGroupData[]
-  unreadCount: number
-  hasNotifications: boolean
-  onMarkAllRead?: () => void
-  viewAllHref?: string
-  onClose: () => void
+  groups: NotificationGroupData[];
+  unreadCount: number;
+  hasNotifications: boolean;
+  onMarkAllRead?: () => void;
+  viewAllHref?: string;
+  onClose: () => void;
 }
 
 function PanelBody({
@@ -76,39 +76,29 @@ function PanelBody({
         }
       />
       <div className="flex-1 overflow-y-auto">
-        {hasNotifications
-          ? groups.map((g) => (
-              <NotificationGroup key={g.id} label={g.label} items={g.items} />
-            ))
-          : <NotificationEmpty />
-        }
+        {hasNotifications ? (
+          groups.map((g) => <NotificationGroup key={g.id} label={g.label} items={g.items} />)
+        ) : (
+          <NotificationEmpty />
+        )}
       </div>
       <NotificationFooter viewAllHref={viewAllHref} />
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
 // NotificationPanel
 // ---------------------------------------------------------------------------
 
-export function NotificationPanel({
-  groups,
-  onMarkAllRead,
-  viewAllHref,
-}: NotificationPanelProps) {
-  const [open, setOpen] = React.useState(false)
-  const isMobile = useIsMobile()
+export function NotificationPanel({ groups, onMarkAllRead, viewAllHref }: NotificationPanelProps) {
+  const [open, setOpen] = React.useState(false);
+  const isMobile = useIsMobile();
 
-  const unreadCount = groups.reduce(
-    (n, g) => n + g.items.filter((i) => i.unread).length,
-    0,
-  )
-  const hasNotifications = groups.some((g) => g.items.length > 0)
+  const unreadCount = groups.reduce((n, g) => n + g.items.filter((i) => i.unread).length, 0);
+  const hasNotifications = groups.some((g) => g.items.length > 0);
 
-  const triggerLabel = unreadCount > 0
-    ? `Notifications, ${unreadCount} unread`
-    : "Notifications"
+  const triggerLabel = unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications";
 
   const panelBodyProps: PanelBodyProps = {
     groups,
@@ -117,7 +107,7 @@ export function NotificationPanel({
     onMarkAllRead,
     viewAllHref,
     onClose: () => setOpen(false),
-  }
+  };
 
   if (isMobile) {
     return (
@@ -134,7 +124,7 @@ export function NotificationPanel({
           <PanelBody {...panelBodyProps} />
         </SheetContent>
       </Sheet>
-    )
+    );
   }
 
   return (
@@ -152,5 +142,5 @@ export function NotificationPanel({
         <PanelBody {...panelBodyProps} />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

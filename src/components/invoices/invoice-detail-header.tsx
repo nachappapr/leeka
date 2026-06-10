@@ -1,19 +1,15 @@
-import { Download, Share } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { PageHeader } from "@/components/ui/custom/page-header"
-import { formatInvoiceDate } from "@/lib/utils"
+import { Download, Share } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { PageHeader } from "@/components/ui/custom/page-header";
+import { formatInvoiceDate } from "@/lib/utils";
 
 interface InvoiceDetailHeaderProps {
-  invoiceId: string
-  customer: string
-  isoDate: string
+  invoiceId: string;
+  customer: string;
+  isoDate: string;
 }
 
-export function InvoiceDetailHeader({
-  invoiceId,
-  customer,
-  isoDate,
-}: InvoiceDetailHeaderProps) {
+export function InvoiceDetailHeader({ invoiceId, customer, isoDate }: InvoiceDetailHeaderProps) {
   return (
     <PageHeader
       backHref="/invoices"
@@ -33,5 +29,5 @@ export function InvoiceDetailHeader({
         </>
       }
     />
-  )
+  );
 }

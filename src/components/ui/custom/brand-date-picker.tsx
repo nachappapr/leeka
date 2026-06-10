@@ -96,20 +96,15 @@ export function BrandDatePicker({
         positionerClassName="z-90"
         className="w-auto p-0 bg-surface border border-line-strong shadow-float rounded-md ring-0"
       >
-        <PopoverTitle className="sr-only">
-          {ariaLabel ?? "Select date"}
-        </PopoverTitle>
+        <PopoverTitle className="sr-only">{ariaLabel ?? "Select date"}</PopoverTitle>
         <Calendar
           mode="single"
           selected={date}
           onSelect={handleSelect}
           classNames={{
-            weekday:
-              "flex-1 text-center text-label font-normal text-ink-3 select-none",
-            day_button:
-              "text-body-sm text-ink-2 rounded-md hover:bg-background",
-            selected:
-              "bg-coral-soft text-coral-ink font-bold rounded-md ring-1 ring-coral-press",
+            weekday: "flex-1 text-center text-label font-normal text-ink-3 select-none",
+            day_button: "text-body-sm text-ink-2 rounded-md hover:bg-background",
+            selected: "bg-coral-soft text-coral-ink font-bold rounded-md ring-1 ring-coral-press",
             today: "rounded-md bg-surface-2 text-coral-ink font-bold",
           }}
         />

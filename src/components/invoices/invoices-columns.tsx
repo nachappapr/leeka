@@ -30,9 +30,7 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
     header: "Invoice #",
     enableSorting: false,
     cell: ({ getValue }) => (
-      <span className="text-body-sm font-medium text-ink-2">
-        {getValue<string>()}
-      </span>
+      <span className="text-body-sm font-medium text-ink-2">{getValue<string>()}</span>
     ),
   },
   {
@@ -55,9 +53,7 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
     header: "Amount",
     sortingFn: (a, b) => parseAmount(a.original.amount) - parseAmount(b.original.amount),
     cell: ({ getValue }) => (
-      <span className="tabular text-body-sm font-bold text-ink">
-        {getValue<string>()}
-      </span>
+      <span className="tabular text-body-sm font-bold text-ink">{getValue<string>()}</span>
     ),
   },
   {

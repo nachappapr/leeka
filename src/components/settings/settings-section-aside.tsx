@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
-import { LogOut } from "@/components/icons"
-import { Card } from "@/components/ui/custom/card"
-import { cn } from "@/lib/utils"
-import { SETTINGS_SECTIONS } from "@/lib/constants/settings"
-import type { SettingsSectionId } from "@/lib/types/settings"
+import { LogOut } from "@/components/icons";
+import { Card } from "@/components/ui/custom/card";
+import { cn } from "@/lib/utils";
+import { SETTINGS_SECTIONS } from "@/lib/constants/settings";
+import type { SettingsSectionId } from "@/lib/types/settings";
 
 interface SettingsSectionAsideProps {
-  activeSection: SettingsSectionId
-  onSectionChange: (id: SettingsSectionId) => void
+  activeSection: SettingsSectionId;
+  onSectionChange: (id: SettingsSectionId) => void;
 }
 
 export function SettingsSectionAside({
   activeSection,
   onSectionChange,
 }: SettingsSectionAsideProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <Card className="max-mobile:hidden">
       <nav aria-label="Settings sections" className="p-2">
         <ul className="m-0 flex list-none flex-col gap-0.5 p-0">
           {SETTINGS_SECTIONS.map((s) => {
-            const Icon = s.icon
-            const isActive = s.id === activeSection
+            const Icon = s.icon;
+            const isActive = s.id === activeSection;
             return (
               <li key={s.id}>
                 <button
@@ -44,7 +44,7 @@ export function SettingsSectionAside({
                   <span>{s.label}</span>
                 </button>
               </li>
-            )
+            );
           })}
 
           <li className="mt-2 border-t border-line pt-2">
@@ -64,5 +64,5 @@ export function SettingsSectionAside({
         </ul>
       </nav>
     </Card>
-  )
+  );
 }

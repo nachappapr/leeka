@@ -137,18 +137,12 @@ export function CustomersTable({ customers }: CustomersTableProps) {
                         onClick={header.column.getToggleSortingHandler()}
                         className="inline-flex select-none items-center gap-1 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        {flexRender(header.column.columnDef.header, header.getContext())}
                         {sortIcon}
                       </button>
                     ) : (
                       <span className="inline-flex items-center gap-1">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        {flexRender(header.column.columnDef.header, header.getContext())}
                       </span>
                     )}
                   </DataHead>
@@ -161,10 +155,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
           {table.getRowModel().rows.map((row) => {
             const detailHref = `/customers/${row.original.id}`;
             return (
-              <DataRow
-                key={row.id}
-                className="relative"
-              >
+              <DataRow key={row.id} className="relative">
                 {row.getVisibleCells().map((cell, i) => {
                   const isFirst = i === 0;
                   const isLast = i === row.getVisibleCells().length - 1;

@@ -1,8 +1,8 @@
-import { UtensilsCrossed } from "lucide-react"
-import type { LucideProps } from "lucide-react"
+import { UtensilsCrossed } from "lucide-react";
+import type { LucideProps } from "lucide-react";
 
 function UtensilsCrossedIcon(props: LucideProps) {
-  return <UtensilsCrossed {...props} />
+  return <UtensilsCrossed {...props} />;
 }
 
-export { UtensilsCrossedIcon }
+export { UtensilsCrossedIcon };

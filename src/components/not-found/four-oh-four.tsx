@@ -7,7 +7,7 @@ function FourOhFour() {
     >
       4<span className="text-coral">0</span>4
     </div>
-  )
+  );
 }
 
-export { FourOhFour }
+export { FourOhFour };

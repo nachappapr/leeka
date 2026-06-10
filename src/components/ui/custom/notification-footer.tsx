@@ -1,12 +1,12 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { ChevronRight, Settings } from "@/components/icons"
+import { ChevronRight, Settings } from "@/components/icons";
 
 interface NotificationFooterProps {
   /** Href for "View all activity". Defaults to "/activity". */
-  viewAllHref?: string
+  viewAllHref?: string;
   /** Href for the notification settings icon. Defaults to "/settings/notifications". */
-  settingsHref?: string
+  settingsHref?: string;
 }
 
 function NotificationFooter({
@@ -30,7 +30,7 @@ function NotificationFooter({
         <Settings className="size-4" aria-hidden />
       </Link>
     </footer>
-  )
+  );
 }
 
-export { NotificationFooter }
+export { NotificationFooter };

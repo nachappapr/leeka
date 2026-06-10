@@ -1,62 +1,61 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { Search } from "@/components/icons"
-import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
-import { StatusPill } from "@/components/ui/custom/status-pill"
-import { INVOICES } from "@/lib/constants/invoices"
-import { CUSTOMERS } from "@/lib/constants/customers"
-import { cn, initials } from "@/lib/utils"
+import { Search } from "@/components/icons";
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import { StatusPill } from "@/components/ui/custom/status-pill";
+import { INVOICES } from "@/lib/constants/invoices";
+import { CUSTOMERS } from "@/lib/constants/customers";
+import { cn, initials } from "@/lib/utils";
 
 export function SearchPalette() {
-  const [query, setQuery] = useState("")
-  const [open, setOpen] = useState(false)
-  const [cursor, setCursor] = useState(0)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const boxRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [cursor, setCursor] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // ⌘K / Ctrl+K opens; Esc closes
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        inputRef.current?.focus()
-        setOpen(true)
+        e.preventDefault();
+        inputRef.current?.focus();
+        setOpen(true);
       }
       if (e.key === "Escape" && open) {
-        setOpen(false)
-        inputRef.current?.blur()
+        setOpen(false);
+        inputRef.current?.blur();
       }
-    }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
-  }, [open])
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   // Click outside → close
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
     const onDoc = (e: MouseEvent) => {
       if (boxRef.current && !boxRef.current.contains(e.target as Node)) {
-        setOpen(false)
+        setOpen(false);
       }
-    }
-    document.addEventListener("mousedown", onDoc)
-    return () => document.removeEventListener("mousedown", onDoc)
-  }, [open])
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
 
-  const q = query.trim().toLowerCase()
-  const normPhone = (s: string) => s.replace(/\D/g, "")
-  const qPhone = normPhone(q)
+  const q = query.trim().toLowerCase();
+  const normPhone = (s: string) => s.replace(/\D/g, "");
+  const qPhone = normPhone(q);
 
   const invMatches = q
     ? INVOICES.filter(
-        (i) =>
-          i.customer.toLowerCase().includes(q) || i.id.toLowerCase().includes(q),
+        (i) => i.customer.toLowerCase().includes(q) || i.id.toLowerCase().includes(q),
       ).slice(0, 3)
-    : INVOICES.slice(0, 3)
+    : INVOICES.slice(0, 3);
 
   const custMatches = q
     ? CUSTOMERS.filter(
@@ -64,50 +63,52 @@ export function SearchPalette() {
           c.name.toLowerCase().includes(q) ||
           (qPhone.length >= 3 && normPhone(c.phone).includes(qPhone)),
       ).slice(0, 3)
-    : CUSTOMERS.slice(0, 3)
+    : CUSTOMERS.slice(0, 3);
 
   const flat = [
     ...invMatches.map((i) => ({ kind: "invoice" as const, item: i })),
     ...custMatches.map((c) => ({ kind: "customer" as const, item: c })),
-  ]
-  const showEmpty = !!q && flat.length === 0
+  ];
+  const showEmpty = !!q && flat.length === 0;
 
   const choose = (entry: (typeof flat)[number]) => {
     if (entry.kind === "invoice") {
-      router.push(`/invoices/${encodeURIComponent(entry.item.id)}`)
+      router.push(`/invoices/${encodeURIComponent(entry.item.id)}`);
     } else {
-      router.push("/customers")
+      router.push("/customers");
     }
-    setQuery("")
-    setOpen(false)
-    inputRef.current?.blur()
-  }
+    setQuery("");
+    setOpen(false);
+    inputRef.current?.blur();
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
-      e.preventDefault()
-      setCursor((c) => Math.min(c + 1, Math.max(flat.length - 1, 0)))
+      e.preventDefault();
+      setCursor((c) => Math.min(c + 1, Math.max(flat.length - 1, 0)));
     } else if (e.key === "ArrowUp") {
-      e.preventDefault()
-      setCursor((c) => Math.max(c - 1, 0))
+      e.preventDefault();
+      setCursor((c) => Math.max(c - 1, 0));
     } else if (e.key === "Enter" && flat[cursor]) {
-      e.preventDefault()
-      choose(flat[cursor])
+      e.preventDefault();
+      choose(flat[cursor]);
     }
-  }
+  };
 
   // Live announcement for screen readers
   const announcement = (() => {
-    if (!open) return ""
-    if (showEmpty) return `No results for "${query}"`
+    if (!open) return "";
+    if (showEmpty) return `No results for "${query}"`;
     if (q) {
-      const parts: string[] = []
-      if (invMatches.length) parts.push(`${invMatches.length} invoice${invMatches.length === 1 ? "" : "s"}`)
-      if (custMatches.length) parts.push(`${custMatches.length} customer${custMatches.length === 1 ? "" : "s"}`)
-      return parts.length ? parts.join(" and ") + " found" : ""
+      const parts: string[] = [];
+      if (invMatches.length)
+        parts.push(`${invMatches.length} invoice${invMatches.length === 1 ? "" : "s"}`);
+      if (custMatches.length)
+        parts.push(`${custMatches.length} customer${custMatches.length === 1 ? "" : "s"}`);
+      return parts.length ? parts.join(" and ") + " found" : "";
     }
-    return ""
-  })()
+    return "";
+  })();
 
   return (
     <div className="relative w-full max-w-xl" ref={boxRef}>
@@ -120,9 +121,7 @@ export function SearchPalette() {
       <div
         className={cn(
           "flex h-10 items-center gap-2.5 rounded-full border bg-card px-3.5 transition-[border-color,box-shadow] duration-150",
-          open
-            ? "border-coral shadow-[0_0_0_4px_var(--color-coral-soft)]"
-            : "border-border",
+          open ? "border-coral shadow-[0_0_0_4px_var(--color-coral-soft)]" : "border-border",
         )}
       >
         <Search className="size-4 shrink-0 text-ink-3" aria-hidden />
@@ -132,15 +131,16 @@ export function SearchPalette() {
           aria-expanded={open}
           aria-haspopup="listbox"
           aria-controls={open ? "sp-results" : undefined}
-          aria-activedescendant={
-            open && flat.length > 0 ? `sp-opt-${cursor}` : undefined
-          }
+          aria-activedescendant={open && flat.length > 0 ? `sp-opt-${cursor}` : undefined}
           aria-autocomplete="list"
           aria-label="Search invoices and customers"
           className="h-auto flex-1 bg-transparent py-0 text-body-sm text-ink outline-none placeholder:text-ink-3"
           placeholder="Search invoices, customers..."
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setCursor(0) }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setCursor(0);
+          }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           autoComplete="off"
@@ -178,11 +178,7 @@ export function SearchPalette() {
               {/* Scrollable results */}
               <div className="max-h-115 overflow-y-auto scrollbar-none">
                 {invMatches.length > 0 && (
-                  <div
-                    role="group"
-                    aria-labelledby="sp-inv-lbl"
-                    className="py-2"
-                  >
+                  <div role="group" aria-labelledby="sp-inv-lbl" className="py-2">
                     <div className="flex items-center justify-between px-4 pb-1.5 pt-2">
                       <span
                         id="sp-inv-lbl"
@@ -209,8 +205,8 @@ export function SearchPalette() {
                         onClick={() => choose({ kind: "invoice", item: inv })}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault()
-                            choose({ kind: "invoice", item: inv })
+                            e.preventDefault();
+                            choose({ kind: "invoice", item: inv });
                           }
                         }}
                       >
@@ -239,10 +235,7 @@ export function SearchPalette() {
                   <div
                     role="group"
                     aria-labelledby="sp-cust-lbl"
-                    className={cn(
-                      "py-2",
-                      invMatches.length > 0 && "border-t border-border",
-                    )}
+                    className={cn("py-2", invMatches.length > 0 && "border-t border-border")}
                   >
                     <div className="flex items-center justify-between px-4 pb-1.5 pt-2">
                       <span
@@ -256,7 +249,7 @@ export function SearchPalette() {
                       </span>
                     </div>
                     {custMatches.map((cust, idx) => {
-                      const fi = invMatches.length + idx
+                      const fi = invMatches.length + idx;
                       return (
                         <div
                           key={cust.id}
@@ -272,8 +265,8 @@ export function SearchPalette() {
                           onClick={() => choose({ kind: "customer", item: cust })}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault()
-                              choose({ kind: "customer", item: cust })
+                              e.preventDefault();
+                              choose({ kind: "customer", item: cust });
                             }
                           }}
                         >
@@ -303,7 +296,7 @@ export function SearchPalette() {
                             </span>
                           )}
                         </div>
-                      )
+                      );
                     })}
                   </div>
                 )}
@@ -312,16 +305,24 @@ export function SearchPalette() {
               {/* Footer — outside the scroll area */}
               <div className="flex shrink-0 items-center gap-4 border-t border-border bg-cream px-5 py-3">
                 <span className="flex items-center gap-1 text-label text-ink-3">
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">↑</kbd>
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">↓</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">
+                    ↑
+                  </kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">
+                    ↓
+                  </kbd>
                   navigate
                 </span>
                 <span className="flex items-center gap-1 text-label text-ink-3">
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">↵</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">
+                    ↵
+                  </kbd>
                   open
                 </span>
                 <span className="flex items-center gap-1 text-label text-ink-3">
-                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">esc</kbd>
+                  <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">
+                    esc
+                  </kbd>
                   close
                 </span>
               </div>
@@ -330,5 +331,5 @@ export function SearchPalette() {
         </div>
       )}
     </div>
-  )
+  );
 }

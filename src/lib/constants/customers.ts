@@ -1,6 +1,6 @@
-import type { Customer } from "@/lib/types"
-import type { Invoice } from "@/lib/types"
-import { INVOICES } from "@/lib/constants/invoices"
+import type { Customer } from "@/lib/types";
+import type { Invoice } from "@/lib/types";
+import { INVOICES } from "@/lib/constants/invoices";
 
 export const CUSTOMERS: ReadonlyArray<Customer> = [
   // Renamed to match invoice customer names so detail pages show populated tables
@@ -88,13 +88,13 @@ export const CUSTOMERS: ReadonlyArray<Customer> = [
     customerSince: "Aug 2024",
     paid: "₹1,700",
   },
-]
+];
 
 // ── Lookup helpers ──────────────────────────────────────────────────────────
 
 /** Find a customer by id. Returns undefined if not found. */
 export function findCustomer(id: string): Customer | undefined {
-  return CUSTOMERS.find((c) => c.id === id)
+  return CUSTOMERS.find((c) => c.id === id);
 }
 
 /**
@@ -102,7 +102,7 @@ export function findCustomer(id: string): Customer | undefined {
  * Used by the customer detail page to build the related-invoices table.
  */
 export function customerInvoices(name: string): Invoice[] {
-  return INVOICES.filter((inv) => inv.customer === name)
+  return INVOICES.filter((inv) => inv.customer === name);
 }
 
 /**
@@ -110,30 +110,27 @@ export function customerInvoices(name: string): Invoice[] {
  * Returns pre-formatted ₹-strings consistent with the rest of the data layer.
  */
 export function customerInvoiceSummary(name: string): {
-  invoices: Invoice[]
-  totalBilled: string
-  outstanding: string | null
+  invoices: Invoice[];
+  totalBilled: string;
+  outstanding: string | null;
 } {
-  const invoices = customerInvoices(name)
+  const invoices = customerInvoices(name);
 
   if (invoices.length === 0) {
-    return { invoices: [], totalBilled: "₹0", outstanding: null }
+    return { invoices: [], totalBilled: "₹0", outstanding: null };
   }
 
-  const parseAmount = (s: string) =>
-    parseInt(s.replace(/[₹,]/g, ""), 10) || 0
+  const parseAmount = (s: string) => parseInt(s.replace(/[₹,]/g, ""), 10) || 0;
 
-  const total = invoices.reduce((sum, inv) => sum + parseAmount(inv.amount), 0)
+  const total = invoices.reduce((sum, inv) => sum + parseAmount(inv.amount), 0);
 
   const outstandingTotal = invoices
     .filter((inv) => inv.status === "overdue" || inv.status === "sent" || inv.status === "viewed")
-    .reduce((sum, inv) => sum + parseAmount(inv.amount), 0)
+    .reduce((sum, inv) => sum + parseAmount(inv.amount), 0);
 
   return {
     invoices,
     totalBilled: `₹${total.toLocaleString("en-IN")}`,
-    outstanding: outstandingTotal > 0
-      ? `₹${outstandingTotal.toLocaleString("en-IN")}`
-      : null,
-  }
+    outstanding: outstandingTotal > 0 ? `₹${outstandingTotal.toLocaleString("en-IN")}` : null,
+  };
 }

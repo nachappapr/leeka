@@ -1,5 +1,5 @@
-import { FAQS } from "@/lib/constants/home"
-import { FaqItem } from "@/components/home/faq-item"
+import { FAQS } from "@/lib/constants/home";
+import { FaqItem } from "@/components/home/faq-item";
 
 function Faq() {
   return (
@@ -23,7 +23,7 @@ function Faq() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export { Faq }
+export { Faq };

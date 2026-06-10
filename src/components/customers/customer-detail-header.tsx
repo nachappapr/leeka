@@ -1,20 +1,18 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { ChevronLeft, Plus } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { CustomerEditTrigger } from "@/components/customers/customer-edit-trigger"
-import type { Customer } from "@/lib/types"
+import { ChevronLeft, Plus } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { CustomerEditTrigger } from "@/components/customers/customer-edit-trigger";
+import type { Customer } from "@/lib/types";
 
 interface CustomerDetailHeaderProps {
-  customer: Customer
+  customer: Customer;
 }
 
 // Custom header (not PageHeader) so the actions can stack onto their own
 // full-width row below the title on mobile — PageHeader keeps them inline.
 export function CustomerDetailHeader({ customer }: CustomerDetailHeaderProps) {
-  const subtitle = customer.gstin
-    ? `${customer.phone} · GSTIN ${customer.gstin}`
-    : customer.phone
+  const subtitle = customer.gstin ? `${customer.phone} · GSTIN ${customer.gstin}` : customer.phone;
 
   return (
     <header className="flex items-start justify-between gap-4 max-mobile:flex-col max-mobile:gap-3">
@@ -28,13 +26,9 @@ export function CustomerDetailHeader({ customer }: CustomerDetailHeaderProps) {
           <ChevronLeft className="size-5" aria-hidden />
         </Link>
         <div className="min-w-0">
-          <h2 className="text-h2 font-extrabold break-words text-ink">
-            {customer.name}
-          </h2>
+          <h2 className="text-h2 font-extrabold break-words text-ink">{customer.name}</h2>
           {subtitle && (
-            <p className="mt-0.5 text-body-sm font-medium break-words text-ink-3">
-              {subtitle}
-            </p>
+            <p className="mt-0.5 text-body-sm font-medium break-words text-ink-3">{subtitle}</p>
           )}
         </div>
       </div>
@@ -55,5 +49,5 @@ export function CustomerDetailHeader({ customer }: CustomerDetailHeaderProps) {
         <CustomerEditTrigger customer={customer} className="max-mobile:flex-1" />
       </div>
     </header>
-  )
+  );
 }

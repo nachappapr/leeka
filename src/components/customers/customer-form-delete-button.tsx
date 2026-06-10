@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Trash2 } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { Trash2 } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { cn } from "@/lib/utils";
 
 interface CustomerFormDeleteButtonProps {
-  onDelete: () => void
+  onDelete: () => void;
 }
 
 export const CustomerFormDeleteButton = React.forwardRef<
@@ -35,5 +35,5 @@ export const CustomerFormDeleteButton = React.forwardRef<
       <Trash2 className="size-4.5 shrink-0" aria-hidden />
       <span className="ml-1.5 max-mobile:sr-only">Delete</span>
     </PillButton>
-  )
-})
+  );
+});

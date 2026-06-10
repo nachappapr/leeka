@@ -9,8 +9,7 @@ export function EmptyDashboardHero() {
       className="relative overflow-hidden rounded-md text-white shadow-coral-hero"
       // eslint-disable-next-line no-restricted-syntax -- multi-stop brand gradient; no single token covers a diagonal three-stop fill
       style={{
-        background:
-          "linear-gradient(135deg, #F46A39 0%, #D9531F 65%, #B83E12 100%)",
+        background: "linear-gradient(135deg, #F46A39 0%, #D9531F 65%, #B83E12 100%)",
       }}
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
@@ -35,9 +34,8 @@ export function EmptyDashboardHero() {
         </h1>
 
         <p className="max-w-135 text-body font-medium leading-relaxed text-white/92">
-          Send your first invoice in under a minute. We&rsquo;ll keep track of
-          who&rsquo;s paid, who&rsquo;s viewed, and who needs a nudge — so you
-          can focus on your shop.
+          Send your first invoice in under a minute. We&rsquo;ll keep track of who&rsquo;s paid,
+          who&rsquo;s viewed, and who needs a nudge — so you can focus on your shop.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3 max-mobile:gap-2">

@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
 // Justified "use client": owns sendOpen + moreOpen states + moreRef for
 // focus-restore.
 
-import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { Copy, Download, Edit, MoreHorizontal, Trash2, WhatsApp } from "@/components/icons"
-import { IconButton } from "@/components/ui/custom/icon-button"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal"
-import type { Invoice } from "@/lib/types"
+import { Copy, Download, Edit, MoreHorizontal, Trash2, WhatsApp } from "@/components/icons";
+import { IconButton } from "@/components/ui/custom/icon-button";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
+import type { Invoice } from "@/lib/types";
 
-import { fireDraftSavedToast } from "./invoice-form-save-draft-button"
-import type { InvoiceFormSheetItem } from "./invoice-form-mobile-sheet"
-import { InvoiceFormMobileSheet } from "./invoice-form-mobile-sheet"
+import { fireDraftSavedToast } from "./invoice-form-save-draft-button";
+import type { InvoiceFormSheetItem } from "./invoice-form-mobile-sheet";
+import { InvoiceFormMobileSheet } from "./invoice-form-mobile-sheet";
 
 interface InvoiceFormPreviewMobileBarProps {
-  invoice: Invoice
-  onEdit: () => void
-  onDiscard: () => void
+  invoice: Invoice;
+  onEdit: () => void;
+  onDiscard: () => void;
 }
 
 // Sticky mobile action bar shown while the user is reviewing the invoice (the
@@ -29,25 +29,25 @@ export function InvoiceFormPreviewMobileBar({
   onEdit,
   onDiscard,
 }: InvoiceFormPreviewMobileBarProps) {
-  const router = useRouter()
-  const [sendOpen, setSendOpen] = useState(false)
-  const [moreOpen, setMoreOpen] = useState(false)
-  const moreRef = useRef<HTMLButtonElement>(null)
+  const router = useRouter();
+  const [sendOpen, setSendOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLButtonElement>(null);
 
   const sheetItems: InvoiceFormSheetItem[] = [
     {
       label: "Save as draft",
       icon: <Edit className="size-4.5" aria-hidden />,
       onClick: () => {
-        setMoreOpen(false)
-        fireDraftSavedToast(invoice, () => router.push("/invoices"))
+        setMoreOpen(false);
+        fireDraftSavedToast(invoice, () => router.push("/invoices"));
       },
     },
     {
       label: "Download PDF",
       icon: <Download className="size-4.5" aria-hidden />,
       onClick: () => {
-        setMoreOpen(false)
+        setMoreOpen(false);
         // TODO: PDF download (integration pass)
       },
     },
@@ -55,7 +55,7 @@ export function InvoiceFormPreviewMobileBar({
       label: "Copy link",
       icon: <Copy className="size-4.5" aria-hidden />,
       onClick: () => {
-        setMoreOpen(false)
+        setMoreOpen(false);
         // TODO: copy link action (integration pass)
       },
     },
@@ -63,12 +63,12 @@ export function InvoiceFormPreviewMobileBar({
       label: "Discard invoice",
       icon: <Trash2 className="size-4.5" aria-hidden />,
       onClick: () => {
-        setMoreOpen(false)
-        onDiscard()
+        setMoreOpen(false);
+        onDiscard();
       },
       danger: true,
     },
-  ]
+  ];
 
   return (
     <>
@@ -121,11 +121,7 @@ export function InvoiceFormPreviewMobileBar({
         </div>
       </footer>
 
-      <SendChannelsModal
-        invoice={invoice}
-        open={sendOpen}
-        onOpenChange={setSendOpen}
-      />
+      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
 
       <InvoiceFormMobileSheet
         open={moreOpen}
@@ -135,5 +131,5 @@ export function InvoiceFormPreviewMobileBar({
         triggerRef={moreRef}
       />
     </>
-  )
+  );
 }

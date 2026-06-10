@@ -1,4 +1,4 @@
-import type React from "react"
+import type React from "react";
 
 export function LinkBroken(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -15,5 +15,5 @@ export function LinkBroken(props: React.SVGProps<SVGSVGElement>) {
       <circle cx="12" cy="12" r="9" />
       <path d="M15 9l-6 6M9 9l6 6" />
     </svg>
-  )
+  );
 }

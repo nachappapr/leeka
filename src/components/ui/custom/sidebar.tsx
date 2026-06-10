@@ -37,11 +37,7 @@ const navButtonClass = cn(
 // it as a child route. To prevent a broader href (/invoices) from claiming a
 // sibling's specific path (/invoices/new), the broader item only matches when
 // no other registered href is a longer prefix of the current path.
-function isNavItemActive(
-  href: string,
-  pathname: string,
-  allHrefs: ReadonlyArray<string>,
-): boolean {
+function isNavItemActive(href: string, pathname: string, allHrefs: ReadonlyArray<string>): boolean {
   if (pathname === href) return true;
   if (href === "/") return false;
   if (!pathname.startsWith(`${href}/`)) return false;
@@ -58,10 +54,7 @@ export function AppSidebar() {
   const router = useRouter();
   const { setOpen } = useSidebar();
   const isTablet = useIsTablet();
-  const allHrefs = React.useMemo(
-    () => [...NAV_MAIN, ...NAV_ACCOUNT].map((item) => item.href),
-    [],
-  );
+  const allHrefs = React.useMemo(() => [...NAV_MAIN, ...NAV_ACCOUNT].map((item) => item.href), []);
 
   const setOpenRef = React.useRef(setOpen);
   React.useEffect(() => {
@@ -77,18 +70,13 @@ export function AppSidebar() {
       <SidebarHeader className="p-3.5 pb-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pt-5 group-data-[collapsible=icon]:pb-5">
         <div className="flex items-center gap-3 px-2 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-nav-item bg-coral shadow-coral group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:rounded-md">
-            <LekkaLogo
-              className="size-6 group-data-[collapsible=icon]:size-5"
-              aria-hidden
-            />
+            <LekkaLogo className="size-6 group-data-[collapsible=icon]:size-5" aria-hidden />
           </div>
           <div className="group-data-[collapsible=icon]:hidden">
             <div className="text-17 font-black tracking-snug text-ink">
               arthapatra<span className="text-coral">.</span>
             </div>
-            <div className="text-kicker font-semibold tracking-wide text-ink-3">
-              Invoicing
-            </div>
+            <div className="text-kicker font-semibold tracking-wide text-ink-3">Invoicing</div>
           </div>
           <SidebarTrigger className="ml-auto text-ink-3 hover:text-ink group-data-[collapsible=icon]:hidden" />
         </div>
@@ -113,10 +101,7 @@ export function AppSidebar() {
                       tooltip={item.badge != null ? `${item.label} (${item.badge})` : item.label}
                       className={navButtonClass}
                       render={
-                        <Link
-                          href={item.href}
-                          aria-current={isActive ? "page" : undefined}
-                        />
+                        <Link href={item.href} aria-current={isActive ? "page" : undefined} />
                       }
                     >
                       <Icon className="size-4 shrink-0" aria-hidden />
@@ -151,10 +136,7 @@ export function AppSidebar() {
                       tooltip={item.label}
                       className={navButtonClass}
                       render={
-                        <Link
-                          href={item.href}
-                          aria-current={isActive ? "page" : undefined}
-                        />
+                        <Link href={item.href} aria-current={isActive ? "page" : undefined} />
                       }
                     >
                       <Icon className="size-4 shrink-0" aria-hidden />
@@ -192,9 +174,7 @@ export function AppSidebar() {
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-            <div className="truncate text-caption font-bold text-ink">
-              Raj Kumar Trading
-            </div>
+            <div className="truncate text-caption font-bold text-ink">Raj Kumar Trading</div>
             <div className="text-kicker text-ink-3">Free plan</div>
           </div>
           <button

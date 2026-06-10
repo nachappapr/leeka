@@ -29,9 +29,7 @@ export function SendSummaryCard({
           To
         </span>
         <div className="flex flex-col items-end text-right">
-          <span className="text-body-sm font-bold text-ink">
-            {invoice.customer}
-          </span>
+          <span className="text-body-sm font-bold text-ink">{invoice.customer}</span>
           <span className="text-label tabular-nums text-ink-3">{phone}</span>
         </div>
       </div>
@@ -43,11 +41,7 @@ export function SendSummaryCard({
         >
           Channel
         </span>
-        <ChannelChips
-          channel={channel}
-          onChannelChange={onChannelChange}
-          disabled={isBusy}
-        />
+        <ChannelChips channel={channel} onChannelChange={onChannelChange} disabled={isBusy} />
       </div>
       {/* Amount row */}
       <div className="flex items-center justify-between gap-4 border-t border-dashed border-line py-2">
@@ -55,9 +49,7 @@ export function SendSummaryCard({
           Amount
         </span>
         <div className="flex flex-col items-end text-right">
-          <span className="text-lead font-bold tabular-nums text-ink">
-            {invoice.amount}
-          </span>
+          <span className="text-lead font-bold tabular-nums text-ink">{invoice.amount}</span>
           <span className="text-label text-ink-3">
             {statusLabel.toLowerCase()} · {date}
           </span>

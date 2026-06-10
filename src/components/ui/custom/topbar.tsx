@@ -1,16 +1,16 @@
-import type React from "react"
+import type React from "react";
 
-import { MobileMenuButton } from "@/components/ui/custom/mobile-menu-button"
-import { MobileSearchTrigger } from "@/components/ui/custom/mobile-search-trigger"
-import { NotificationPanel } from "@/components/ui/custom/notification-panel"
-import { SearchPalette } from "@/components/ui/custom/search-palette"
-import { NOTIFICATIONS } from "@/lib/constants/notifications"
+import { MobileMenuButton } from "@/components/ui/custom/mobile-menu-button";
+import { MobileSearchTrigger } from "@/components/ui/custom/mobile-search-trigger";
+import { NotificationPanel } from "@/components/ui/custom/notification-panel";
+import { SearchPalette } from "@/components/ui/custom/search-palette";
+import { NOTIFICATIONS } from "@/lib/constants/notifications";
 
 interface TopbarProps {
-  title: string
-  subtitle?: string
+  title: string;
+  subtitle?: string;
   /** Mobile-only action slot — rendered after NotificationPanel in the right cluster */
-  actions?: React.ReactNode
+  actions?: React.ReactNode;
 }
 
 export function Topbar({ title, subtitle, actions }: TopbarProps) {
@@ -19,14 +19,8 @@ export function Topbar({ title, subtitle, actions }: TopbarProps) {
       <MobileMenuButton />
 
       <div className="min-w-0 max-mobile:flex-1">
-        <h1 className="truncate text-title font-black text-ink">
-          {title}
-        </h1>
-        {subtitle && (
-          <p className="truncate text-label font-semibold text-ink-3">
-            {subtitle}
-          </p>
-        )}
+        <h1 className="truncate text-title font-black text-ink">{title}</h1>
+        {subtitle && <p className="truncate text-label font-semibold text-ink-3">{subtitle}</p>}
       </div>
 
       {/* Desktop search — fills the center 1fr column */}
@@ -40,5 +34,5 @@ export function Topbar({ title, subtitle, actions }: TopbarProps) {
         {actions}
       </div>
     </header>
-  )
+  );
 }

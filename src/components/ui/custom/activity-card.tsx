@@ -1,24 +1,13 @@
-import { ACTIVITY_ICON_MAP, ACTIVITY_ICON_STYLE } from "@/lib/constants"
-import type { ActivityItem } from "@/lib/types"
-import { Card } from "@/components/ui/custom/card"
+import { ACTIVITY_ICON_MAP, ACTIVITY_ICON_STYLE } from "@/lib/constants";
+import type { ActivityItem } from "@/lib/types";
+import { Card } from "@/components/ui/custom/card";
 
 // ── Private sub-component ────────────────────────────────────────────────────
 
-function ActivityRow({
-  item,
-  isLast,
-}: {
-  item: ActivityItem
-  isLast: boolean
-}) {
-  const Icon = ACTIVITY_ICON_MAP[item.icon]
+function ActivityRow({ item, isLast }: { item: ActivityItem; isLast: boolean }) {
+  const Icon = ACTIVITY_ICON_MAP[item.icon];
   return (
-    <div
-      className={
-        "flex items-start gap-3 py-3.5" +
-        (isLast ? "" : " border-b border-border")
-      }
-    >
+    <div className={"flex items-start gap-3 py-3.5" + (isLast ? "" : " border-b border-border")}>
       <div
         className={
           "flex h-9 w-9 shrink-0 items-center justify-center rounded-full " +
@@ -32,7 +21,7 @@ function ActivityRow({
         <div className="mt-0.5 text-label text-ink-3">{item.meta}</div>
       </div>
     </div>
-  )
+  );
 }
 
 // ── Public component ─────────────────────────────────────────────────────────
@@ -42,13 +31,9 @@ export function ActivityCard({ items }: { items: ReadonlyArray<ActivityItem> }) 
     <Card title="Activity">
       <div className="flex flex-col px-6">
         {items.map((item, i) => (
-          <ActivityRow
-            key={item.title}
-            item={item}
-            isLast={i === items.length - 1}
-          />
+          <ActivityRow key={item.title} item={item} isLast={i === items.length - 1} />
         ))}
       </div>
     </Card>
-  )
+  );
 }

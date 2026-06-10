@@ -53,13 +53,18 @@ export function ChannelChips({ channel, onChannelChange, disabled }: ChannelChip
     >
       {/* WhatsApp radio */}
       <button
-        ref={(el) => { chipRefs.current[0] = el; }}
+        ref={(el) => {
+          chipRefs.current[0] = el;
+        }}
         type="button"
         role="radio"
         aria-checked={channel === "whatsapp"}
         tabIndex={0 === rovingIndex ? 0 : -1}
         disabled={disabled}
-        onClick={() => { setFocusedIndex(0); onChannelChange("whatsapp"); }}
+        onClick={() => {
+          setFocusedIndex(0);
+          onChannelChange("whatsapp");
+        }}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-label font-bold transition-colors",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
@@ -75,13 +80,18 @@ export function ChannelChips({ channel, onChannelChange, disabled }: ChannelChip
 
       {/* SMS radio */}
       <button
-        ref={(el) => { chipRefs.current[1] = el; }}
+        ref={(el) => {
+          chipRefs.current[1] = el;
+        }}
         type="button"
         role="radio"
         aria-checked={channel === "sms"}
         tabIndex={1 === rovingIndex ? 0 : -1}
         disabled={disabled}
-        onClick={() => { setFocusedIndex(1); onChannelChange("sms"); }}
+        onClick={() => {
+          setFocusedIndex(1);
+          onChannelChange("sms");
+        }}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-label font-bold transition-colors",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
@@ -97,7 +107,9 @@ export function ChannelChips({ channel, onChannelChange, disabled }: ChannelChip
 
       {/* Email — aria-disabled, participates in roving tabindex, not selectable */}
       <button
-        ref={(el) => { chipRefs.current[2] = el; }}
+        ref={(el) => {
+          chipRefs.current[2] = el;
+        }}
         type="button"
         role="radio"
         aria-checked={false}

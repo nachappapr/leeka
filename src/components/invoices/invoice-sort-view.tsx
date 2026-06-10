@@ -1,28 +1,33 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 
-import { ArrowDown, ArrowUp, IndianRupee, UserRound } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { SortRadioRow } from "@/components/invoices/sort-radio-row"
-import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
-import { INVOICE_SORTS } from "@/lib/constants/invoices"
-import type { InvoiceSortId } from "@/lib/types/invoice"
+import { ArrowDown, ArrowUp, IndianRupee, UserRound } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { SortRadioRow } from "@/components/invoices/sort-radio-row";
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
+import { INVOICE_SORTS } from "@/lib/constants/invoices";
+import type { InvoiceSortId } from "@/lib/types/invoice";
 
 function sortIcon(iconKey: string): React.ReactNode {
-  const cls = "size-5"
+  const cls = "size-5";
   switch (iconKey) {
-    case "arrowDown": return <ArrowDown className={cls} aria-hidden />
-    case "arrowUp":   return <ArrowUp   className={cls} aria-hidden />
-    case "rupee":     return <IndianRupee className={cls} aria-hidden />
-    case "user":      return <UserRound  className={cls} aria-hidden />
-    default:          return <ArrowDown  className={cls} aria-hidden />
+    case "arrowDown":
+      return <ArrowDown className={cls} aria-hidden />;
+    case "arrowUp":
+      return <ArrowUp className={cls} aria-hidden />;
+    case "rupee":
+      return <IndianRupee className={cls} aria-hidden />;
+    case "user":
+      return <UserRound className={cls} aria-hidden />;
+    default:
+      return <ArrowDown className={cls} aria-hidden />;
   }
 }
 
 interface InvoiceSortViewProps {
   /** Called when the user applies a sort or cancels. */
-  onClose: () => void
+  onClose: () => void;
 }
 
 /**
@@ -31,51 +36,51 @@ interface InvoiceSortViewProps {
  * the committed sort value (no setState-in-effect needed).
  */
 export function InvoiceSortView({ onClose }: InvoiceSortViewProps) {
-  const { sort, setSort } = useInvoiceListActions()
-  const [draft, setDraft] = useState<InvoiceSortId>(sort)
+  const { sort, setSort } = useInvoiceListActions();
+  const [draft, setDraft] = useState<InvoiceSortId>(sort);
 
   // Store DOM nodes for roving-tabindex focus management
   const rowNodes = useRef<(HTMLButtonElement | null)[]>(
     Array.from({ length: INVOICE_SORTS.length }, () => null),
-  )
+  );
 
   // Move focus to the selected radio row when this view mounts
   useEffect(() => {
-    const idx = INVOICE_SORTS.findIndex((s) => s.id === draft)
-    const node = rowNodes.current[idx >= 0 ? idx : 0]
-    node?.focus()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // intentionally empty — fire only on mount
+    const idx = INVOICE_SORTS.findIndex((s) => s.id === draft);
+    const node = rowNodes.current[idx >= 0 ? idx : 0];
+    node?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally empty — fire only on mount
 
   function handleGroupKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    const currentIndex = INVOICE_SORTS.findIndex((s) => s.id === draft)
-    let nextIndex = currentIndex
+    const currentIndex = INVOICE_SORTS.findIndex((s) => s.id === draft);
+    let nextIndex = currentIndex;
 
     if (e.key === "ArrowDown") {
-      e.preventDefault()
-      nextIndex = Math.min(currentIndex + 1, INVOICE_SORTS.length - 1)
+      e.preventDefault();
+      nextIndex = Math.min(currentIndex + 1, INVOICE_SORTS.length - 1);
     } else if (e.key === "ArrowUp") {
-      e.preventDefault()
-      nextIndex = Math.max(currentIndex - 1, 0)
+      e.preventDefault();
+      nextIndex = Math.max(currentIndex - 1, 0);
     } else if (e.key === "Home") {
-      e.preventDefault()
-      nextIndex = 0
+      e.preventDefault();
+      nextIndex = 0;
     } else if (e.key === "End") {
-      e.preventDefault()
-      nextIndex = INVOICE_SORTS.length - 1
+      e.preventDefault();
+      nextIndex = INVOICE_SORTS.length - 1;
     } else {
-      return
+      return;
     }
 
     if (nextIndex !== currentIndex) {
-      setDraft(INVOICE_SORTS[nextIndex].id)
-      rowNodes.current[nextIndex]?.focus()
+      setDraft(INVOICE_SORTS[nextIndex].id);
+      rowNodes.current[nextIndex]?.focus();
     }
   }
 
   function handleApply() {
-    setSort(draft)
-    onClose()
+    setSort(draft);
+    onClose();
   }
 
   return (
@@ -105,7 +110,9 @@ export function InvoiceSortView({ onClose }: InvoiceSortViewProps) {
             hint={s.hint}
             onClick={() => setDraft(s.id)}
             tabIndex={draft === s.id ? 0 : -1}
-            setRowRef={(el) => { rowNodes.current[i] = el }}
+            setRowRef={(el) => {
+              rowNodes.current[i] = el;
+            }}
           />
         ))}
       </div>
@@ -130,5 +137,5 @@ export function InvoiceSortView({ onClose }: InvoiceSortViewProps) {
         </PillButton>
       </div>
     </>
-  )
+  );
 }

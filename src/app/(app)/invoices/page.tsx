@@ -1,5 +1,5 @@
-import { InvoicesContainer } from "@/components/invoices/invoices-container"
+import { InvoicesContainer } from "@/components/invoices/invoices-container";
 
 export default function InvoicesPage() {
-  return <InvoicesContainer />
+  return <InvoicesContainer />;
 }

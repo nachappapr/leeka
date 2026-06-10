@@ -1,8 +1,8 @@
-import { Check, Clock, Download, WhatsApp } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { Check, Clock, Download, WhatsApp } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
 
 interface InvoiceActionsPaidProps {
-  onSend: () => void
+  onSend: () => void;
 }
 
 export function InvoiceActionsPaid({ onSend }: InvoiceActionsPaidProps) {
@@ -27,5 +27,5 @@ export function InvoiceActionsPaid({ onSend }: InvoiceActionsPaidProps) {
         </PillButton>
       </div>
     </>
-  )
+  );
 }

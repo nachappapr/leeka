@@ -1,13 +1,13 @@
 // No "use client": purely presentational — all handlers passed in as props, no hooks owned.
 // Rides the client boundary of the parent (InvoiceFormCustomerSearchCombobox).
 
-import * as React from "react"
+import * as React from "react";
 
-import { ChevronRight, Plus } from "@/components/icons"
-import type { FilteredCustomer } from "@/lib/types/customer"
-import { cn } from "@/lib/utils"
+import { ChevronRight, Plus } from "@/components/icons";
+import type { FilteredCustomer } from "@/lib/types/customer";
+import { cn } from "@/lib/utils";
 
-import { InvoiceFormCustomerAvatar } from "./invoice-form-customer-avatar"
+import { InvoiceFormCustomerAvatar } from "./invoice-form-customer-avatar";
 
 export function InvoiceFormCustomerComboboxDropdown({
   query,
@@ -19,16 +19,16 @@ export function InvoiceFormCustomerComboboxDropdown({
   onClearActive,
   onEnterAddNew,
 }: {
-  query: string
-  matches: FilteredCustomer[]
-  activeIndex: number
-  listboxRef: React.RefObject<HTMLUListElement | null>
-  onSelect: (i: number) => void
-  onSetActive: (i: number) => void
-  onClearActive: () => void
-  onEnterAddNew: () => void
+  query: string;
+  matches: FilteredCustomer[];
+  activeIndex: number;
+  listboxRef: React.RefObject<HTMLUListElement | null>;
+  onSelect: (i: number) => void;
+  onSetActive: (i: number) => void;
+  onClearActive: () => void;
+  onEnterAddNew: () => void;
 }) {
-  const q = query.trim().toLowerCase()
+  const q = query.trim().toLowerCase();
   return (
     <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-30 max-h-90 overflow-y-auto rounded-2xl border-[1.5px] border-line bg-card p-1.5 shadow-float">
       {/* Section label — role="presentation" keeps it out of option count */}
@@ -37,9 +37,7 @@ export function InvoiceFormCustomerComboboxDropdown({
           role="presentation"
           className="px-2.5 pb-1 pt-2 text-kicker font-extrabold uppercase tracking-wide text-ink-3"
         >
-          {q
-            ? `${matches.length} match${matches.length === 1 ? "" : "es"}`
-            : "Recent customers"}
+          {q ? `${matches.length} match${matches.length === 1 ? "" : "es"}` : "Recent customers"}
         </div>
       )}
 
@@ -77,8 +75,8 @@ export function InvoiceFormCustomerComboboxDropdown({
             onClick={() => onSelect(i)}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault()
-                onSelect(i)
+                e.preventDefault();
+                onSelect(i);
               }
             }}
           >
@@ -107,5 +105,5 @@ export function InvoiceFormCustomerComboboxDropdown({
         </span>
       </button>
     </div>
-  )
+  );
 }

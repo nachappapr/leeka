@@ -1,6 +1,6 @@
-import { BrowserChrome } from "@/components/home/browser-chrome"
-import { ShowcaseLaptopFormPane } from "@/components/home/showcase-laptop-form-pane"
-import { ShowcaseLaptopTotalsPane } from "@/components/home/showcase-laptop-totals-pane"
+import { BrowserChrome } from "@/components/home/browser-chrome";
+import { ShowcaseLaptopFormPane } from "@/components/home/showcase-laptop-form-pane";
+import { ShowcaseLaptopTotalsPane } from "@/components/home/showcase-laptop-totals-pane";
 
 function ShowcaseLaptopFrame() {
   return (
@@ -13,7 +13,7 @@ function ShowcaseLaptopFrame() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { ShowcaseLaptopFrame }
+export { ShowcaseLaptopFrame };

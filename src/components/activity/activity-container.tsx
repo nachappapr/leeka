@@ -1,19 +1,16 @@
-import Link from "next/link"
-import { Settings } from "@/components/icons"
-import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar"
-import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch"
-import { EmptyTableState } from "@/components/ui/custom/empty-table-state"
-import { pillButtonVariants } from "@/components/ui/custom/pill-button"
-import { Topbar } from "@/components/ui/custom/topbar"
-import { ActivityFeed } from "@/components/activity/activity-feed"
-import { ActivityGlanceCard } from "@/components/activity/activity-glance-card"
-import { ActivityPrefsCard } from "@/components/activity/activity-prefs-card"
-import { MarkAllReadButton } from "@/components/activity/mark-all-read-button"
-import {
-  ACTIVITY_GLANCE_ROWS,
-  ACTIVITY_UNREAD_COUNT,
-} from "@/lib/constants/activity"
-import { ACTIVITY_NOTIFICATIONS } from "@/lib/constants/notifications"
+import Link from "next/link";
+import { Settings } from "@/components/icons";
+import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
+import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
+import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
+import { pillButtonVariants } from "@/components/ui/custom/pill-button";
+import { Topbar } from "@/components/ui/custom/topbar";
+import { ActivityFeed } from "@/components/activity/activity-feed";
+import { ActivityGlanceCard } from "@/components/activity/activity-glance-card";
+import { ActivityPrefsCard } from "@/components/activity/activity-prefs-card";
+import { MarkAllReadButton } from "@/components/activity/mark-all-read-button";
+import { ACTIVITY_GLANCE_ROWS, ACTIVITY_UNREAD_COUNT } from "@/lib/constants/activity";
+import { ACTIVITY_NOTIFICATIONS } from "@/lib/constants/notifications";
 
 function ActivityPageHeader() {
   return (
@@ -28,16 +25,13 @@ function ActivityPageHeader() {
       </div>
       <div className="flex shrink-0 items-center gap-2 max-mobile:hidden">
         {ACTIVITY_UNREAD_COUNT > 0 && <MarkAllReadButton />}
-        <Link
-          href="/settings"
-          className={pillButtonVariants({ tone: "outline", size: "sm" })}
-        >
+        <Link href="/settings" className={pillButtonVariants({ tone: "outline", size: "sm" })}>
           <Settings className="size-4" aria-hidden />
           Notification settings
         </Link>
       </div>
     </header>
-  )
+  );
 }
 
 function PopulatedActivity() {
@@ -54,7 +48,7 @@ function PopulatedActivity() {
         <ActivityPrefsCard />
       </aside>
     </div>
-  )
+  );
 }
 
 export function ActivityContainer() {
@@ -79,5 +73,5 @@ export function ActivityContainer() {
 
       <MobileTabBar />
     </div>
-  )
+  );
 }

@@ -3,26 +3,24 @@
 // Adds the "What your customer sees" eyebrow + a UI-only PDF button over the
 // scaled-down live preview.
 
-import { Download } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
+import { Download } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
 
-import { InvoiceFormLivePreview } from "./invoice-form-live-preview"
+import { InvoiceFormLivePreview } from "./invoice-form-live-preview";
 
 interface InvoiceFormPreviewSidebarProps {
-  invoiceIdNoHash: string
-  customerName: string
-  phone: string
-  items: ReadonlyArray<{ name: string; qty: number; price: number }>
-  subtotal: number
-  tax: number
-  total: number
-  isoDate: string
-  dueIsoDate: string
+  invoiceIdNoHash: string;
+  customerName: string;
+  phone: string;
+  items: ReadonlyArray<{ name: string; qty: number; price: number }>;
+  subtotal: number;
+  tax: number;
+  total: number;
+  isoDate: string;
+  dueIsoDate: string;
 }
 
-export function InvoiceFormPreviewSidebar(
-  props: InvoiceFormPreviewSidebarProps,
-) {
+export function InvoiceFormPreviewSidebar(props: InvoiceFormPreviewSidebarProps) {
   return (
     <div>
       {/* Eyebrow row */}
@@ -44,5 +42,5 @@ export function InvoiceFormPreviewSidebar(
       </div>
       <InvoiceFormLivePreview {...props} />
     </div>
-  )
+  );
 }

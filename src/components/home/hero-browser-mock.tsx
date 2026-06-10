@@ -1,6 +1,6 @@
-import { BrowserChrome } from "@/components/home/browser-chrome"
-import { BrowserSidebar } from "@/components/home/hero-browser-sidebar"
-import { BrowserDashboardMain } from "@/components/home/hero-browser-dashboard-main"
+import { BrowserChrome } from "@/components/home/browser-chrome";
+import { BrowserSidebar } from "@/components/home/hero-browser-sidebar";
+import { BrowserDashboardMain } from "@/components/home/hero-browser-dashboard-main";
 
 function HeroBrowserMock() {
   return (
@@ -18,7 +18,7 @@ function HeroBrowserMock() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { HeroBrowserMock }
+export { HeroBrowserMock };

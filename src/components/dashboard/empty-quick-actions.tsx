@@ -1,14 +1,14 @@
-import Link from "next/link"
-import { Receipt, Users, WhatsApp, ChevronRight } from "@/components/icons"
-import { cn } from "@/lib/utils"
-import { QUICK_ACTIONS } from "@/lib/constants/empty-dashboard"
-import type { QuickAction } from "@/lib/types/empty-dashboard"
+import Link from "next/link";
+import { Receipt, Users, WhatsApp, ChevronRight } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { QUICK_ACTIONS } from "@/lib/constants/empty-dashboard";
+import type { QuickAction } from "@/lib/types/empty-dashboard";
 
 const ICON_MAP = {
   Receipt,
   Users,
   WhatsApp,
-} as const
+} as const;
 
 export function EmptyQuickActions() {
   return (
@@ -28,11 +28,11 @@ export function EmptyQuickActions() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function QuickActionCard({ action }: { action: QuickAction }) {
-  const IconComponent = ICON_MAP[action.icon]
+  const IconComponent = ICON_MAP[action.icon];
 
   return (
     <Link
@@ -54,5 +54,5 @@ function QuickActionCard({ action }: { action: QuickAction }) {
       </div>
       <ChevronRight className="size-4 shrink-0 text-ink-3" aria-hidden />
     </Link>
-  )
+  );
 }

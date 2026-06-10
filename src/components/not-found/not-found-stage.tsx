@@ -1,5 +1,5 @@
-import { NotFoundCopy } from "@/components/not-found/not-found-copy"
-import { NotFoundBrowserMock } from "@/components/not-found/not-found-browser-mock"
+import { NotFoundCopy } from "@/components/not-found/not-found-copy";
+import { NotFoundBrowserMock } from "@/components/not-found/not-found-browser-mock";
 
 function NotFoundStage() {
   return (
@@ -8,8 +8,7 @@ function NotFoundStage() {
         className="pointer-events-none absolute -top-40 -right-44 size-130 rounded-full"
         // eslint-disable-next-line no-restricted-syntax -- decorative coral radial blob; single-use decorative element, no design token warranted
         style={{
-          background:
-            "radial-gradient(circle, rgba(244,106,57,0.16) 0%, transparent 65%)",
+          background: "radial-gradient(circle, rgba(244,106,57,0.16) 0%, transparent 65%)",
         }}
         aria-hidden="true"
       />
@@ -18,8 +17,7 @@ function NotFoundStage() {
         className="pointer-events-none absolute -bottom-36 -left-44 size-105 rounded-full"
         // eslint-disable-next-line no-restricted-syntax -- decorative green radial blob; single-use decorative element, no design token warranted
         style={{
-          background:
-            "radial-gradient(circle, rgba(31,157,85,0.09) 0%, transparent 65%)",
+          background: "radial-gradient(circle, rgba(31,157,85,0.09) 0%, transparent 65%)",
         }}
         aria-hidden="true"
       />
@@ -31,7 +29,7 @@ function NotFoundStage() {
         </div>
       </div>
     </main>
-  )
+  );
 }
 
-export { NotFoundStage }
+export { NotFoundStage };

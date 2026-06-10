@@ -1,7 +1,7 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const iconButtonVariants = cva(
   "inline-flex shrink-0 items-center justify-center rounded-lg transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -22,7 +22,7 @@ const iconButtonVariants = cva(
       tone: "ghost",
     },
   },
-)
+);
 
 function IconButton({
   className,
@@ -37,7 +37,7 @@ function IconButton({
       className={cn(iconButtonVariants({ size, tone }), className)}
       {...props}
     />
-  )
+  );
 }
 
-export { IconButton, iconButtonVariants }
+export { IconButton, iconButtonVariants };

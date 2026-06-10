@@ -1,12 +1,12 @@
-import type { InvoiceLineItem } from "@/lib/types"
-import { formatRupees } from "@/lib/utils"
+import type { InvoiceLineItem } from "@/lib/types";
+import { formatRupees } from "@/lib/utils";
 
 interface InvoicePreviewItemRowProps {
-  item: InvoiceLineItem
+  item: InvoiceLineItem;
 }
 
 export function InvoicePreviewItemRow({ item }: InvoicePreviewItemRowProps) {
-  const lineTotal = item.qty * item.unitPrice
+  const lineTotal = item.qty * item.unitPrice;
   return (
     <tr>
       <td className="border-b border-border px-3.5 py-3.5 text-body-sm font-medium text-ink">
@@ -22,5 +22,5 @@ export function InvoicePreviewItemRow({ item }: InvoicePreviewItemRowProps) {
         {formatRupees(lineTotal)}
       </td>
     </tr>
-  )
+  );
 }

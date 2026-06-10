@@ -1,10 +1,10 @@
 interface InvoicePreviewMetaCellProps {
-  label: string
-  primary: string
-  secondary: string
-  secondaryClassName?: string
-  primaryDateTime?: string
-  className?: string
+  label: string;
+  primary: string;
+  secondary: string;
+  secondaryClassName?: string;
+  primaryDateTime?: string;
+  className?: string;
 }
 
 export function InvoicePreviewMetaCell({
@@ -19,10 +19,7 @@ export function InvoicePreviewMetaCell({
     <div className={className}>
       <div className="text-kicker uppercase text-ink-3">{label}</div>
       {primaryDateTime ? (
-        <time
-          dateTime={primaryDateTime}
-          className="mt-1.5 block text-body font-bold text-ink"
-        >
+        <time dateTime={primaryDateTime} className="mt-1.5 block text-body font-bold text-ink">
           {primary}
         </time>
       ) : (
@@ -30,5 +27,5 @@ export function InvoicePreviewMetaCell({
       )}
       <div className={`text-caption ${secondaryClassName}`}>{secondary}</div>
     </div>
-  )
+  );
 }

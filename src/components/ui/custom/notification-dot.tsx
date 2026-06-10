@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface NotificationDotProps {
-  withHalo?: boolean
-  className?: string
+  withHalo?: boolean;
+  className?: string;
 }
 
 function NotificationDot({ withHalo = false, className }: NotificationDotProps) {
@@ -15,10 +15,10 @@ function NotificationDot({ withHalo = false, className }: NotificationDotProps) 
         "rounded-full",
         "bg-coral",
         withHalo && "ring-3 ring-coral-soft",
-        className
+        className,
       )}
     />
-  )
+  );
 }
 
-export { NotificationDot }
+export { NotificationDot };

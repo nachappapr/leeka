@@ -1,12 +1,9 @@
-import { PRICING_PLANS } from "@/lib/constants/home"
-import { PricingPlanCard } from "@/components/home/pricing-plan"
+import { PRICING_PLANS } from "@/lib/constants/home";
+import { PricingPlanCard } from "@/components/home/pricing-plan";
 
 function Pricing() {
   return (
-    <section
-      id="pricing"
-      className="scroll-mt-20 bg-card py-22 max-tablet:py-16 max-mobile:py-12"
-    >
+    <section id="pricing" className="scroll-mt-20 bg-card py-22 max-tablet:py-16 max-mobile:py-12">
       <div className="mx-auto max-w-7xl px-8 max-mobile:px-5">
         {/* Section head */}
         <div className="mx-auto mb-14 max-w-180 text-center max-mobile:mb-10">
@@ -30,7 +27,7 @@ function Pricing() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export { Pricing }
+export { Pricing };

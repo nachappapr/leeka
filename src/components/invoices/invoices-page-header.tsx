@@ -1,7 +1,7 @@
-import { Plus } from "@/components/icons"
-import { PageHeader } from "@/components/ui/custom/page-header"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { ExportTrigger } from "@/components/invoices/export-trigger"
+import { Plus } from "@/components/icons";
+import { PageHeader } from "@/components/ui/custom/page-header";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { ExportTrigger } from "@/components/invoices/export-trigger";
 
 export function InvoicesPageHeader() {
   return (
@@ -18,5 +18,5 @@ export function InvoicesPageHeader() {
         </>
       }
     />
-  )
+  );
 }

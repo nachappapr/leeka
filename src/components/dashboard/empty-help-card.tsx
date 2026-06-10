@@ -1,4 +1,4 @@
-import { ChevronRight, WhatsApp } from "@/components/icons"
+import { ChevronRight, WhatsApp } from "@/components/icons";
 
 export function EmptyHelpCard() {
   return (
@@ -14,9 +14,7 @@ export function EmptyHelpCard() {
       </span>
 
       <div>
-        <p className="text-body font-extrabold text-white">
-          Need a hand getting started?
-        </p>
+        <p className="text-body font-extrabold text-white">Need a hand getting started?</p>
         <p className="mt-1 text-caption font-medium leading-relaxed text-white/75">
           Message us on WhatsApp — we&rsquo;ll walk you through your first invoice in Hindi or
           English.
@@ -33,5 +31,5 @@ export function EmptyHelpCard() {
         </a>
       </div>
     </div>
-  )
+  );
 }

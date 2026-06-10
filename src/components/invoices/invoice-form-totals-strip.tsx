@@ -1,21 +1,17 @@
 // No "use client": purely presentational — no hooks, no state.
 // Rides the client boundary of the parent (InvoiceFormBody → invoice form).
 
-import { formatRupees } from "@/lib/utils"
+import { formatRupees } from "@/lib/utils";
 
 export interface InvoiceFormTotalsStripProps {
-  subtotal: number
-  tax: number
-  total: number
+  subtotal: number;
+  tax: number;
+  total: number;
 }
 
 // text-money-sm = responsive 28→24, font-weight:800, tracking; token owns all
 
-export function InvoiceFormTotalsStrip({
-  subtotal,
-  tax,
-  total,
-}: InvoiceFormTotalsStripProps) {
+export function InvoiceFormTotalsStrip({ subtotal, tax, total }: InvoiceFormTotalsStripProps) {
   return (
     <div className="flex justify-end">
       <div className="w-65 space-y-1">
@@ -33,5 +29,5 @@ export function InvoiceFormTotalsStrip({
         </div>
       </div>
     </div>
-  )
+  );
 }

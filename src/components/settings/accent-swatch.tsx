@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Check } from "@/components/icons"
-import { cn } from "@/lib/utils"
+import { Check } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 interface AccentSwatchProps {
-  color: string
-  selected: boolean
-  onSelect: () => void
+  color: string;
+  selected: boolean;
+  onSelect: () => void;
 }
 
 export function AccentSwatch({ color, selected, onSelect }: AccentSwatchProps) {
@@ -28,5 +28,5 @@ export function AccentSwatch({ color, selected, onSelect }: AccentSwatchProps) {
     >
       {selected && <Check size={18} strokeWidth={3} className="text-white" />}
     </button>
-  )
+  );
 }

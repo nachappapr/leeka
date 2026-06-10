@@ -38,10 +38,7 @@ export function DashboardContainer() {
           actions={<InvoiceListActionsTrigger />}
         />
         <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
-          <EmptyStateSwitch
-            empty={<EmptyDashboard />}
-            populated={<PopulatedDashboard />}
-          />
+          <EmptyStateSwitch empty={<EmptyDashboard />} populated={<PopulatedDashboard />} />
         </div>
         <MobileTabBar />
       </div>

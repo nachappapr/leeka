@@ -1,36 +1,31 @@
-import { StatusPill } from "@/components/ui/custom/status-pill"
-import type { InvoiceDetail } from "@/lib/types"
-import { formatInvoiceDate, formatRupees } from "@/lib/utils"
-import { InvoicePreviewItemMobileRow } from "./invoice-preview-item-mobile-row"
-import { InvoicePreviewItemRow } from "./invoice-preview-item-row"
-import { InvoicePreviewMetaCell } from "./invoice-preview-meta-cell"
+import { StatusPill } from "@/components/ui/custom/status-pill";
+import type { InvoiceDetail } from "@/lib/types";
+import { formatInvoiceDate, formatRupees } from "@/lib/utils";
+import { InvoicePreviewItemMobileRow } from "./invoice-preview-item-mobile-row";
+import { InvoicePreviewItemRow } from "./invoice-preview-item-row";
+import { InvoicePreviewMetaCell } from "./invoice-preview-meta-cell";
 
 interface InvoicePreviewCardProps {
-  invoice: InvoiceDetail
+  invoice: InvoiceDetail;
 }
 
 function formatDueRelative(dueIso: string): string {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const due = new Date(dueIso)
-  due.setHours(0, 0, 0, 0)
-  const diffDays = Math.round(
-    (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  )
-  if (diffDays === 0) return "Today"
-  if (diffDays === 1) return "Tomorrow"
-  if (diffDays > 0) return `In ${diffDays} days`
-  if (diffDays === -1) return "Yesterday"
-  return `${Math.abs(diffDays)} days overdue`
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dueIso);
+  due.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Tomorrow";
+  if (diffDays > 0) return `In ${diffDays} days`;
+  if (diffDays === -1) return "Yesterday";
+  return `${Math.abs(diffDays)} days overdue`;
 }
 
 export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
-  const subtotal = invoice.items.reduce(
-    (sum, it) => sum + it.qty * it.unitPrice,
-    0,
-  )
-  const tax = Math.round((subtotal * invoice.taxPct) / 100)
-  const total = subtotal + tax
+  const subtotal = invoice.items.reduce((sum, it) => sum + it.qty * it.unitPrice, 0);
+  const tax = Math.round((subtotal * invoice.taxPct) / 100);
+  const total = subtotal + tax;
 
   return (
     <article className="rounded-2xl bg-card p-8 shadow-card max-mobile:p-4.5">
@@ -40,9 +35,7 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
           <div className="flex size-14 items-center justify-center rounded-xl bg-coral text-22 font-black text-white">
             RK
           </div>
-          <h2 className="mt-3 text-title font-black text-ink">
-            Raj Kumar Trading
-          </h2>
+          <h2 className="mt-3 text-title font-black text-ink">Raj Kumar Trading</h2>
           <address className="not-italic text-caption leading-relaxed text-ink-3">
             Sector 14, Gurugram, Haryana 122001
             <br />
@@ -52,9 +45,7 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
 
         <div className="text-right max-mobile:text-left">
           <div className="text-kicker uppercase text-ink-3">Invoice</div>
-          <div className="text-h2 font-black tracking-snug text-coral">
-            {invoice.id}
-          </div>
+          <div className="text-h2 font-black tracking-snug text-coral">{invoice.id}</div>
           <div className="mt-1.5">
             <StatusPill status={invoice.status} />
           </div>
@@ -91,16 +82,28 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
         <caption className="sr-only">Invoice line items</caption>
         <thead>
           <tr>
-            <th scope="col" className="rounded-tl-nav-item border-b border-border bg-background px-3.5 py-3 text-left text-kicker uppercase text-ink-3">
+            <th
+              scope="col"
+              className="rounded-tl-nav-item border-b border-border bg-background px-3.5 py-3 text-left text-kicker uppercase text-ink-3"
+            >
               Item
             </th>
-            <th scope="col" className="border-b border-border bg-background px-3.5 py-3 text-right text-kicker uppercase text-ink-3">
+            <th
+              scope="col"
+              className="border-b border-border bg-background px-3.5 py-3 text-right text-kicker uppercase text-ink-3"
+            >
               Qty
             </th>
-            <th scope="col" className="border-b border-border bg-background px-3.5 py-3 text-right text-kicker uppercase text-ink-3">
+            <th
+              scope="col"
+              className="border-b border-border bg-background px-3.5 py-3 text-right text-kicker uppercase text-ink-3"
+            >
               Price
             </th>
-            <th scope="col" className="rounded-tr-nav-item border-b border-border bg-background px-3.5 py-3 text-right text-kicker uppercase text-ink-3">
+            <th
+              scope="col"
+              className="rounded-tr-nav-item border-b border-border bg-background px-3.5 py-3 text-right text-kicker uppercase text-ink-3"
+            >
               Total
             </th>
           </tr>
@@ -136,9 +139,7 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
           <hr className="my-2 border-t border-border" />
           <div className="flex items-baseline justify-between">
             <span className="text-body-sm font-black text-ink">Total</span>
-            <span className="tabular text-money-sm font-black text-ink">
-              {formatRupees(total)}
-            </span>
+            <span className="tabular text-money-sm font-black text-ink">{formatRupees(total)}</span>
           </div>
         </div>
       </div>
@@ -147,5 +148,5 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
         Thank you for your business!
       </p>
     </article>
-  )
+  );
 }

@@ -1,26 +1,21 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect, useRef } from "react"
+import type React from "react";
+import { useEffect, useRef } from "react";
 
-import { ArrowUpDown, Download, ListFilter } from "@/components/icons"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-} from "@/components/ui/primitives/sheet"
-import { ActionSheetRow } from "@/components/invoices/action-sheet-row"
-import { InvoiceSortView } from "@/components/invoices/invoice-sort-view"
-import { InvoiceFilterView } from "@/components/invoices/invoice-filter-view"
-import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider"
-import type { ActionsView } from "@/components/invoices/invoice-list-actions-trigger"
+import { ArrowUpDown, Download, ListFilter } from "@/components/icons";
+import { Sheet, SheetClose, SheetContent, SheetTitle } from "@/components/ui/primitives/sheet";
+import { ActionSheetRow } from "@/components/invoices/action-sheet-row";
+import { InvoiceSortView } from "@/components/invoices/invoice-sort-view";
+import { InvoiceFilterView } from "@/components/invoices/invoice-filter-view";
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
+import type { ActionsView } from "@/components/invoices/invoice-list-actions-trigger";
 
 interface InvoiceListActionsSheetProps {
-  view: ActionsView
-  onViewChange: (v: ActionsView) => void
+  view: ActionsView;
+  onViewChange: (v: ActionsView) => void;
   /** Ref to the ⋯ trigger button for focus restoration on close */
-  triggerRef: React.RefObject<HTMLButtonElement | null>
+  triggerRef: React.RefObject<HTMLButtonElement | null>;
 }
 
 /**
@@ -39,36 +34,32 @@ export function InvoiceListActionsSheet({
   onViewChange,
   triggerRef,
 }: InvoiceListActionsSheetProps) {
-  const { sortLabel, filterLabel, statuses, openExport } = useInvoiceListActions()
+  const { sortLabel, filterLabel, statuses, openExport } = useInvoiceListActions();
 
   // Focus the first menu row when swapping BACK to the menu view from
   // a nested view. When the dialog opens fresh, Base UI handles initial
   // focus; this effect only fires when view transitions to "menu" while
   // the dialog is already open.
-  const firstMenuRowRef = useRef<HTMLButtonElement | null>(null)
-  const prevView = useRef<ActionsView>(null)
+  const firstMenuRowRef = useRef<HTMLButtonElement | null>(null);
+  const prevView = useRef<ActionsView>(null);
 
   useEffect(() => {
     if (view === "menu" && prevView.current !== null && prevView.current !== "menu") {
       // Returned to menu from sort/filter — move focus to first row
-      firstMenuRowRef.current?.focus()
+      firstMenuRowRef.current?.focus();
     }
-    prevView.current = view
-  }, [view])
+    prevView.current = view;
+  }, [view]);
 
   // Accessible title per view
   const dialogTitle =
-    view === "sort"
-      ? "Sort by"
-      : view === "filter"
-        ? "Filter by status"
-        : "Invoice actions"
+    view === "sort" ? "Sort by" : view === "filter" ? "Filter by status" : "Invoice actions";
 
   return (
     <Sheet
       open={view !== null}
       onOpenChange={(open) => {
-        if (!open) onViewChange(null)
+        if (!open) onViewChange(null);
       }}
     >
       <SheetContent
@@ -111,8 +102,8 @@ export function InvoiceListActionsSheet({
               icon={<Download className="size-4.5" aria-hidden />}
               label="Export as PDF"
               onClick={() => {
-                onViewChange(null)
-                openExport()
+                onViewChange(null);
+                openExport();
               }}
             />
 
@@ -126,15 +117,11 @@ export function InvoiceListActionsSheet({
         )}
 
         {/* ── Sort view — conditional render gives fresh mount each time ── */}
-        {view === "sort" && (
-          <InvoiceSortView onClose={() => onViewChange(null)} />
-        )}
+        {view === "sort" && <InvoiceSortView onClose={() => onViewChange(null)} />}
 
         {/* ── Filter view — conditional render gives fresh mount each time ── */}
-        {view === "filter" && (
-          <InvoiceFilterView onClose={() => onViewChange(null)} />
-        )}
+        {view === "filter" && <InvoiceFilterView onClose={() => onViewChange(null)} />}
       </SheetContent>
     </Sheet>
-  )
+  );
 }

@@ -10,19 +10,16 @@ const pillButtonVariants = cva(
   {
     variants: {
       tone: {
-        primary:
-          "bg-primary text-primary-foreground shadow-press hover:bg-coral-press",
+        primary: "bg-primary text-primary-foreground shadow-press hover:bg-coral-press",
         secondary: "bg-coral-soft text-coral-ink hover:bg-coral-soft/80",
         outline: "bg-card text-foreground border-ink-3 hover:bg-surface-2",
         ghost: "bg-transparent text-foreground hover:bg-surface-2",
         paid: "bg-paid text-card shadow-press hover:bg-paid-ink",
         whatsapp: "bg-whatsapp text-card shadow-press hover:bg-whatsapp-press",
-        destructive:
-          "bg-destructive text-card shadow-press hover:bg-overdue-ink",
+        destructive: "bg-destructive text-card shadow-press hover:bg-overdue-ink",
         onCoral: "bg-card text-coral-ink hover:bg-coral-soft",
         draft: "bg-draft-soft text-draft-ink hover:bg-draft-soft/80 active:bg-draft-soft/60",
-        ghostDanger:
-          "bg-transparent text-overdue-ink hover:bg-overdue-soft active:bg-overdue-soft",
+        ghostDanger: "bg-transparent text-overdue-ink hover:bg-overdue-soft active:bg-overdue-soft",
       },
       size: {
         sm: "h-9 px-3.5 text-caption",
@@ -41,14 +38,7 @@ const PillButton = React.forwardRef<
   HTMLButtonElement,
   ButtonPrimitive.Props & VariantProps<typeof pillButtonVariants>
 >(function PillButton(
-  {
-    className,
-    tone = "primary",
-    size = "md",
-    render,
-    nativeButton,
-    ...props
-  },
+  { className, tone = "primary", size = "md", render, nativeButton, ...props },
   ref,
 ) {
   return (

@@ -1,12 +1,12 @@
-import { WhatsApp, Mail, IndianRupee, Home } from "@/components/icons"
-import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar"
-import { Card } from "@/components/ui/custom/card"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { CustomerContactRow } from "@/components/customers/customer-contact-row"
-import type { Customer } from "@/lib/types"
+import { WhatsApp, Mail, IndianRupee, Home } from "@/components/icons";
+import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
+import { Card } from "@/components/ui/custom/card";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { CustomerContactRow } from "@/components/customers/customer-contact-row";
+import type { Customer } from "@/lib/types";
 
 interface CustomerContactCardProps {
-  customer: Customer
+  customer: Customer;
 }
 
 function getInitials(name: string): string {
@@ -14,11 +14,11 @@ function getInitials(name: string): string {
     .split(" ")
     .map((w) => w[0])
     .join("")
-    .slice(0, 2)
+    .slice(0, 2);
 }
 
 export function CustomerContactCard({ customer }: CustomerContactCardProps) {
-  const initials = getInitials(customer.name)
+  const initials = getInitials(customer.name);
 
   return (
     <Card className="p-6">
@@ -30,9 +30,7 @@ export function CustomerContactCard({ customer }: CustomerContactCardProps) {
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <div className="break-words text-title-sm font-bold text-ink">
-            {customer.name}
-          </div>
+          <div className="break-words text-title-sm font-bold text-ink">{customer.name}</div>
           <div className="mt-1 text-label text-ink-3">
             {customer.customerSince
               ? `Customer since ${customer.customerSince}`
@@ -81,5 +79,5 @@ export function CustomerContactCard({ customer }: CustomerContactCardProps) {
         </PillButton>
       </div>
     </Card>
-  )
+  );
 }

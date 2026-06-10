@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { formatPhone, validPhone } from "@/lib/utils/auth-phone"
-import { Info, ArrowRight, Check } from "@/components/icons"
-import { AuthPillToggle } from "@/components/auth/auth-pill-toggle"
-import type { AuthMode } from "@/components/auth/auth-pill-toggle"
+import { cn } from "@/lib/utils";
+import { formatPhone, validPhone } from "@/lib/utils/auth-phone";
+import { Info, ArrowRight, Check } from "@/components/icons";
+import { AuthPillToggle } from "@/components/auth/auth-pill-toggle";
+import type { AuthMode } from "@/components/auth/auth-pill-toggle";
 
 interface AuthPhoneStepProps {
-  mode: AuthMode
-  phone: string
-  consent: boolean
-  onPhoneChange: (v: string) => void
-  onConsentChange: (v: boolean) => void
-  onModeChange: (m: AuthMode) => void
-  onSubmit: () => void
+  mode: AuthMode;
+  phone: string;
+  consent: boolean;
+  onPhoneChange: (v: string) => void;
+  onConsentChange: (v: boolean) => void;
+  onModeChange: (m: AuthMode) => void;
+  onSubmit: () => void;
 }
 
 function AuthPhoneStep({
@@ -25,10 +25,10 @@ function AuthPhoneStep({
   onModeChange,
   onSubmit,
 }: AuthPhoneStepProps) {
-  const isDisabled = !validPhone(phone) || (mode === "signup" && !consent)
+  const isDisabled = !validPhone(phone) || (mode === "signup" && !consent);
 
   function handlePhoneInput(e: React.ChangeEvent<HTMLInputElement>) {
-    onPhoneChange(formatPhone(e.target.value))
+    onPhoneChange(formatPhone(e.target.value));
   }
 
   return (
@@ -55,7 +55,9 @@ function AuthPhoneStep({
         Mobile number
       </label>
       <div className="flex h-16 items-center gap-2.5 rounded-xl border-[1.5px] border-line-strong bg-surface px-4 transition-all focus-within:border-coral focus-within:ring-4 focus-within:ring-coral/14">
-        <span className="text-22 leading-none" aria-hidden="true">🇮🇳</span>
+        <span className="text-22 leading-none" aria-hidden="true">
+          🇮🇳
+        </span>
         <span className="shrink-0 text-18 font-bold text-ink">+91</span>
         <span className="h-7 w-px shrink-0 bg-line" aria-hidden="true" />
         <input
@@ -94,7 +96,8 @@ function AuthPhoneStep({
           <span className="text-caption leading-relaxed text-ink-2">
             I agree to ArthaPatra&apos;s{" "}
             <span className="font-semibold text-ink">Terms of Service</span> and{" "}
-            <span className="font-semibold text-ink">Privacy Policy</span>, and to receive transactional SMS on this number.
+            <span className="font-semibold text-ink">Privacy Policy</span>, and to receive
+            transactional SMS on this number.
           </span>
         </label>
       </div>
@@ -140,7 +143,7 @@ function AuthPhoneStep({
         )}
       </p>
     </div>
-  )
+  );
 }
 
-export { AuthPhoneStep }
+export { AuthPhoneStep };

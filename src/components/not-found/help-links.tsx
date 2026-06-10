@@ -1,12 +1,12 @@
-import Link from "next/link"
-import { FileText, HelpCircle } from "@/components/icons"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+import { FileText, HelpCircle } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/invoices/new", icon: FileText, label: "New invoice" },
   { href: "/#faq", icon: FileText, label: "Documentation" },
   { href: "/#faq", icon: HelpCircle, label: "FAQ" },
-] as const
+] as const;
 
 const helpLinkClass = cn(
   "inline-flex items-center gap-2 h-10 px-3.5 rounded-full",
@@ -14,7 +14,7 @@ const helpLinkClass = cn(
   "transition-[border-color,color,background-color] duration-150",
   "hover:border-ink-2 hover:text-ink hover:bg-surface-2",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2",
-)
+);
 
 function HelpLinks() {
   return (
@@ -31,7 +31,7 @@ function HelpLinks() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export { HelpLinks }
+export { HelpLinks };

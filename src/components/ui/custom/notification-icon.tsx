@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import {
   CheckCircle2,
   Clock,
@@ -8,15 +8,15 @@ import {
   Users,
   Edit,
   Share,
-} from "@/components/icons"
-import type { ComponentType, SVGProps } from "react"
-import type { NotificationTone } from "@/lib/types/notifications"
+} from "@/components/icons";
+import type { ComponentType, SVGProps } from "react";
+import type { NotificationTone } from "@/lib/types/notifications";
 
 type ToneConfig = {
-  Icon: ComponentType<SVGProps<SVGSVGElement>>
-  bgClass: string
-  fgClass: string
-}
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  bgClass: string;
+  fgClass: string;
+};
 
 const TONE_MAP: Record<NotificationTone, ToneConfig> = {
   paid: {
@@ -59,12 +59,12 @@ const TONE_MAP: Record<NotificationTone, ToneConfig> = {
     bgClass: "bg-pending-soft",
     fgClass: "text-pending-ink",
   },
-}
+};
 
 interface NotificationIconProps {
-  tone: NotificationTone
-  className?: string
-  "aria-hidden"?: boolean
+  tone: NotificationTone;
+  className?: string;
+  "aria-hidden"?: boolean;
 }
 
 function NotificationIcon({
@@ -72,7 +72,7 @@ function NotificationIcon({
   className,
   "aria-hidden": ariaHidden = true,
 }: NotificationIconProps) {
-  const { Icon, bgClass, fgClass } = TONE_MAP[tone]
+  const { Icon, bgClass, fgClass } = TONE_MAP[tone];
 
   return (
     <span
@@ -83,12 +83,12 @@ function NotificationIcon({
         "rounded-md",
         bgClass,
         fgClass,
-        className
+        className,
       )}
     >
       <Icon className="w-5 h-5" />
     </span>
-  )
+  );
 }
 
-export { NotificationIcon }
+export { NotificationIcon };

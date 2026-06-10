@@ -1,4 +1,4 @@
-import type { SetupStep, PreviewTile, QuickAction } from "@/lib/types/empty-dashboard"
+import type { SetupStep, PreviewTile, QuickAction } from "@/lib/types/empty-dashboard";
 
 export const SETUP_STEPS: ReadonlyArray<SetupStep> = [
   {
@@ -29,7 +29,7 @@ export const SETUP_STEPS: ReadonlyArray<SetupStep> = [
     hint: "Your customer pays with one tap. We mark it paid for you.",
     action: null,
   },
-]
+];
 
 export const PREVIEW_TILES: ReadonlyArray<PreviewTile> = [
   {
@@ -53,7 +53,7 @@ export const PREVIEW_TILES: ReadonlyArray<PreviewTile> = [
     bgClass: "bg-overdue-soft",
     inkClass: "text-overdue-ink",
   },
-]
+];
 
 export const QUICK_ACTIONS: ReadonlyArray<QuickAction> = [
   {
@@ -80,4 +80,4 @@ export const QUICK_ACTIONS: ReadonlyArray<QuickAction> = [
     bgClass: "bg-whatsapp-soft",
     inkClass: "text-whatsapp",
   },
-]
+];

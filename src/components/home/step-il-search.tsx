@@ -53,7 +53,7 @@ function StepIlSearch() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export { StepIlSearch }
+export { StepIlSearch };

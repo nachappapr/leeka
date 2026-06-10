@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
 // Justified "use client": fires brandToast (client-only Sonner call).
 
-import { Trash2 } from "@/components/icons"
-import { PillButton } from "@/components/ui/custom/pill-button"
-import { brandToast } from "@/components/ui/custom/brand-toast"
+import { Trash2 } from "@/components/icons";
+import { PillButton } from "@/components/ui/custom/pill-button";
+import { brandToast } from "@/components/ui/custom/brand-toast";
 
 interface InvoiceFormDeleteButtonProps {
-  onDelete: () => void
+  onDelete: () => void;
 }
 
 export function fireDeleteInvoiceToast(invoiceId: string, onConfirm: () => void) {
@@ -26,18 +26,14 @@ export function fireDeleteInvoiceToast(invoiceId: string, onConfirm: () => void)
         label: "Cancel",
       },
     ],
-  })
+  });
 }
 
 export function InvoiceFormDeleteButton({ onDelete }: InvoiceFormDeleteButtonProps) {
   return (
-    <PillButton
-      tone="ghostDanger"
-      type="button"
-      onClick={onDelete}
-    >
+    <PillButton tone="ghostDanger" type="button" onClick={onDelete}>
       <Trash2 aria-hidden />
       Delete invoice
     </PillButton>
-  )
+  );
 }

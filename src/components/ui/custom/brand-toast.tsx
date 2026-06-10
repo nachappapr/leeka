@@ -71,9 +71,7 @@ function BrandToastBody({ kind, title, sub, actions, toastId }: BrandToastBodyPr
       {/* Body — col 2, row 1 */}
       <div className="col-start-2 row-start-1 flex flex-col justify-center self-center leading-snug">
         <span className="text-body-sm font-bold text-card">{title}</span>
-        {sub && (
-          <span className="mt-0.5 text-label font-medium text-card/60">{sub}</span>
-        )}
+        {sub && <span className="mt-0.5 text-label font-medium text-card/60">{sub}</span>}
       </div>
 
       {/* Close — col 3, row 1 */}

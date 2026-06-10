@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import type { LanguageOption } from "@/lib/types/settings"
+import { cn } from "@/lib/utils";
+import type { LanguageOption } from "@/lib/types/settings";
 
 interface LanguageTileProps {
-  language: LanguageOption
-  selected: boolean
-  onSelect: () => void
+  language: LanguageOption;
+  selected: boolean;
+  onSelect: () => void;
 }
 
 export function LanguageTile({ language, selected, onSelect }: LanguageTileProps) {
@@ -28,5 +28,5 @@ export function LanguageTile({ language, selected, onSelect }: LanguageTileProps
       <div className="text-body font-bold text-ink">{language.label}</div>
       <div className="mt-0.5 text-label text-ink-3">{language.sub}</div>
     </button>
-  )
+  );
 }

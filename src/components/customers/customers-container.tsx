@@ -1,27 +1,27 @@
-import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar"
-import { Topbar } from "@/components/ui/custom/topbar"
-import { Card } from "@/components/ui/custom/card"
-import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch"
-import { EmptyTableState } from "@/components/ui/custom/empty-table-state"
-import { CustomersPageHeader } from "@/components/customers/customers-page-header"
-import { CustomersTable } from "@/components/customers/customers-table"
-import { CustomersMobileList } from "@/components/customers/customers-mobile-list"
-import { CUSTOMERS } from "@/lib/constants"
+import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
+import { Topbar } from "@/components/ui/custom/topbar";
+import { Card } from "@/components/ui/custom/card";
+import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
+import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
+import { CustomersPageHeader } from "@/components/customers/customers-page-header";
+import { CustomersTable } from "@/components/customers/customers-table";
+import { CustomersMobileList } from "@/components/customers/customers-mobile-list";
+import { CUSTOMERS } from "@/lib/constants";
 
 function sumOutstanding(customers: typeof CUSTOMERS): string | null {
   const outstandingValues = customers
     .map((c) => c.outstanding)
     .filter((v): v is string => v !== null)
-    .map((v) => parseInt(v.replace(/[₹,]/g, ""), 10))
+    .map((v) => parseInt(v.replace(/[₹,]/g, ""), 10));
 
-  if (outstandingValues.length === 0) return null
+  if (outstandingValues.length === 0) return null;
 
-  const total = outstandingValues.reduce((a, b) => a + b, 0)
-  return `₹${total.toLocaleString("en-IN")}`
+  const total = outstandingValues.reduce((a, b) => a + b, 0);
+  return `₹${total.toLocaleString("en-IN")}`;
 }
 
 export function CustomersContainer() {
-  const totalOutstanding = sumOutstanding(CUSTOMERS)
+  const totalOutstanding = sumOutstanding(CUSTOMERS);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -59,5 +59,5 @@ export function CustomersContainer() {
       </div>
       <MobileTabBar />
     </div>
-  )
+  );
 }
