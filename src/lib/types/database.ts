@@ -33,6 +33,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      profiles: {
+        Row: {
+          created_at: string;
+          display_name: string | null;
+          id: string;
+          language: string;
+          phone: string;
+        };
+        Insert: {
+          created_at?: string;
+          display_name?: string | null;
+          id: string;
+          language?: string;
+          phone: string;
+        };
+        Update: {
+          created_at?: string;
+          display_name?: string | null;
+          id?: string;
+          language?: string;
+          phone?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
