@@ -71,3 +71,5 @@
 - [border-overdue opacity modifier fails SC 1.4.11 — RESOLVED](project_overdue_border_opacity_contrast.md) — solid border-overdue (5.26:1) now used; /30 and /55 modifiers always fail; rule still applies project-wide
 - [CustomerDeleteSheet focus restore gap — RESOLVED 2026-06-08](project_cust_delete_sheet_focus_restore.md) — deleteButtonRef forwarded via forwardRef chain; finalFocus on SheetContent; focus returns to Delete button on Cancel/Esc
 - [Sheet primitive motion-reduce translate guard — RESOLVED](project_tw_animate_no_reduced_motion.md) — sheet.tsx now has motion-reduce:translate-y-0 / translate-x-0 guards on all four sides; SC 2.3.3 satisfied for all Sheet consumers
+- [Skeleton loading.tsx: no AT announcement (Medium)](project_skeleton_loading_at_pattern.md) — all seven loading.tsx files need role=status+aria-label on outer div + aria-hidden on each Skeleton; static HTML, no client boundary
+- [animate-pulse no prefers-reduced-motion guard (Medium)](project_animate_pulse_no_prm.md) — Skeleton primitive applies animate-pulse unconditionally; fix: add motion-reduce:animate-none to primitive className; cascades to all consumers

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { MOBILE_TABS } from "@/lib/constants";
+import { MOBILE_TABS } from "@/lib/constants/navigation";
 import { cn } from "@/lib/utils";
 
 export function MobileTabBar() {
