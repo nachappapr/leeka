@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/primitives/skeleton";
+import { Skeleton } from "@/components/ui/custom/skeleton";
 
 export default function ActivityLoading() {
   return (
