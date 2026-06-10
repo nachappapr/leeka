@@ -1,0 +1,1 @@
+- [AP-2 Supabase foundation](project_ap2_supabase_foundation.md) — env var names (PUBLISHABLE_KEY not ANON_KEY), migration ref, CI strategy, settled schema decisions

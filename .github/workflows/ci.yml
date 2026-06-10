@@ -11,6 +11,15 @@ jobs:
     name: Lint, Type-check & Build
     runs-on: ubuntu-latest
 
+    env:
+      # Public Supabase vars — not secrets; required by env.client.ts / env.server.ts
+      # at build time. The service-role key is NOT needed for lint/type-check/build.
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      # Service-role key is required by env.server.ts at startup; provide it via
+      # GitHub Actions secret so server-side imports don't throw during build.
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,3 +46,27 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  migrations:
+    name: Apply migrations (Supabase CLI)
+    runs-on: ubuntu-latest
+    # Only run on pushes to main to avoid applying migrations on every branch.
+    # Remove this condition if you want drift-detection on PRs too.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Apply migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          supabase link --project-ref ${{ vars.SUPABASE_PROJECT_REF }}
+          supabase db push --include-all
