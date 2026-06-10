@@ -10,6 +10,8 @@ interface AuthPhoneStepProps {
   mode: AuthMode;
   phone: string;
   consent: boolean;
+  isPending?: boolean;
+  error?: string;
   onPhoneChange: (v: string) => void;
   onConsentChange: (v: boolean) => void;
   onModeChange: (m: AuthMode) => void;
@@ -20,12 +22,14 @@ function AuthPhoneStep({
   mode,
   phone,
   consent,
+  isPending = false,
+  error,
   onPhoneChange,
   onConsentChange,
   onModeChange,
   onSubmit,
 }: AuthPhoneStepProps) {
-  const isDisabled = !validPhone(phone) || (mode === "signup" && !consent);
+  const isDisabled = !validPhone(phone) || (mode === "signup" && !consent) || isPending;
 
   function handlePhoneInput(e: React.ChangeEvent<HTMLInputElement>) {
     onPhoneChange(formatPhone(e.target.value));
@@ -107,14 +111,26 @@ function AuthPhoneStep({
         <span>We never share your number. SMS rates may apply.</span>
       </div>
 
+      <p
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        className="mt-3 text-body-sm font-semibold text-overdue"
+      >
+        {error ?? ""}
+      </p>
+
       <button
         type="button"
-        onClick={onSubmit}
-        disabled={isDisabled}
-        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+        onClick={() => {
+          if (isDisabled) return;
+          onSubmit();
+        }}
+        aria-disabled={isDisabled}
+        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 aria-disabled:pointer-events-none aria-disabled:opacity-40"
       >
-        {mode === "login" ? "Send code" : "Continue"}
-        <ArrowRight className="size-5" aria-hidden="true" />
+        {isPending ? "Sending…" : mode === "login" ? "Send code" : "Continue"}
+        {!isPending && <ArrowRight className="size-5" aria-hidden="true" />}
       </button>
 
       <p className="mt-5 text-center text-body-sm text-ink-3">

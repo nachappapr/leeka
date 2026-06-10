@@ -33,6 +33,7 @@ function OtpInput({ value, onChange, disabled = false }: OtpInputProps) {
   }
 
   function handleKeyDown(idx: number, e: KeyboardEvent<HTMLInputElement>) {
+    if (disabled && e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     if (e.key === "Backspace") {
       if (digits[idx]) {
         const next = digits.map((d, i) => (i === idx ? "" : d));
@@ -76,7 +77,8 @@ function OtpInput({ value, onChange, disabled = false }: OtpInputProps) {
           pattern="[0-9]*"
           maxLength={1}
           value={digit}
-          disabled={disabled}
+          readOnly={disabled}
+          aria-disabled={disabled}
           aria-label={`Digit ${idx + 1} of ${OTP_LENGTH}`}
           autoComplete={idx === 0 ? "one-time-code" : "off"}
           onChange={(e) => handleChange(idx, e.target.value)}
@@ -86,7 +88,7 @@ function OtpInput({ value, onChange, disabled = false }: OtpInputProps) {
           onBlur={() => setFocused(null)}
           className={cn(
             "h-16 w-full rounded-xl border-2 bg-surface text-center text-26 font-extrabold tabular-nums text-ink outline-none transition-all duration-150 max-mobile:h-14 max-mobile:text-title",
-            "disabled:pointer-events-none disabled:opacity-50",
+            "aria-disabled:pointer-events-none aria-disabled:opacity-50",
             focused === idx
               ? "border-coral ring-4 ring-coral/14"
               : digit

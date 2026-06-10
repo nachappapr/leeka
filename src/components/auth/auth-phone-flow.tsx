@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 
 import { validPhone } from "@/lib/utils/auth-phone";
+import { sendOtp, verifyOtp } from "@/lib/actions/auth";
 import type { BizTypeId } from "@/lib/constants/auth";
 import type { AuthStep } from "@/lib/types/auth";
 import { AuthPhoneStep } from "@/components/auth/auth-phone-step";
@@ -18,6 +20,7 @@ interface AuthPhoneFlowProps {
 
 function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [step, setStep] = useState<AuthStep>("phone");
   const [mode, setMode] = useState<AuthMode>(initialMode);
@@ -28,6 +31,9 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
   const [yourName, setYourName] = useState("");
   const [bizType, setBizType] = useState<BizTypeId | null>(null);
   const [resend, setResend] = useState(0);
+  const [phoneError, setPhoneError] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
     if (resend <= 0) return;
@@ -50,6 +56,8 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
       setMode(m);
       setStep("phone");
       setOtp("");
+      setPhoneError("");
+      setOtpError("");
       setBizName("");
       setYourName("");
       setBizType(null);
@@ -60,70 +68,110 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
 
   function handlePhoneSubmit() {
     if (!validPhone(phone)) return;
-    setStep("otp");
-    setOtp("");
-    setResend(24);
+    setPhoneError("");
+    startTransition(async () => {
+      const result = await sendOtp(phone);
+      if (!result.ok) {
+        setPhoneError(result.error);
+        return;
+      }
+      setOtp("");
+      setOtpError("");
+      setResend(24);
+      setStatusMessage(`Code sent to +91 ${phone}`);
+      setStep("otp");
+    });
   }
 
   function handleOtpSubmit() {
     if (otp.length < 6) return;
-    setStep(mode === "signup" ? "profile" : "done");
+    setOtpError("");
+    startTransition(async () => {
+      const result = await verifyOtp(phone, otp);
+      if (!result.ok) {
+        setOtpError(result.error);
+        return;
+      }
+      if (mode === "signup") {
+        setStatusMessage("Creating your account…");
+        setStep("profile");
+      } else {
+        setStatusMessage("Signing you in…");
+        setStep("done");
+      }
+    });
   }
 
   function handleChangeNumber() {
     setStep("phone");
     setOtp("");
+    setOtpError("");
   }
 
   function handleResend() {
     if (resend > 0) return;
-    setResend(24);
-    // TODO: wire resend API
-  }
-
-  if (step === "done") {
-    return <AuthDoneStep mode={mode} yourName={yourName} />;
-  }
-
-  if (step === "profile") {
-    return (
-      <AuthProfileStep
-        bizName={bizName}
-        yourName={yourName}
-        bizType={bizType}
-        onBizNameChange={setBizName}
-        onYourNameChange={setYourName}
-        onBizTypeChange={setBizType}
-        onSubmit={() => setStep("done")}
-      />
-    );
-  }
-
-  if (step === "otp") {
-    return (
-      <AuthOtpStep
-        mode={mode}
-        phone={phone}
-        otp={otp}
-        resend={resend}
-        onOtpChange={setOtp}
-        onChangeNumber={handleChangeNumber}
-        onResend={handleResend}
-        onSubmit={handleOtpSubmit}
-      />
-    );
+    setOtpError("");
+    startTransition(async () => {
+      const result = await sendOtp(phone);
+      if (!result.ok) {
+        setOtpError(result.error);
+        return;
+      }
+      setResend(24);
+      flushSync(() => setStatusMessage(""));
+      setStatusMessage(`Code sent to +91 ${phone}`);
+    });
   }
 
   return (
-    <AuthPhoneStep
-      mode={mode}
-      phone={phone}
-      consent={consent}
-      onPhoneChange={setPhone}
-      onConsentChange={setConsent}
-      onModeChange={handleModeChange}
-      onSubmit={handlePhoneSubmit}
-    />
+    <>
+      <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {statusMessage}
+      </p>
+
+      {step === "done" && <AuthDoneStep mode={mode} yourName={yourName} />}
+
+      {step === "profile" && (
+        <AuthProfileStep
+          bizName={bizName}
+          yourName={yourName}
+          bizType={bizType}
+          onBizNameChange={setBizName}
+          onYourNameChange={setYourName}
+          onBizTypeChange={setBizType}
+          onSubmit={() => setStep("done")}
+        />
+      )}
+
+      {step === "otp" && (
+        <AuthOtpStep
+          mode={mode}
+          phone={phone}
+          otp={otp}
+          resend={resend}
+          isPending={isPending}
+          error={otpError}
+          onOtpChange={setOtp}
+          onChangeNumber={handleChangeNumber}
+          onResend={handleResend}
+          onSubmit={handleOtpSubmit}
+        />
+      )}
+
+      {step === "phone" && (
+        <AuthPhoneStep
+          mode={mode}
+          phone={phone}
+          consent={consent}
+          isPending={isPending}
+          error={phoneError}
+          onPhoneChange={setPhone}
+          onConsentChange={setConsent}
+          onModeChange={handleModeChange}
+          onSubmit={handlePhoneSubmit}
+        />
+      )}
+    </>
   );
 }
 

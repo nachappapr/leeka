@@ -8,8 +8,12 @@ function validPhone(p: string) {
   return p.replace(/\D/g, "").length === 10;
 }
 
+function toE164(tenDigit: string): string {
+  return `+91${tenDigit.replace(/\D/g, "")}`;
+}
+
 function padTime(n: number) {
   return String(n).padStart(2, "0");
 }
 
-export { formatPhone, validPhone, padTime };
+export { formatPhone, validPhone, toE164, padTime };

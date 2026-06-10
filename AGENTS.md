@@ -139,6 +139,16 @@ export default function DashboardPage() {
 
 If a page legitimately needs to branch between containers (e.g. role-gated dashboards), branching in the page is fine — but each branch still returns a single container element, never inline composition.
 
+### 8. Form handling — two-tier standard
+
+Pick the tier by the shape of the form; do not mix tiers within one form.
+
+**Tier 1 — `useForm` (react-hook-form) + `zodResolver`:** any form with **2+ validated fields** or per-field error display (invoice create/edit, customer forms, the signup profile step). The zod schema lives in `src/lib/schema/<feature>.ts` (existing convention — see `src/lib/schema/invoice.ts`) and is **shared** with the Server Action — the action parses the same schema server-side; client-side validation is UX, never a security boundary.
+
+**Tier 2 — controlled `useState` + `useTransition` + Server Action:** single-input or custom-widget micro-interactions (phone entry, OTP entry, search/filter inputs, inline toggles). Do NOT wrap these in react-hook-form — a one-field registry or a `Controller` around a custom widget (e.g. `OtpInput`) is indirection with no validation benefit. Errors come from the Server Action's `{ ok, error }` result and render in the step's live region.
+
+Both tiers: every Server Action validates its inputs (zod schema or regex guard) before touching Supabase, regardless of what the client validated. Multi-step flows (e.g. auth phone → otp → profile) are state machines — the step machine stays in plain state; RHF only ever owns fields _within_ a single step.
+
 ---
 
 ## Agent dispatch (mandatory routing rule)

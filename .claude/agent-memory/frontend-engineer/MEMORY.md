@@ -1,1 +1,2 @@
 - [Dashboard Patterns](project-dashboard-patterns.md) — ESLint rules, token mappings, JSX depth strategy from first dashboard build
+- [Auth Server Actions pattern](project-auth-server-actions.md) — sendOtp/verifyOtp in src/lib/actions/auth.ts, useTransition pattern, AuthActionResult type, text-overdue for errors

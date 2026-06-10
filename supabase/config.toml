@@ -187,8 +187,10 @@ password_requirements = ""
 [auth.rate_limit]
 # Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
 email_sent = 2
-# Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
-sms_sent = 30
+# Number of SMS OTPs that can be sent per hour per IP. Deliberately conservative:
+# 10/hr prevents SMS flooding while covering normal test/dev usage.
+# Production: raise to 60 once a DLT-registered Twilio/MSG91 number is live.
+sms_sent = 10
 # Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.
 anonymous_users = 30
 # Number of sessions that can be refreshed in a 5 minute interval per IP address.
@@ -196,7 +198,8 @@ token_refresh = 150
 # Number of sign up and sign-in requests that can be made in a 5 minute interval per IP address (excludes anonymous users).
 sign_in_sign_ups = 30
 # Number of OTP / Magic link verifications that can be made in a 5 minute interval per IP address.
-token_verifications = 30
+# 10 attempts per 5-minute window — stops brute-force against a known phone number.
+token_verifications = 10
 # Number of Web3 logins that can be made in a 5 minute interval per IP address.
 web3 = 30
 
@@ -246,17 +249,23 @@ otp_expiry = 3600
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.
-enable_signup = false
+enable_signup = true
 # If enabled, users need to confirm their phone number before signing in.
 enable_confirmations = false
 # Template for sending OTP to users
-template = "Your code is {{ .Code }}"
+template = "Your ArthaPatra code is {{ .Code }}. Valid for 10 minutes."
 # Controls the minimum amount of time that must pass before sending another sms otp.
-max_frequency = "5s"
+# 24 seconds matches the client-side cooldown shown in the OTP step.
+max_frequency = "24s"
 
-# Use pre-defined map of phone number to OTP for testing.
-# [auth.sms.test_otp]
-# 4152127777 = "123456"
+# Deterministic test OTPs for local dev and CI — no live SMS provider required.
+# Format: E.164 without the leading +  →  fixed 6-digit code
+# Add any number you need for integration testing here.
+[auth.sms.test_otp]
+# Indian numbers (without +91 prefix) → fixed code for testing
+"9100000001" = "000001"
+"9100000002" = "000002"
+"9100000003" = "000003"
 
 # Configure logged in session timeouts.
 # [auth.sessions]
@@ -275,13 +284,28 @@ max_frequency = "5s"
 # enabled = true
 # uri = "pg-functions://<database>/<schema>/<hook_name>"
 
-# Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
+# ── SMS Provider ──────────────────────────────────────────────────────────────
+# Only ONE provider section should be enabled at a time.
+# India production checklist before enabling either:
+#   1. Register DLT sender ID + template with your telecom operator.
+#   2. Provision live credentials and add them to your deployment's env.
+#   3. Raise sms_sent rate limit above to match expected traffic.
+#
+# Option A — Twilio (global, supports Indian numbers via MSG91 sub-account)
+# Docs: https://supabase.com/docs/guides/auth/phone-login/twilio
 [auth.sms.twilio]
 enabled = false
-account_sid = ""
-message_service_sid = ""
+account_sid = "env(SUPABASE_AUTH_SMS_TWILIO_ACCOUNT_SID)"
+message_service_sid = "env(SUPABASE_AUTH_SMS_TWILIO_MESSAGE_SERVICE_SID)"
 # DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:
 auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
+
+# Option B — Textlocal (popular in India; requires DLT approval)
+# Docs: https://supabase.com/docs/guides/auth/phone-login/textlocal
+# [auth.sms.textlocal]
+# enabled = false
+# sender = "env(SUPABASE_AUTH_SMS_TEXTLOCAL_SENDER)"
+# api_key = "env(SUPABASE_AUTH_SMS_TEXTLOCAL_API_KEY)"
 
 # Multi-factor-authentication is available to Supabase Pro plan.
 [auth.mfa]

@@ -11,6 +11,8 @@ interface AuthOtpStepProps {
   phone: string;
   otp: string;
   resend: number;
+  isPending?: boolean;
+  error?: string;
   onOtpChange: (v: string) => void;
   onChangeNumber: () => void;
   onResend: () => void;
@@ -22,12 +24,14 @@ function AuthOtpStep({
   phone,
   otp,
   resend,
+  isPending = false,
+  error,
   onOtpChange,
   onChangeNumber,
   onResend,
   onSubmit,
 }: AuthOtpStepProps) {
-  const isDisabled = otp.length < 6;
+  const isDisabled = otp.length < 6 || isPending;
 
   return (
     <div className="flex flex-col gap-0">
@@ -52,7 +56,16 @@ function AuthOtpStep({
         </button>
       </p>
 
-      <OtpInput value={otp} onChange={onOtpChange} />
+      <OtpInput value={otp} onChange={onOtpChange} disabled={isPending} />
+
+      <p
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        className="mt-3 text-body-sm font-semibold text-overdue"
+      >
+        {error ?? ""}
+      </p>
 
       <div className="mt-5 flex items-center gap-2.5 rounded-xl bg-coral-soft p-3">
         <Info className="size-4.5 shrink-0 text-coral-ink" aria-hidden="true" />
@@ -70,7 +83,8 @@ function AuthOtpStep({
           <button
             type="button"
             onClick={onResend}
-            className="font-extrabold text-coral hover:text-coral-press focus-visible:outline-none focus-visible:underline"
+            disabled={isPending}
+            className="font-extrabold text-coral hover:text-coral-press focus-visible:outline-none focus-visible:underline disabled:pointer-events-none disabled:opacity-40"
           >
             Resend code
           </button>
@@ -79,12 +93,15 @@ function AuthOtpStep({
 
       <button
         type="button"
-        onClick={onSubmit}
-        disabled={isDisabled}
-        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+        onClick={() => {
+          if (isDisabled) return;
+          onSubmit();
+        }}
+        aria-disabled={isDisabled}
+        className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-coral text-body font-bold text-white transition-colors hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2 aria-disabled:pointer-events-none aria-disabled:opacity-40"
       >
-        Verify &amp; continue
-        <ArrowRight className="size-5" aria-hidden="true" />
+        {isPending ? "Verifying…" : "Verify & continue"}
+        {!isPending && <ArrowRight className="size-5" aria-hidden="true" />}
       </button>
 
       <button
