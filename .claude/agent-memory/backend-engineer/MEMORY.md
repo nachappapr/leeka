@@ -1,2 +1,3 @@
 - [AP-2 Supabase foundation](project_ap2_supabase_foundation.md) — env var names (PUBLISHABLE_KEY not ANON_KEY), migration ref, CI strategy, settled schema decisions
 - [AP-5 profiles table](project_ap5_profiles.md) — schema, trigger pattern, RLS policies, anon grant revoke pattern
+- [AP-6 businesses tables](project_ap6_businesses.md) — businesses + business_members schema, RPC bootstrap pattern, RLS, GSTIN validation, generated types note (RPC args are string not nullable)
