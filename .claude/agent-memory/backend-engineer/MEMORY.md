@@ -2,3 +2,4 @@
 - [AP-5 profiles table](project_ap5_profiles.md) — schema, trigger pattern, RLS policies, anon grant revoke pattern
 - [AP-6 businesses tables](project_ap6_businesses.md) — businesses + business_members schema, RPC bootstrap pattern, RLS, GSTIN validation, generated types note (RPC args are string not nullable)
 - [AP-8 tenant tables](project_ap8_tenant_tables.md) — all 10 tenant tables, RLS pattern with (select auth.uid()), notifications merge, FK index gaps, invoice_status enum
+- [AP-9 public invoice RPC](project_ap9_public_invoice_rpc.md) — gen_random_bytes in extensions schema, trigger SECURITY INVOKER, get_public_invoice SECURITY DEFINER, intentional anon WARN
