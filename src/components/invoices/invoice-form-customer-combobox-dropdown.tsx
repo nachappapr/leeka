@@ -4,7 +4,7 @@
 import * as React from "react";
 
 import { ChevronRight, Plus } from "@/components/icons";
-import type { FilteredCustomer } from "@/lib/types/customer";
+import type { SelectedCustomer } from "@/lib/types/customer";
 import { cn } from "@/lib/utils";
 
 import { InvoiceFormCustomerAvatar } from "./invoice-form-customer-avatar";
@@ -20,7 +20,7 @@ export function InvoiceFormCustomerComboboxDropdown({
   onEnterAddNew,
 }: {
   query: string;
-  matches: FilteredCustomer[];
+  matches: SelectedCustomer[];
   activeIndex: number;
   listboxRef: React.RefObject<HTMLUListElement | null>;
   onSelect: (i: number) => void;
@@ -61,7 +61,7 @@ export function InvoiceFormCustomerComboboxDropdown({
       >
         {matches.map((c, i) => (
           <li
-            key={c.id}
+            key={i}
             id={`cp-opt-${i}`}
             role="option"
             aria-selected={i === activeIndex}

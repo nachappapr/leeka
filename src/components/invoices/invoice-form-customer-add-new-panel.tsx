@@ -4,6 +4,7 @@
 
 import * as React from "react";
 
+import { upsertCustomerAction } from "@/app/(app)/customers/actions";
 import { Check, ChevronLeft } from "@/components/icons";
 import { FieldLabel } from "@/components/ui/custom/field-label";
 import { IconButton } from "@/components/ui/custom/icon-button";
@@ -23,7 +24,22 @@ export function InvoiceFormCustomerAddNewPanel({
   const [newName, setNewName] = React.useState(initialName);
   const [newPhone, setNewPhone] = React.useState("");
   const [newGstin, setNewGstin] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
   const canSave = newName.trim().length > 0 && newPhone.trim().length > 0;
+
+  async function handleSave() {
+    if (!canSave) return;
+    setSaving(true);
+    const result = await upsertCustomerAction({
+      name: newName.trim(),
+      phone: newPhone.trim(),
+      gstin: newGstin.trim() || undefined,
+    });
+    setSaving(false);
+    if (result.ok) {
+      onSave({ name: newName.trim(), phone: newPhone.trim() });
+    }
+  }
 
   return (
     <div className="rounded-2xl border-[1.5px] border-dashed border-line-strong bg-background p-3.5">
@@ -82,11 +98,8 @@ export function InvoiceFormCustomerAddNewPanel({
           tone="primary"
           size="sm"
           type="button"
-          disabled={!canSave}
-          onClick={() => {
-            if (canSave)
-              onSave({ name: newName.trim(), phone: newPhone.trim(), last: "New customer" });
-          }}
+          disabled={!canSave || saving}
+          onClick={handleSave}
         >
           <Check className="size-3.5" strokeWidth={2.6} aria-hidden />
           Save &amp; use

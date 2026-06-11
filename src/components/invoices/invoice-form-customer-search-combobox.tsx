@@ -6,23 +6,14 @@
 
 import * as React from "react";
 
+import { searchCustomersAction } from "@/app/(app)/customers/actions";
 import { Search, XIcon } from "@/components/icons";
 import { IconButton } from "@/components/ui/custom/icon-button";
-import { CUSTOMERS } from "@/lib/constants/customers";
-import type { FilteredCustomer, SelectedCustomer } from "@/lib/types/customer";
+import type { SelectedCustomer } from "@/lib/types/customer";
 import { cn } from "@/lib/utils";
 
 import { InvoiceFormCustomerAddNewPanel } from "./invoice-form-customer-add-new-panel";
 import { InvoiceFormCustomerComboboxDropdown } from "./invoice-form-customer-combobox-dropdown";
-
-// ── Private helper ─────────────────────────────────────────────────────────
-
-function filterCustomers(q: string): FilteredCustomer[] {
-  if (!q) return Array.from(CUSTOMERS.slice(0, 5));
-  return CUSTOMERS.filter(
-    (c) => c.name.toLowerCase().includes(q) || c.phone.replace(/\s/g, "").includes(q),
-  );
-}
 
 // ── Export ─────────────────────────────────────────────────────────────────
 
@@ -36,13 +27,24 @@ export function InvoiceFormCustomerSearchCombobox({
   const [activeIndex, setActiveIndex] = React.useState(-1);
   const [addNewMode, setAddNewMode] = React.useState(false);
   const [addNewPrefill, setAddNewPrefill] = React.useState("");
+  const [matches, setMatches] = React.useState<SelectedCustomer[]>([]);
 
   const boxRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const listboxRef = React.useRef<HTMLUListElement>(null);
 
   const q = query.trim().toLowerCase();
-  const matches = filterCustomers(q);
+
+  // Only fetch when the dropdown is open — avoids a silent fetch-all on mount.
+  React.useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => {
+      searchCustomersAction(q).then((result) => {
+        if (result.ok) setMatches(result.data);
+      });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [q, open]);
 
   // Outside-click closes dropdown
   React.useEffect(() => {
