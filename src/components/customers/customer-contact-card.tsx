@@ -69,14 +69,45 @@ export function CustomerContactCard({ customer }: CustomerContactCardProps) {
 
       {/* Action buttons */}
       <div className="mt-4.5 flex gap-2">
-        <PillButton tone="outline" size="sm" className="flex-1">
-          <WhatsApp aria-hidden className="size-4" />
-          WhatsApp
-        </PillButton>
-        <PillButton tone="outline" size="sm" className="flex-1">
-          <Mail aria-hidden className="size-4" />
-          Email
-        </PillButton>
+        {customer.phone ? (
+          <PillButton
+            tone="outline"
+            size="sm"
+            className="flex-1"
+            render={
+              <a
+                href={`https://wa.me/${customer.phone.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`WhatsApp ${customer.name}`}
+              />
+            }
+          >
+            <WhatsApp aria-hidden className="size-4" />
+            WhatsApp
+          </PillButton>
+        ) : (
+          <PillButton tone="outline" size="sm" className="flex-1" disabled>
+            <WhatsApp aria-hidden className="size-4" />
+            WhatsApp
+          </PillButton>
+        )}
+        {customer.email ? (
+          <PillButton
+            tone="outline"
+            size="sm"
+            className="flex-1"
+            render={<a href={`mailto:${customer.email}`} aria-label={`Email ${customer.name}`} />}
+          >
+            <Mail aria-hidden className="size-4" />
+            Email
+          </PillButton>
+        ) : (
+          <PillButton tone="outline" size="sm" className="flex-1" disabled>
+            <Mail aria-hidden className="size-4" />
+            Email
+          </PillButton>
+        )}
       </div>
     </Card>
   );
