@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { ProfileStepSchema } from "@/lib/schema/profile";
+import logger from "@/lib/logger";
 import type { AuthActionResult } from "@/lib/types/auth";
 
 /**
@@ -41,7 +42,7 @@ export async function saveDisplayName(displayName: string): Promise<AuthActionRe
     .eq("id", user.id);
 
   if (error) {
-    console.error("[saveDisplayName] Supabase error:", error.message);
+    logger.error({ err: error }, "saveDisplayName: update failed");
     return { ok: false, error: "Failed to save display name" };
   }
 

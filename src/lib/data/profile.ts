@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import logger from "@/lib/logger";
 import type { Tables } from "@/lib/types/database";
 
 export type Profile = Tables<"profiles">;
@@ -22,7 +23,7 @@ export async function getProfile(): Promise<Profile | null> {
   if (error) {
     // PGRST116 = "no rows returned" — expected for new users before trigger runs
     if (error.code !== "PGRST116") {
-      console.error("[getProfile] Supabase error:", error.message);
+      logger.error({ err: error }, "getProfile: query failed");
     }
     return null;
   }

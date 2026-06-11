@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { BusinessSchema } from "@/lib/schema/business";
+import logger from "@/lib/logger";
 
 export type CreateBusinessResult = { ok: true; businessId: string } | { ok: false; error: string };
 
@@ -59,7 +60,7 @@ export async function createBusiness(input: {
     if (error.message.includes("NAME_REQUIRED")) {
       return { ok: false, error: "Business name is required." };
     }
-    console.error("[createBusiness] RPC error for user", user.id, "code:", error.code);
+    logger.error({ err: { code: error.code }, userId: user.id }, "createBusiness: RPC failed");
     return { ok: false, error: "Failed to create business. Please try again." };
   }
 

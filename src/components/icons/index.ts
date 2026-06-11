@@ -68,6 +68,8 @@ export {
   ListFilter,
   Mail,
   Loader2,
+  Building2,
+  ChevronDown,
 } from "lucide-react";
 
 // Custom SVG icons — paths copied verbatim from design source

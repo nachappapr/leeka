@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { validPhone, toE164 } from "@/lib/utils/auth-phone";
 import { getProfile } from "@/lib/data/profile";
+import { getBusinessForUser } from "@/lib/data/business";
 import type { AuthActionResult } from "@/lib/types/auth";
 
 export async function sendOtp(phone: string): Promise<AuthActionResult> {
@@ -44,5 +45,8 @@ export async function verifyOtp(phone: string, token: string): Promise<AuthActio
   const profileComplete =
     typeof profile?.display_name === "string" && profile.display_name.trim().length > 0;
 
-  return { ok: true, profileComplete };
+  const business = profileComplete ? await getBusinessForUser() : null;
+  const businessComplete = business !== null;
+
+  return { ok: true, profileComplete, businessComplete };
 }

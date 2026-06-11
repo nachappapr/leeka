@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import logger from "@/lib/logger";
 import type { Tables } from "@/lib/types/database";
 
 export type Business = Tables<"businesses">;
@@ -22,7 +23,7 @@ export async function getBusinessForUser(): Promise<Business | null> {
   if (error) {
     // PGRST116 = "no rows returned" — expected for users without a business
     if (error.code !== "PGRST116") {
-      console.error("[getBusinessForUser] Supabase error:", error.message);
+      logger.error({ err: error }, "getBusinessForUser: query failed");
     }
     return null;
   }

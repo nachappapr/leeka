@@ -96,9 +96,12 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
         setOtpError(result.error);
         return;
       }
-      if (result.profileComplete) {
+      if (result.profileComplete && result.businessComplete) {
         setStatusMessage("Signing you in…");
         setStep("done");
+      } else if (result.profileComplete && !result.businessComplete) {
+        setStatusMessage("Setting up your business…");
+        router.push("/onboarding");
       } else if (mode === "signup") {
         setStatusMessage("Creating your account…");
         setStep("profile");
@@ -147,8 +150,8 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
         yourNameRef.current?.focus();
         return;
       }
-      setStatusMessage("All set! Opening your dashboard…");
-      setStep("done");
+      setStatusMessage("Setting up your business…");
+      router.push("/onboarding?name=" + encodeURIComponent(bizName));
     });
   }
 
