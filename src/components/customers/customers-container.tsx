@@ -1,61 +1,104 @@
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { Topbar } from "@/components/ui/custom/topbar";
 import { Card } from "@/components/ui/custom/card";
-import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
 import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
 import { CustomersPageHeader } from "@/components/customers/customers-page-header";
 import { CustomersTable } from "@/components/customers/customers-table";
 import { CustomersMobileList } from "@/components/customers/customers-mobile-list";
-import { CUSTOMERS } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/server";
+import type { Customer } from "@/lib/types";
 
-function sumOutstanding(customers: typeof CUSTOMERS): string | null {
-  const outstandingValues = customers
-    .map((c) => c.outstanding)
-    .filter((v): v is string => v !== null)
-    .map((v) => parseInt(v.replace(/[₹,]/g, ""), 10));
+async function fetchCustomers(): Promise<Customer[]> {
+  const supabase = await createClient();
 
-  if (outstandingValues.length === 0) return null;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const total = outstandingValues.reduce((a, b) => a + b, 0);
-  return `₹${total.toLocaleString("en-IN")}`;
+  if (!user) return [];
+
+  const { data: member } = await supabase
+    .from("business_members")
+    .select("business_id")
+    .eq("user_id", user.id)
+    .single();
+
+  const businessId = member?.business_id;
+  if (!businessId) return [];
+
+  // customers table not yet in generated Database types — cast required until next type-gen run
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rows, error } = await (supabase as any)
+    .from("customers")
+    .select("*")
+    .eq("business_id", businessId)
+    .order("name");
+
+  if (error || !rows) return [];
+
+  return (
+    rows as Array<{
+      id: string;
+      name: string;
+      phone: string | null;
+      email: string | null;
+      gstin: string | null;
+      billing_address: string | null;
+      city: string | null;
+      created_at: string;
+    }>
+  ).map((row) => ({
+    id: row.id,
+    name: row.name,
+    phone: row.phone ?? "",
+    email: row.email ?? undefined,
+    gstin: row.gstin ?? undefined,
+    address: row.billing_address ?? undefined,
+    city: row.city ?? undefined,
+    invoiceCount: 0,
+    totalBilled: "₹0",
+    outstanding: null,
+    paid: "₹0",
+    customerSince: row.created_at
+      ? new Date(row.created_at).toLocaleDateString("en-IN", {
+          month: "short",
+          year: "numeric",
+        })
+      : undefined,
+  }));
 }
 
-export function CustomersContainer() {
-  const totalOutstanding = sumOutstanding(CUSTOMERS);
+export async function CustomersContainer() {
+  const customers = await fetchCustomers();
+  const hasCustomers = customers.length > 0;
 
   return (
     <div className="flex flex-1 flex-col">
       <Topbar title="Customers" subtitle="All your customers" />
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
-        <EmptyStateSwitch
-          empty={
-            <>
-              <CustomersPageHeader totalCount={0} totalOutstanding={null} />
-              <Card>
-                <EmptyTableState
-                  icon="Users"
-                  title="No customers yet"
-                  body="Add your first customer — name and phone is enough. You can fill in GSTIN & address later."
-                  primary={{ label: "Add customer", href: "/customers", icon: "Plus" }}
-                />
-              </Card>
-            </>
-          }
-          populated={
-            <>
-              <CustomersPageHeader
-                totalCount={CUSTOMERS.length}
-                totalOutstanding={totalOutstanding}
+        {hasCustomers ? (
+          <>
+            <CustomersPageHeader totalCount={customers.length} totalOutstanding={null} />
+            <Card>
+              <CustomersTable customers={customers} />
+              <div className="p-4 min-mobile:hidden">
+                <CustomersMobileList customers={customers} />
+              </div>
+            </Card>
+          </>
+        ) : (
+          <>
+            <CustomersPageHeader totalCount={0} totalOutstanding={null} />
+            <Card>
+              <EmptyTableState
+                icon="Users"
+                title="No customers yet"
+                body="Add your first customer — name and phone is enough. You can fill in GSTIN & address later."
+                primary={{ label: "Add customer", href: "/customers", icon: "Plus" }}
               />
-              <Card>
-                <CustomersTable customers={CUSTOMERS} />
-                <div className="p-4 min-mobile:hidden">
-                  <CustomersMobileList customers={CUSTOMERS} />
-                </div>
-              </Card>
-            </>
-          }
-        />
+            </Card>
+          </>
+        )}
       </div>
       <MobileTabBar />
     </div>

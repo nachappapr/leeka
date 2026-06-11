@@ -1,23 +1,28 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { CustomerFormModal } from "@/components/ui/custom/customer-form-modal";
+import { upsertCustomerAction } from "@/app/(app)/customers/actions";
 import type { CustomerSavePayload } from "@/lib/types";
 
 interface CustomerAddTriggerProps {
-  /** Optional callback — caller can update local/server state on save. */
   onSave?: (payload: CustomerSavePayload) => void;
 }
 
 export function CustomerAddTrigger({ onSave }: CustomerAddTriggerProps) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
-  function handleSave(payload: CustomerSavePayload) {
-    // TODO: wire to backend — create customer via Server Action
-    onSave?.(payload);
+  async function handleSave(payload: CustomerSavePayload) {
+    const result = await upsertCustomerAction(payload);
+    if (result.ok) {
+      router.refresh();
+      onSave?.(payload);
+    }
   }
 
   return (

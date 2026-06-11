@@ -5,15 +5,13 @@ import { useRouter } from "next/navigation";
 import { Edit } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { CustomerFormModal } from "@/components/ui/custom/customer-form-modal";
+import { upsertCustomerAction } from "@/app/(app)/customers/actions";
 import type { Customer, CustomerSavePayload } from "@/lib/types";
 
 interface CustomerEditTriggerProps {
   customer: Customer;
-  /** Optional callback — caller can update local/server state on save. */
   onSave?: (payload: CustomerSavePayload) => void;
-  /** Optional callback — caller handles deletion (e.g. list-row removal). */
   onDelete?: (customer: Customer) => void;
-  /** Extra classes for the trigger button (e.g. mobile flex sizing). */
   className?: string;
 }
 
@@ -27,14 +25,17 @@ export function CustomerEditTrigger({
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  function handleSave(payload: CustomerSavePayload) {
-    // TODO: wire to backend — update customer via Server Action
-    onSave?.(payload);
+  async function handleSave(payload: CustomerSavePayload) {
+    const result = await upsertCustomerAction({ ...payload, id: customer.id });
+    if (result.ok) {
+      router.refresh();
+      onSave?.(payload);
+    }
   }
 
   function handleDelete(c: Customer) {
-    // TODO: wire to backend — delete customer via Server Action
     onDelete?.(c);
+    router.refresh();
     router.push("/customers");
   }
 
