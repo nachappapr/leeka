@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useTransition } from "react";
+import { useState, useEffect, useCallback, useTransition, useRef } from "react";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 
 import { validPhone } from "@/lib/utils/auth-phone";
 import { sendOtp, verifyOtp } from "@/lib/actions/auth";
+import { saveDisplayName } from "@/lib/actions/profile";
+import { ProfileStepSchema } from "@/lib/schema/profile";
 import type { BizTypeId } from "@/lib/constants/auth";
 import type { AuthStep } from "@/lib/types/auth";
 import { AuthPhoneStep } from "@/components/auth/auth-phone-step";
@@ -33,7 +35,9 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
   const [resend, setResend] = useState(0);
   const [phoneError, setPhoneError] = useState("");
   const [otpError, setOtpError] = useState("");
+  const [profileError, setProfileError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
+  const yourNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (resend <= 0) return;
@@ -92,7 +96,10 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
         setOtpError(result.error);
         return;
       }
-      if (mode === "signup") {
+      if (result.profileComplete) {
+        setStatusMessage("Signing you in…");
+        setStep("done");
+      } else if (mode === "signup") {
         setStatusMessage("Creating your account…");
         setStep("profile");
       } else {
@@ -123,6 +130,28 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
     });
   }
 
+  function handleProfileSubmit() {
+    const parsed = ProfileStepSchema.safeParse({ displayName: yourName });
+    if (!parsed.success) {
+      flushSync(() => setProfileError(""));
+      setProfileError(parsed.error.issues[0]?.message ?? "Invalid name");
+      yourNameRef.current?.focus();
+      return;
+    }
+    setStatusMessage("Saving…");
+    startTransition(async () => {
+      const result = await saveDisplayName(parsed.data.displayName);
+      if (!result.ok) {
+        setProfileError(result.error);
+        setStatusMessage("");
+        yourNameRef.current?.focus();
+        return;
+      }
+      setStatusMessage("All set! Opening your dashboard…");
+      setStep("done");
+    });
+  }
+
   return (
     <>
       <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -136,10 +165,13 @@ function AuthPhoneFlow({ mode: initialMode }: AuthPhoneFlowProps) {
           bizName={bizName}
           yourName={yourName}
           bizType={bizType}
+          isPending={isPending}
+          error={profileError}
+          yourNameRef={yourNameRef}
           onBizNameChange={setBizName}
           onYourNameChange={setYourName}
           onBizTypeChange={setBizType}
-          onSubmit={() => setStep("done")}
+          onSubmit={handleProfileSubmit}
         />
       )}
 
