@@ -13,6 +13,7 @@ import { TaxSection } from "@/components/settings/tax-section";
 import { NotificationsSection } from "@/components/settings/notifications-section";
 import { LanguageSection } from "@/components/settings/language-section";
 import { PlanSection } from "@/components/settings/plan-section";
+import { ItemsSection } from "@/components/settings/items-section";
 import type { SettingsSectionId } from "@/lib/types/settings";
 
 export function SettingsContainer() {
@@ -43,6 +44,7 @@ export function SettingsContainer() {
             {section === "notifications" && <NotificationsSection />}
             {section === "language" && <LanguageSection />}
             {section === "plan" && <PlanSection />}
+            {section === "items" && <ItemsSection />}
           </div>
         </div>
       </div>

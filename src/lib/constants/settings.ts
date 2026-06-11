@@ -1,4 +1,12 @@
-import { Bell, ImageIcon, IndianRupee, Languages, ShoppingBag, Sparkles } from "@/components/icons";
+import {
+  Bell,
+  ImageIcon,
+  IndianRupee,
+  Languages,
+  Package,
+  ShoppingBag,
+  Sparkles,
+} from "@/components/icons";
 import type { SettingsSectionDef, LanguageOption } from "@/lib/types/settings";
 
 export const SETTINGS_SECTIONS: ReadonlyArray<SettingsSectionDef> = [
@@ -8,6 +16,7 @@ export const SETTINGS_SECTIONS: ReadonlyArray<SettingsSectionDef> = [
   { id: "notifications", icon: Bell, label: "Notifications" },
   { id: "language", icon: Languages, label: "Language" },
   { id: "plan", icon: Sparkles, label: "Plan & billing" },
+  { id: "items", icon: Package, label: "Saved items" },
 ];
 
 // Raw hex rendered via a data-driven CSS var in accent-swatch.tsx (no semantic token covers these).

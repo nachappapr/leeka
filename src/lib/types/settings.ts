@@ -6,7 +6,8 @@ export type SettingsSectionId =
   | "tax"
   | "notifications"
   | "language"
-  | "plan";
+  | "plan"
+  | "items";
 
 export interface SettingsSectionDef {
   id: SettingsSectionId;

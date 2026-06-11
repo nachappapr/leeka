@@ -11,11 +11,13 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { InvoiceEditSchema, type InvoiceEditFormData } from "@/lib/schema/invoice";
 import type { SelectedCustomer } from "@/lib/types/customer";
 import type { Invoice } from "@/lib/types";
+import type { SavedItem } from "@/lib/types/item";
 import { formatRupees } from "@/lib/utils";
 
 import { InvoiceCreateHeader } from "./invoice-create-header";
 import { InvoiceFormBody } from "./invoice-form-body";
 import { InvoiceFormDesktopActionBar } from "./invoice-form-desktop-action-bar";
+import { InvoiceFormItemPicker } from "./invoice-form-item-picker";
 import { InvoiceFormEditMobileBar } from "./invoice-form-edit-mobile-bar";
 import { InvoiceFormPreviewMobileBar } from "./invoice-form-preview-mobile-bar";
 import { InvoiceFormPreviewSidebar } from "./invoice-form-preview-sidebar";
@@ -31,6 +33,7 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
   const [customer, setCustomer] = useState<SelectedCustomer | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   // Focus management for view swap (WCAG 2.4.3). When the view changes from
   // "edit" → "preview" we move focus to the review heading so assistive
@@ -98,6 +101,11 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
     setValue("phone", "");
   }
 
+  function handleAddFromSaved(item: SavedItem) {
+    append({ name: item.name, qty: 1, price: item.default_price ?? 0 });
+    setPickerOpen(false);
+  }
+
   const onSubmit = (data: InvoiceEditFormData) => {
     // TODO: wire to Server Action
     console.log("Invoice create submitted:", data);
@@ -155,6 +163,7 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
           register={register}
           onAddItem={() => append({ name: "", qty: 1, price: 0 })}
           onRemoveItem={remove}
+          onOpenPicker={() => setPickerOpen(true)}
           subtotal={subtotal}
           tax={tax}
           total={total}
@@ -187,6 +196,11 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
         onDiscard={() => router.push("/invoices")}
         invoice={syntheticInvoice}
         buttonRef={previewBtnRef}
+      />
+      <InvoiceFormItemPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        onSelect={handleAddFromSaved}
       />
     </>
   );

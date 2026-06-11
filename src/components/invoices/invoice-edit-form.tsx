@@ -11,6 +11,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { InvoiceEditSchema, type InvoiceEditFormData } from "@/lib/schema/invoice";
 import type { SelectedCustomer } from "@/lib/types/customer";
 import type { Invoice, InvoiceDetail } from "@/lib/types";
+import type { SavedItem } from "@/lib/types/item";
 import { formatRupees } from "@/lib/utils";
 
 import { InvoiceEditHeader } from "./invoice-edit-header";
@@ -22,6 +23,7 @@ import { InvoiceFormPreviewSidebar } from "./invoice-form-preview-sidebar";
 import { InvoiceFormReviewHeader } from "./invoice-form-review-header";
 import { InvoiceFormReviewStage } from "./invoice-form-review-stage";
 import { fireDeleteInvoiceToast } from "./invoice-form-delete-button";
+import { InvoiceFormItemPicker } from "./invoice-form-item-picker";
 
 interface InvoiceEditFormProps {
   invoice: InvoiceDetail;
@@ -30,6 +32,7 @@ interface InvoiceEditFormProps {
 export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
+  const [pickerOpen, setPickerOpen] = useState(false);
   // Pre-populate customer from invoice data
   const [customer, setCustomer] = useState<SelectedCustomer | null>({
     name: invoice.customer,
@@ -106,6 +109,11 @@ export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
     setValue("phone", "");
   }
 
+  function handleAddFromSaved(item: SavedItem) {
+    append({ name: item.name, qty: 1, price: item.default_price ?? 0 });
+    setPickerOpen(false);
+  }
+
   const onSubmit = (data: InvoiceEditFormData) => {
     // TODO: wire to Server Action
     console.log("Invoice edit submitted:", data);
@@ -169,6 +177,7 @@ export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
           register={register}
           onAddItem={() => append({ name: "", qty: 1, price: 0 })}
           onRemoveItem={remove}
+          onOpenPicker={() => setPickerOpen(true)}
           subtotal={subtotal}
           tax={tax}
           total={total}
@@ -205,6 +214,11 @@ export function InvoiceEditForm({ invoice }: InvoiceEditFormProps) {
         onDelete={handleDeleteInvoice}
         invoice={syntheticInvoice}
         buttonRef={previewBtnRef}
+      />
+      <InvoiceFormItemPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        onSelect={handleAddFromSaved}
       />
     </>
   );

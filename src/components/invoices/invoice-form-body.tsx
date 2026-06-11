@@ -29,6 +29,7 @@ export interface InvoiceFormBodyProps {
   register: UseFormRegister<InvoiceEditFormData>;
   onAddItem: () => void;
   onRemoveItem: (i: number) => void;
+  onOpenPicker: () => void;
   subtotal: number;
   tax: number;
   total: number;
@@ -46,6 +47,7 @@ export function InvoiceFormBody({
   register,
   onAddItem,
   onRemoveItem,
+  onOpenPicker,
   subtotal,
   tax,
   total,
@@ -90,10 +92,13 @@ export function InvoiceFormBody({
               done={itemsValid}
             />
             {/* Items eyebrow row */}
-            <div className="flex items-center justify-between mt-1 mb-3">
-              <span className="text-kicker font-extrabold uppercase tracking-wide text-ink-3">
+            <div className="flex items-center gap-2 mt-1 mb-3">
+              <span className="text-kicker font-extrabold uppercase tracking-wide text-ink-3 mr-auto">
                 Items
               </span>
+              <PillButton tone="ghost" size="sm" type="button" onClick={onOpenPicker}>
+                From saved
+              </PillButton>
               <PillButton tone="secondary" size="sm" type="button" onClick={onAddItem}>
                 <Plus strokeWidth={2.4} aria-hidden />
                 Add item
