@@ -47,6 +47,9 @@ export interface SavedDraftLine {
   line_subtotal: number;
   line_tax: number;
   line_total: number;
+  cgst: number;
+  sgst: number;
+  igst: number;
 }
 
 export interface SaveDraftResult {
@@ -55,6 +58,12 @@ export interface SaveDraftResult {
   subtotal: number;
   taxTotal: number;
   total: number;
+  cgst: number;
+  sgst: number;
+  igst: number;
+  roundOff: number;
+  isInterstate: boolean;
+  gstEnabled: boolean;
   lines: SavedDraftLine[];
 }
 

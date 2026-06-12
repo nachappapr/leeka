@@ -225,10 +225,12 @@ export type Database = {
       };
       invoice_line_items: {
         Row: {
+          cgst: number;
           discount: number;
           gst_rate: number;
           hsn_sac: string | null;
           id: string;
+          igst: number;
           invoice_id: string;
           line_subtotal: number;
           line_tax: number;
@@ -236,13 +238,16 @@ export type Database = {
           name: string;
           position: number;
           qty: number;
+          sgst: number;
           unit_price: number;
         };
         Insert: {
+          cgst?: number;
           discount?: number;
           gst_rate?: number;
           hsn_sac?: string | null;
           id?: string;
+          igst?: number;
           invoice_id: string;
           line_subtotal?: number;
           line_tax?: number;
@@ -250,13 +255,16 @@ export type Database = {
           name: string;
           position?: number;
           qty?: number;
+          sgst?: number;
           unit_price?: number;
         };
         Update: {
+          cgst?: number;
           discount?: number;
           gst_rate?: number;
           hsn_sac?: string | null;
           id?: string;
+          igst?: number;
           invoice_id?: string;
           line_subtotal?: number;
           line_tax?: number;
@@ -264,6 +272,7 @@ export type Database = {
           name?: string;
           position?: number;
           qty?: number;
+          sgst?: number;
           unit_price?: number;
         };
         Relationships: [
@@ -704,10 +713,16 @@ export type Database = {
       save_invoice_draft: {
         Args: {
           p_business_id: string;
+          p_cgst?: number;
           p_customer_id?: string;
+          p_gst_enabled?: boolean;
+          p_igst?: number;
           p_invoice_id?: string;
+          p_is_interstate?: boolean;
           p_line_items?: Json;
           p_notes?: string;
+          p_round_off?: number;
+          p_sgst?: number;
           p_subtotal?: number;
           p_tax_total?: number;
           p_total?: number;
