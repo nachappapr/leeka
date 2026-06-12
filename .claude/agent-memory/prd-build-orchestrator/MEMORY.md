@@ -10,4 +10,5 @@
 - [Epic 7 Lifecycle & Payments — CLOSED](project-epic7-lifecycle-payments.md) — AP-17/18/19/20 all approved 2026-06-12; AP-20 deviations (GET cron, IST boundary) ratified; next = Epic 8 / AP-21 PDF
 - [Epic 9 — CLOSED for v1](project-epic9-pay-link.md) — AP-22/AP-23 approved 2026-06-12; AP-24 SKIPPED for v1 (open question #1 resolved: manual mark-paid only); PDF→Epic 8, edge-cache→AP-43; coral traps; PayCard ratified
 - [Shared UI wrappers are frozen](feedback-shared-ui-immutable.md) — never modify ui/custom wrappers for one feature; build a feature-local variant (AP-23 Card lesson)
-- [Epic 10 WhatsApp — AP-25 awaiting review](project-epic10-whatsapp.md) — env-gated send (no live creds); status/PDF/webhook de-scoped; invoiceUuid="" until list/detail go live; AP-26/27 open
+- [Epic 10 WhatsApp — CLOSED](project-epic10-whatsapp.md) — AP-25/26/27 all shipped 2026-06-12; env-gated send (no WABA creds); invoiceUuid="" until list/detail go live
+- [Epic 11 Email Delivery — AP-28 CLOSED](project-epic11-email-delivery.md) — send+tracking approved & migration applied to main 2026-06-12 (Option A); DB evidence on file; story-completion gate env-gated on Resend creds + invoices UI (analogous to Epic 10)

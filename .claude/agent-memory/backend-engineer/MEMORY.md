@@ -11,3 +11,4 @@
 - [AP-20 overdue sweep](project_ap20_overdue_sweep.md) — sweep_overdue_invoices RPC, partial index, writable CTE pattern, cron route handler GET+POST, vercel.json, CRON_SECRET convention
 - [AP-25 WhatsApp send](project_ap25_whatsapp_send.md) — env-gated sendInvoice action, sendWhatsAppInvoice helper, writeDispatchLog pattern, 'skipped'/'sent'/'failed' statuses, no status/sent_at mutation
 - [AP-26 WhatsApp webhook viewed](project_ap26_whatsapp_webhook.md) — mark_message_status RPC, no-downgrade guard, partial unique index, timingSafeEqual sig verify, always-200 contract, isWhatsAppWebhookConfigured() pattern
+- [AP-28 email send + tracking](project_ap28_email_send_tracking.md) — Resend fetch wrapper, svix sig verify, mark_email_status RPC (bounced=terminal+notify, opened=viewed); migration applied to main 2026-06-12; COMPLETE
