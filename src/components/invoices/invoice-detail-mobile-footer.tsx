@@ -40,7 +40,12 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           Send receipt
         </PillButton>
         <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
-        <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
+        <SendChannelsModal
+          invoice={invoice}
+          invoiceUuid={invoice.invoiceUuid ?? ""}
+          open={sendOpen}
+          onOpenChange={setSendOpen}
+        />
       </footer>
     );
   }
@@ -88,7 +93,12 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         Mark paid
       </PillButton>
       <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
-      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
+      <SendChannelsModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={sendOpen}
+        onOpenChange={setSendOpen}
+      />
     </footer>
   );
 }

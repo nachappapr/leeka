@@ -146,7 +146,12 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
       </div>
 
       {/* Send on WhatsApp modal — portaled, DOM position irrelevant */}
-      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
+      <SendChannelsModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={sendOpen}
+        onOpenChange={setSendOpen}
+      />
     </>
   );
 }

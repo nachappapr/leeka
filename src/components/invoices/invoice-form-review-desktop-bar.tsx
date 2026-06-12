@@ -41,7 +41,12 @@ export function InvoiceFormReviewDesktopBar({ invoice, onBack }: InvoiceFormRevi
         </PillButton>
       </div>
 
-      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
+      <SendChannelsModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={sendOpen}
+        onOpenChange={setSendOpen}
+      />
     </>
   );
 }

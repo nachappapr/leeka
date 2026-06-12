@@ -12,6 +12,8 @@ import {
 } from "@/lib/schema/lifecycle";
 import { computeTotals } from "@/lib/invoice/compute-totals";
 import logger from "@/lib/logger";
+import { serverEnv, isWhatsAppConfigured } from "@/lib/env.server";
+import { sendWhatsAppInvoice } from "@/lib/whatsapp/send";
 import type { SaveDraftResult } from "@/lib/types/invoice";
 import type { RecordPaymentResult, RecordPaymentRow } from "@/lib/types/payment";
 import type {
@@ -24,6 +26,7 @@ import type {
   DeleteInvoiceResult,
   DeleteInvoiceRow,
 } from "@/lib/types/lifecycle";
+import type { SendInvoiceResult } from "@/lib/types/send";
 
 export type SaveInvoiceDraftResult =
   | { ok: true; data: SaveDraftResult }
@@ -662,4 +665,194 @@ export async function deleteInvoice(payload: unknown): Promise<DeleteInvoiceResu
       deleted: row.deleted,
     },
   };
+}
+
+// ── sendInvoice ───────────────────────────────────────────────────────────────
+
+const SendInvoiceInputSchema = z.object({
+  invoiceId: z.string().uuid("Invalid invoice ID"),
+});
+
+interface InvoiceForSend {
+  id: string;
+  number: string | null;
+  public_token: string | null;
+  total: number;
+  amount_paid: number;
+  customer_id: string | null;
+  customers: { phone: string | null } | null;
+}
+
+interface DispatchWriteParams {
+  supabase: Awaited<ReturnType<typeof createClient>>;
+  businessId: string;
+  invoiceId: string;
+  outcome: "sent" | "failed" | "skipped";
+  providerMsgId: string | null;
+  logError: string | null;
+}
+
+/**
+ * Writes a message_log row + invoice_events row for a WhatsApp dispatch
+ * attempt. Called for every outcome (sent / failed / skipped) so the log
+ * is complete regardless of whether a live API call was made.
+ *
+ * Returns the created message_log id, or an empty string when the insert fails
+ * (the outer action already logs the insert error).
+ */
+async function writeDispatchLog(params: DispatchWriteParams): Promise<string> {
+  const { supabase, businessId, invoiceId, outcome, providerMsgId, logError } = params;
+
+  const { data: logRow, error: logErr } = await supabase
+    .from("message_log")
+    .insert({
+      business_id: businessId,
+      invoice_id: invoiceId,
+      channel: "whatsapp",
+      status: outcome,
+      provider_msg_id: providerMsgId,
+      error: logError,
+    })
+    .select("id")
+    .single();
+
+  if (logErr) {
+    logger.error({ err: { code: logErr.code } }, "sendInvoice: message_log insert failed");
+  }
+
+  const { error: eventErr } = await supabase.from("invoice_events").insert({
+    business_id: businessId,
+    invoice_id: invoiceId,
+    type: "whatsapp.dispatched",
+    channel: "whatsapp",
+    meta: { outcome, provider_msg_id: providerMsgId },
+  });
+
+  if (eventErr) {
+    logger.error({ err: { code: eventErr.code } }, "sendInvoice: invoice_events insert failed");
+  }
+
+  return logRow?.id ?? "";
+}
+
+/**
+ * sendInvoice — AP-25 Server Action (WhatsApp Cloud API dispatch).
+ *
+ * Sends a pay-link WhatsApp message to the invoice's customer. Dispatch is
+ * logged to message_log and invoice_events regardless of outcome.
+ *
+ * Binding decisions:
+ * - DOES NOT touch invoices.status or invoices.sent_at (owned by issue_invoice).
+ * - ENV-GATED: when WhatsApp credentials are absent the live POST is skipped;
+ *   a 'skipped' message_log row is written and { ok:true, data:{ skipped:true } }
+ *   is returned — this is the expected dev/CI path today.
+ * - Requires public_token to be set (invoice must have been issued first).
+ * - Template is pay-link only (no PDF — deferred to Epic 8).
+ */
+export async function sendInvoice(invoiceId: unknown): Promise<SendInvoiceResult> {
+  const parsed = SendInvoiceInputSchema.safeParse({ invoiceId });
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid invoice ID" };
+  }
+
+  const uuid = parsed.data.invoiceId;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data: invoiceRow, error: invoiceErr } = await supabase
+    .from("invoices")
+    .select("id, number, public_token, total, amount_paid, customer_id, customers(phone)")
+    .eq("id", uuid)
+    .eq("business_id", businessId)
+    .single();
+
+  if (invoiceErr || !invoiceRow) {
+    if (invoiceErr && invoiceErr.code !== "PGRST116") {
+      logger.error({ err: { code: invoiceErr.code } }, "sendInvoice: invoice fetch failed");
+    }
+    return { ok: false, error: "Invoice not found" };
+  }
+
+  const invoice = invoiceRow as unknown as InvoiceForSend;
+
+  if (!invoice.public_token) {
+    return { ok: false, error: "Invoice has not been issued yet — issue it before sending" };
+  }
+
+  const customer = Array.isArray(invoice.customers) ? invoice.customers[0] : invoice.customers;
+  const phone = customer?.phone ?? null;
+
+  if (!phone) {
+    return { ok: false, error: "Customer has no phone number on file" };
+  }
+
+  /*
+   * Build the absolute pay URL. Prefer NEXT_PUBLIC_APP_URL (the deployed app
+   * origin, e.g. https://app.arthapatra.in). Falls back to NEXT_PUBLIC_SUPABASE_URL
+   * in local dev — set NEXT_PUBLIC_APP_URL in .env.local for a correct pay link
+   * during manual testing (the fallback URL points at Supabase, not the dev server).
+   */
+  const appBase = serverEnv.NEXT_PUBLIC_APP_URL ?? serverEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const payUrl = `${appBase}/pay/${invoice.public_token}`;
+  const invoiceNumber = invoice.number ?? uuid;
+
+  // ── ENV GATE ──────────────────────────────────────────────────────────────
+  //
+  // Skip the live Cloud API call when WABA credentials are not yet provisioned.
+  // This is the expected path in dev/CI today (AP-4 precedent). The 'skipped'
+  // log row lets operators see dispatch attempts; the non-alarming ok:true result
+  // lets the UI show a "WhatsApp not configured" notice without treating it as
+  // an error.
+  if (!isWhatsAppConfigured()) {
+    logger.info({ invoiceId: uuid }, "sendInvoice: WhatsApp not configured — skipping dispatch");
+
+    const messageLogId = await writeDispatchLog({
+      supabase,
+      businessId,
+      invoiceId: uuid,
+      outcome: "skipped",
+      providerMsgId: null,
+      logError: "WhatsApp not configured",
+    });
+
+    return {
+      ok: true,
+      data: { invoiceId: uuid, messageLogId, outcome: "skipped", skipped: true },
+    };
+  }
+
+  // ── Live dispatch via WhatsApp Cloud API ──────────────────────────────────
+
+  const sendResult = await sendWhatsAppInvoice({ recipientPhone: phone, invoiceNumber, payUrl });
+
+  const outcome = sendResult.ok ? "sent" : "failed";
+  const providerMsgId = sendResult.ok ? sendResult.providerMsgId : null;
+  const logError = sendResult.ok ? null : sendResult.error;
+
+  const messageLogId = await writeDispatchLog({
+    supabase,
+    businessId,
+    invoiceId: uuid,
+    outcome,
+    providerMsgId,
+    logError,
+  });
+
+  if (!sendResult.ok) {
+    return { ok: false, error: `WhatsApp send failed: ${sendResult.error}` };
+  }
+
+  return { ok: true, data: { invoiceId: uuid, messageLogId, outcome: "sent" } };
 }

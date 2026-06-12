@@ -2,6 +2,8 @@ import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 
 export interface Invoice {
   id: string;
+  /** The Postgres UUID of the invoice row. Populated when coming from real DB data; absent for synthetic (new draft) and legacy mock rows. */
+  invoiceUuid?: string;
   customer: string;
   city: string;
   isoDate: string;

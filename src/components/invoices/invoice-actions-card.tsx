@@ -39,7 +39,12 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           )}
         </div>
       </Card>
-      <SendChannelsModal invoice={invoice} open={sendOpen} onOpenChange={setSendOpen} />
+      <SendChannelsModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={sendOpen}
+        onOpenChange={setSendOpen}
+      />
     </>
   );
 }

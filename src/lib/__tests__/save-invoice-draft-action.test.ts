@@ -1,5 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+vi.mock("server-only", () => ({}));
+
+vi.mock("@/lib/env.server", () => ({
+  serverEnv: {},
+  isWhatsAppConfigured: () => false,
+  isWhatsAppWebhookConfigured: () => false,
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(),
 }));
