@@ -87,3 +87,13 @@ export interface DeleteInvoiceData {
 export type DeleteInvoiceResult =
   | { ok: true; data: DeleteInvoiceData }
   | { ok: false; error: string };
+
+/**
+ * Shape returned by the sweep_overdue_invoices RPC on success.
+ * swept_count: number of invoices transitioned to 'overdue' in this run.
+ * invoice_ids: the UUIDs of every flipped invoice (empty array if swept_count=0).
+ */
+export interface SweepOverdueRow {
+  swept_count: number;
+  invoice_ids: string[];
+}

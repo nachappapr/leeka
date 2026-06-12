@@ -8,3 +8,4 @@
 - [AP-16 atomic invoice number RPC](project_ap16_atomic_invoice_number.md) — next_invoice_number + issue_invoice RPCs, YYYY-YY FY format, lpad-truncation fix, seeding decision, Json→unknown cast pattern
 - [AP-18 record payment RPC](project_ap18_record_payment.md) — record_payment RPC, FOR UPDATE concurrency lock, SUM recompute, overpayment guard, cognitive-complexity helper pattern, GRANT/REVOKE PUBLIC note
 - [AP-19 lifecycle actions](project_ap19_lifecycle_actions.md) — all 4 lifecycle RPCs: mark_invoice_paid, cancel_invoice, duplicate_invoice, delete_invoice; invoice_line_items has NO created_at/updated_at; invoices BEFORE INSERT trigger auto-generates public_token
+- [AP-20 overdue sweep](project_ap20_overdue_sweep.md) — sweep_overdue_invoices RPC, partial index, writable CTE pattern, cron route handler GET+POST, vercel.json, CRON_SECRET convention
