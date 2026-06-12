@@ -6,6 +6,10 @@ import { ItemSchema } from "@/lib/schema/item";
 import logger from "@/lib/logger";
 import type { SavedItem } from "@/lib/types/item";
 import type { UpdateReminderSettingsResult, ReminderSettingsData } from "@/lib/types/reminders";
+import type {
+  GetNotificationSettingsResult,
+  UpdateNotificationSettingsResult,
+} from "@/lib/types/notification-settings";
 
 export type ListItemsResult = { ok: true; data: SavedItem[] } | { ok: false; error: string };
 export type UpsertItemResult = { ok: true; data: SavedItem } | { ok: false; error: string };
@@ -258,6 +262,139 @@ export async function getReminderSettings(): Promise<GetReminderSettingsResult> 
       enabled: data.enabled,
       offsets: data.offsets_days,
       channel: data.channel as "whatsapp" | "email",
+    },
+  };
+}
+
+// ── getNotificationSettings ───────────────────────────────────────────────────
+
+/**
+ * getNotificationSettings — AP-39 read action.
+ *
+ * Reads the business's notification_settings row via the RLS-scoped server
+ * client. Returns defaults { waReceipts:true, pushViewed:true, pushPaid:true,
+ * dailyEmail:false } when no row exists (first visit before any save).
+ */
+export async function getNotificationSettings(): Promise<GetNotificationSettingsResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase
+    .from("notification_settings")
+    .select("wa_delivery_receipts, push_invoice_viewed, push_payment_received, daily_summary_email")
+    .eq("business_id", businessId)
+    .maybeSingle();
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "getNotificationSettings: query failed");
+    return { ok: false, error: "Failed to load notification settings." };
+  }
+
+  if (!data) {
+    return {
+      ok: true,
+      data: { waReceipts: true, pushViewed: true, pushPaid: true, dailyEmail: false },
+    };
+  }
+
+  return {
+    ok: true,
+    data: {
+      waReceipts: data.wa_delivery_receipts,
+      pushViewed: data.push_invoice_viewed,
+      pushPaid: data.push_payment_received,
+      dailyEmail: data.daily_summary_email,
+    },
+  };
+}
+
+// ── updateNotificationSettings ────────────────────────────────────────────────
+
+const UpdateNotificationSettingsSchema = z
+  .object({
+    waReceipts: z.boolean(),
+    pushViewed: z.boolean(),
+    pushPaid: z.boolean(),
+    dailyEmail: z.boolean(),
+  })
+  .strict();
+
+/**
+ * updateNotificationSettings — AP-39 Server Action.
+ *
+ * Persists the four notification channel toggles for the caller's business via
+ * the RLS-scoped server client (NOT admin) so member RLS enforces tenancy.
+ * No Pro gating — these toggles are available to all plans.
+ *
+ * Upserts on business_id conflict; updated_at is refreshed via the column
+ * default on INSERT and set explicitly on UPDATE.
+ */
+export async function updateNotificationSettings(
+  payload: unknown,
+): Promise<UpdateNotificationSettingsResult> {
+  const parsed = UpdateNotificationSettingsSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid notification settings",
+    };
+  }
+
+  const { waReceipts, pushViewed, pushPaid, dailyEmail } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data: upserted, error: upsertErr } = await supabase
+    .from("notification_settings")
+    .upsert(
+      {
+        business_id: businessId,
+        wa_delivery_receipts: waReceipts,
+        push_invoice_viewed: pushViewed,
+        push_payment_received: pushPaid,
+        daily_summary_email: dailyEmail,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "business_id" },
+    )
+    .select("wa_delivery_receipts, push_invoice_viewed, push_payment_received, daily_summary_email")
+    .single();
+
+  if (upsertErr || !upserted) {
+    logger.error({ err: { code: upsertErr?.code } }, "updateNotificationSettings: upsert failed");
+    return { ok: false, error: "Failed to save notification settings. Please try again." };
+  }
+
+  return {
+    ok: true,
+    data: {
+      waReceipts: upserted.wa_delivery_receipts,
+      pushViewed: upserted.push_invoice_viewed,
+      pushPaid: upserted.push_payment_received,
+      dailyEmail: upserted.daily_summary_email,
     },
   };
 }

@@ -4,10 +4,15 @@ import { useEffect, useState, useTransition } from "react";
 
 import { Card } from "@/components/ui/custom/card";
 import { ToggleSwitch } from "@/components/ui/custom/toggle-switch";
-import { brandToast } from "@/components/ui/custom/brand-toast";
 import { SETTINGS_NOTIFICATION_TOGGLES } from "@/lib/constants/settings";
-import { getReminderSettings, updateReminderSettings } from "@/app/(app)/settings/actions";
+import {
+  getReminderSettings,
+  updateReminderSettings,
+  getNotificationSettings,
+  updateNotificationSettings,
+} from "@/app/(app)/settings/actions";
 import type { ReminderChannel } from "@/lib/types/reminders";
+import type { NotificationSettingsData } from "@/lib/types/notification-settings";
 import { ReminderSettingsPanel } from "./reminder-settings-panel";
 
 const AUTO_REMINDERS_ID = "auto-reminders";
@@ -17,6 +22,30 @@ const DEFAULT_CHANNEL: ReminderChannel = "whatsapp";
 
 const OFFSET_MIN = 0;
 const OFFSET_MAX = 60;
+
+type NotificationToggleId = "wa-receipts" | "push-viewed" | "push-paid" | "daily-email";
+
+const TOGGLE_TO_FIELD: Record<NotificationToggleId, keyof NotificationSettingsData> = {
+  "wa-receipts": "waReceipts",
+  "push-viewed": "pushViewed",
+  "push-paid": "pushPaid",
+  "daily-email": "dailyEmail",
+};
+
+function defaultNotificationSettings(): NotificationSettingsData {
+  const defaults: Record<NotificationToggleId, boolean> = {
+    "wa-receipts": true,
+    "push-viewed": true,
+    "push-paid": true,
+    "daily-email": false,
+  };
+  return {
+    waReceipts: defaults["wa-receipts"],
+    pushViewed: defaults["push-viewed"],
+    pushPaid: defaults["push-paid"],
+    dailyEmail: defaults["daily-email"],
+  };
+}
 
 function computeOffsetErrors(
   offsets: number[],
@@ -38,14 +67,11 @@ function computeOffsetErrors(
 }
 
 export function NotificationsSection() {
-  const [mockToggles, setMockToggles] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(
-      SETTINGS_NOTIFICATION_TOGGLES.filter((t) => t.id !== AUTO_REMINDERS_ID).map((t) => [
-        t.id,
-        t.defaultOn,
-      ]),
-    ),
+  const [notifSettings, setNotifSettings] = useState<NotificationSettingsData>(
+    defaultNotificationSettings,
   );
+  const [notifPending, setNotifPending] = useState<ReadonlySet<NotificationToggleId>>(new Set());
+  const [notifSavedOnce, setNotifSavedOnce] = useState(false);
 
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [offsets, setOffsets] = useState<number[]>(DEFAULT_OFFSETS);
@@ -59,18 +85,49 @@ export function NotificationsSection() {
 
   useEffect(() => {
     startTransition(async () => {
-      const result = await getReminderSettings();
-      if (result.ok) {
-        setRemindersEnabled(result.data.enabled);
-        setOffsets(result.data.offsets);
-        setReminderChannel(result.data.channel);
+      const [reminderResult, notifResult] = await Promise.all([
+        getReminderSettings(),
+        getNotificationSettings(),
+      ]);
+
+      if (reminderResult.ok) {
+        setRemindersEnabled(reminderResult.data.enabled);
+        setOffsets(reminderResult.data.offsets);
+        setReminderChannel(reminderResult.data.channel);
       }
+
+      if (notifResult.ok) {
+        setNotifSettings(notifResult.data);
+      }
+
       setLoadDone(true);
     });
   }, []);
 
-  function setMockToggle(id: string, value: boolean) {
-    setMockToggles((prev) => ({ ...prev, [id]: value }));
+  async function handleNotifToggle(id: NotificationToggleId, next: boolean) {
+    const field = TOGGLE_TO_FIELD[id];
+    const previous = notifSettings[field];
+
+    setNotifSettings((prev) => ({ ...prev, [field]: next }));
+    setNotifPending((prev) => new Set([...prev, id]));
+    setSettingsError(null);
+
+    const result = await updateNotificationSettings({ ...notifSettings, [field]: next });
+
+    setNotifPending((prev) => {
+      const nextSet = new Set(prev);
+      nextSet.delete(id);
+      return nextSet;
+    });
+
+    if (result.ok) {
+      setNotifSettings(result.data);
+      setNotifSavedOnce(true);
+    } else {
+      setNotifSettings((prev) => ({ ...prev, [field]: previous }));
+      const label = SETTINGS_NOTIFICATION_TOGGLES.find((t) => t.id === id)?.label;
+      setSettingsError(label ? `${label}: ${result.error}` : result.error);
+    }
   }
 
   async function persistReminderSettings(
@@ -88,7 +145,6 @@ export function NotificationsSection() {
       setRemindersEnabled(result.data.enabled);
       setOffsets(result.data.offsets);
       setReminderChannel(result.data.channel);
-      brandToast.success({ title: "Reminder settings saved" });
     } else {
       if (enabled && result.error === "Auto reminders are a Pro feature") {
         setRemindersEnabled(false);
@@ -153,20 +209,35 @@ export function NotificationsSection() {
       ? "Reminder settings saved."
       : "";
 
+  const notifStatusMessage =
+    notifSavedOnce && notifPending.size === 0
+      ? "Notification settings saved."
+      : notifPending.size > 0
+        ? "Saving…"
+        : "";
+
   const autoRemindersDef = SETTINGS_NOTIFICATION_TOGGLES.find((t) => t.id === AUTO_REMINDERS_ID);
 
   return (
     <Card title="Notifications" headingLevel={3}>
       <div className="p-6">
-        {SETTINGS_NOTIFICATION_TOGGLES.filter((t) => t.id !== AUTO_REMINDERS_ID).map((t) => (
-          <ToggleSwitch
-            key={t.id}
-            id={`notif-toggle-${t.id}`}
-            label={t.label}
-            checked={mockToggles[t.id] ?? false}
-            onCheckedChange={(v) => setMockToggle(t.id, v)}
-          />
-        ))}
+        {SETTINGS_NOTIFICATION_TOGGLES.filter((t) => t.id !== AUTO_REMINDERS_ID).map((t) => {
+          const id = t.id as NotificationToggleId;
+          const field = TOGGLE_TO_FIELD[id];
+          return (
+            <div key={t.id} aria-busy={notifPending.has(id)}>
+              <ToggleSwitch
+                id={`notif-toggle-${t.id}`}
+                label={t.label}
+                checked={notifSettings[field]}
+                onCheckedChange={(v) => {
+                  if (notifPending.has(id)) return;
+                  void handleNotifToggle(id, v);
+                }}
+              />
+            </div>
+          );
+        })}
 
         {autoRemindersDef && (
           <ToggleSwitch
@@ -179,7 +250,7 @@ export function NotificationsSection() {
 
         {settingsError && (
           <p
-            id="auto-reminders-error"
+            id="settings-error"
             role="alert"
             aria-live="assertive"
             className="mt-2 rounded-md border border-overdue bg-overdue-soft px-3.5 py-2.5 text-caption text-overdue-ink"
@@ -187,6 +258,10 @@ export function NotificationsSection() {
             {settingsError}
           </p>
         )}
+
+        <p role="status" aria-live="polite" className="sr-only">
+          {notifStatusMessage}
+        </p>
 
         {remindersEnabled && loadDone && (
           <ReminderSettingsPanel
