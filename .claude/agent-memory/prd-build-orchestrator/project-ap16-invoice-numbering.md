@@ -1,9 +1,15 @@
 ---
 name: project-ap16-invoice-numbering
-description: Epic 6 AP-16 atomic invoice numbering — unit-by-unit status; Units 1+2 approved/review-ready, Unit 3 is the load test
+description: Epic 6 AP-16 atomic invoice numbering — CLOSED 2026-06-12, all 3 units approved, story-completion gate passed, committed as 075ef3f
 metadata:
   type: project
 ---
+
+**STORY CLOSED 2026-06-12.** All 3 units human-approved; story-completion gate passed (pure-backend scope — UI close-out items n/a). Committed as `075ef3f`. Working tree clean. Live DB verified: invoice_sequences PK (business_id, fy); next_invoice_number + issue_invoice both SECURITY INVOKER, search_path pinned (public, pg_temp), EXECUTE→authenticated; advisors carry zero AP-16 findings (the 3 SECURITY DEFINER WARNs are pre-existing get_public_invoice/create_business + auth password setting, not regressions); concurrency harness fully removed (none-clean). All 6 SQL files on disk (3 real migrations 20260612120000/120001/130000 + 3 stub harness SQLs for phantom remote history). 46 vitest tests pass.
+
+**Why:** Gap-free, dupe-free sequential numbering is a P0 legal/compliance requirement for Indian GST invoices.
+
+**How to apply:** AP-16 is DONE — do not re-open or re-verify on resume. Next Epic 6 work (if any) or the next PRD story begins fresh. Carried follow-ups below remain parked.
 
 Epic 6 (Milestone M1) · AP-16 "Atomic invoice numbering" — race-safe, gap-free per-business per-FY invoice numbers. 3 units, section-level review gate.
 
