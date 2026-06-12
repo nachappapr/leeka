@@ -1,10 +1,10 @@
 ---
 name: project-epic10-whatsapp
-description: Epic 10 WhatsApp Delivery — AP-25 + AP-26 APPROVED & committed (env-gated, no live creds yet); AP-27 onboarding docs pending
+description: Epic 10 WhatsApp Delivery — CLOSED 2026-06-12: AP-25/26/27 all approved & committed (env-gated, no live WABA yet)
 type: project
 ---
 
-Epic 10 (WhatsApp Delivery): AP-25 "Cloud API send" and AP-26 "delivery/read webhook → viewed" both APPROVED by the user and committed 2026-06-12 (AP-25 = `ae2d34f`, AP-26 = `c7c2c48`); Notion checkboxes ticked with deviation notes. AP-27 (onboarding docs, P1·S) is the only open Epic 10 unit.
+Epic 10 (WhatsApp Delivery) is CLOSED. All three units approved by the user and committed 2026-06-12: AP-25 "Cloud API send" = `ae2d34f`, AP-26 "delivery/read webhook → viewed" = `c7c2c48`, AP-27 "onboarding docs" (`docs/whatsapp-onboarding.md`, repo's first doc) = `16862f1`. All Notion checkboxes ticked with deviation notes. Live operation still blocked on ops prerequisites: Meta WABA provisioning + template approval + invoices UI leaving mock data.
 
 **AP-26 confirmed judgment calls (user-approved):** unconfigured POST returns 200 `{skipped:true}` (not 503) so Meta's retry/disable logic never trips; env var names are `WHATSAPP_APP_SECRET` + `WHATSAPP_WEBHOOK_VERIFY_TOKEN`. Migration `20260612112416` (mark_message_status RPC + provider_msg_id partial unique index) is applied remotely AND committed.
 
