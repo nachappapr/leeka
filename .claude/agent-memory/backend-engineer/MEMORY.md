@@ -17,3 +17,5 @@
 - [AP-33 dashboard_summary RPC](project_ap33_dashboard_summary.md) — single-round-trip aggregate: outstanding/overdue/paid_this_month/status_counts; STABLE SECURITY INVOKER, IST month boundary, zero-fill pattern
 - [AP-34 reports aggregation RPC](project_ap34_reports_aggregation.md) — get_reports_metrics, payments_business_paid_at_idx, zero-fill via generate_series, avg_days_to_pay epoch math, STABLE SECURITY DEFINER
 - [AP-36 business settings backend](project_ap36_business_settings.md) — business-logos bucket (private, 2MB, MIME-gated), Storage RLS via foldername()[1]::uuid, updateBusinessProfile/uploadBusinessLogo SAs, getBusinessLogoSignedUrl helper; ALTER TABLE storage.objects forbidden
+- [AP-38 invoice template](project_ap38_invoice_template.md) — accent_color + footer_message on businesses, getBusinessId exported, TemplateSchema + updateInvoiceTemplate SA
+- [AP-39 notification settings](project_ap39_notification_settings.md) — notification_settings table, (select auth.uid()) RLS pattern, getNotificationSettings/updateNotificationSettings SAs, no Pro gate
