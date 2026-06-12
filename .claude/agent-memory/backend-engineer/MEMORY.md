@@ -13,3 +13,4 @@
 - [AP-26 WhatsApp webhook viewed](project_ap26_whatsapp_webhook.md) — mark_message_status RPC, no-downgrade guard, partial unique index, timingSafeEqual sig verify, always-200 contract, isWhatsAppWebhookConfigured() pattern
 - [AP-28 email send + tracking](project_ap28_email_send_tracking.md) — Resend fetch wrapper, svix sig verify, mark_email_status RPC (bounced=terminal+notify, opened=viewed); migration applied to main 2026-06-12; COMPLETE
 - [AP-29 sendReminder action](project_ap29_send_reminder.md) — sendReminder SA, writeDispatchLog eventType refactor, "reminder_sent" hard contract with Epic 13, cognitive-complexity helper pattern
+- [AP-32 notifications pipeline](project_ap32_notifications_pipeline.md) — emit_paid_invoice_event + fan_out_invoice_notification triggers, notifications.meta column, mark-read Server Actions, type contract 'invoice_viewed'/'invoice_paid'/'reminder_sent'

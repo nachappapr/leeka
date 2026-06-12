@@ -1,63 +1,38 @@
-import Link from "next/link";
-import { Settings } from "@/components/icons";
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
 import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
-import { pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 import { ActivityFeed } from "@/components/activity/activity-feed";
 import { ActivityGlanceCard } from "@/components/activity/activity-glance-card";
 import { ActivityPrefsCard } from "@/components/activity/activity-prefs-card";
-import { MarkAllReadButton } from "@/components/activity/mark-all-read-button";
-import { ACTIVITY_GLANCE_ROWS, ACTIVITY_UNREAD_COUNT } from "@/lib/constants/activity";
-import { ACTIVITY_NOTIFICATIONS } from "@/lib/constants/notifications";
+import { ActivityPageHeader } from "@/components/activity/activity-page-header";
+import { getActivityEvents, getActivityGlanceCounts } from "@/lib/data/activity";
+import { getUnreadNotificationCount } from "@/lib/data/notifications";
+import type { ActivityFilterId } from "@/lib/types/activity";
 
-function ActivityPageHeader() {
-  return (
-    <header className="flex items-start justify-between gap-4">
-      <div>
-        <h2 className="text-26 font-extrabold tracking-snug text-ink max-mobile:text-title">
-          Activity
-        </h2>
-        <p className="mt-0.5 text-body-sm font-medium text-ink-3">
-          Everything that&rsquo;s happened across your shop, in one feed.
-        </p>
-      </div>
-      <div className="flex shrink-0 items-center gap-2 max-mobile:hidden">
-        {ACTIVITY_UNREAD_COUNT > 0 && <MarkAllReadButton />}
-        <Link href="/settings" className={pillButtonVariants({ tone: "outline", size: "sm" })}>
-          <Settings className="size-4" aria-hidden />
-          Notification settings
-        </Link>
-      </div>
-    </header>
-  );
+interface ActivityContainerProps {
+  filter: ActivityFilterId;
+  page: number;
 }
 
-function PopulatedActivity() {
-  return (
-    <div className="flex gap-5 max-tablet:flex-col">
-      <div className="min-w-0 flex-1">
-        <ActivityFeed items={ACTIVITY_NOTIFICATIONS} />
-      </div>
-      <aside
-        aria-label="Activity summary"
-        className="flex w-72 shrink-0 flex-col gap-5 max-tablet:hidden"
-      >
-        <ActivityGlanceCard rows={ACTIVITY_GLANCE_ROWS} />
-        <ActivityPrefsCard />
-      </aside>
-    </div>
-  );
-}
+export async function ActivityContainer({ filter, page }: ActivityContainerProps) {
+  const [{ items, hasNextPage }, glanceRows, unreadCount] = await Promise.all([
+    getActivityEvents({ filter, page }),
+    getActivityGlanceCounts(),
+    getUnreadNotificationCount(),
+  ]);
 
-export function ActivityContainer() {
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Activity" subtitle="Everything happening across your shop" />
+      <Topbar
+        title="Activity"
+        subtitle="Everything happening across your shop"
+        notificationsSlot={<TopbarNotifications />}
+      />
 
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
-        <ActivityPageHeader />
+        <ActivityPageHeader unreadCount={unreadCount} />
 
         <EmptyStateSwitch
           empty={
@@ -67,7 +42,20 @@ export function ActivityContainer() {
               body="When you send invoices and get paid, the timeline will show up here."
             />
           }
-          populated={<PopulatedActivity />}
+          populated={
+            <div className="flex gap-5 max-tablet:flex-col">
+              <div className="min-w-0 flex-1">
+                <ActivityFeed items={items} filter={filter} page={page} hasNextPage={hasNextPage} />
+              </div>
+              <aside
+                aria-label="Activity summary"
+                className="flex w-72 shrink-0 flex-col gap-5 max-tablet:hidden"
+              >
+                <ActivityGlanceCard rows={glanceRows} />
+                <ActivityPrefsCard />
+              </aside>
+            </div>
+          }
         />
       </div>
 

@@ -6,7 +6,7 @@ export interface ActivityItem {
   meta: string;
 }
 
-export type ActivityFilterId = "all" | "payments" | "views" | "overdue" | "whatsapp" | "customers";
+export type ActivityFilterId = "all" | "payments" | "views" | "reminders";
 
 export interface ActivityGlanceRow {
   label: string;

@@ -1,65 +1,44 @@
-"use client";
-
-import { useState } from "react";
+import Link from "next/link";
 import { Bell } from "@/components/icons";
 import { Card } from "@/components/ui/custom/card";
-import { FilterChips } from "@/components/ui/custom/filter-chips";
 import { NotificationGroup } from "@/components/ui/custom/notification-group";
-import {
-  ACTIVITY_FILTER_LABELS,
-  ACTIVITY_FILTER_TONES,
-  ACTIVITY_GROUP_LABELS,
-  ACTIVITY_GROUP_ORDER,
-} from "@/lib/constants/activity";
+import { ActivityFilterChips } from "@/components/activity/activity-filter-chips";
+import { ActivityFeedAnnouncer } from "@/components/activity/activity-feed-announcer";
+import { ACTIVITY_GROUP_LABELS, ACTIVITY_GROUP_ORDER } from "@/lib/constants/activity";
 import type { ActivityFilterId } from "@/lib/types/activity";
 import type { NotificationItemData } from "@/lib/types/notifications";
 
 interface ActivityFeedProps {
-  items: ReadonlyArray<NotificationItemData>;
+  items: NotificationItemData[];
+  filter: ActivityFilterId;
+  page: number;
+  hasNextPage: boolean;
 }
 
-export function ActivityFeed({ items }: ActivityFeedProps) {
-  const [activeFilter, setActiveFilter] = useState<ActivityFilterId>("all");
-
-  const filterItems = (id: ActivityFilterId) =>
-    id === "all" ? items : items.filter((n) => ACTIVITY_FILTER_TONES[id].includes(n.tone));
-
-  const filtered = filterItems(activeFilter);
-
+export function ActivityFeed({ items, filter, page, hasNextPage }: ActivityFeedProps) {
   const groups = ACTIVITY_GROUP_ORDER.map((g) => ({
     id: g,
     label: ACTIVITY_GROUP_LABELS[g],
-    items: filtered.filter((n) => n.group === g),
+    items: items.filter((n) => n.group === g),
   })).filter((g) => g.items.length > 0);
 
-  const liveText =
-    groups.length === 0
-      ? "No activity for this filter."
-      : `Showing ${filtered.length} activity item${filtered.length !== 1 ? "s" : ""}.`;
+  function paginationHref(targetPage: number) {
+    const params = new URLSearchParams();
+    if (filter !== "all") params.set("type", filter);
+    if (targetPage > 1) params.set("page", String(targetPage));
+    const qs = params.toString();
+    return qs ? `/activity?${qs}` : "/activity";
+  }
 
-  const chipItems = (Object.keys(ACTIVITY_FILTER_TONES) as ActivityFilterId[]).map((id) => ({
-    id,
-    label: ACTIVITY_FILTER_LABELS[id],
-    count: filterItems(id).length,
-  }));
+  const hasPrevPage = page > 1;
 
   return (
     <Card>
-      {/* sr-only heading gives h3 group labels ("Today", "Yesterday"…) a proper h2 parent */}
       <h2 className="sr-only">Notification feed</h2>
 
-      {/* Persistent live region — always in DOM so AT announces filter changes */}
-      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
-        {liveText}
-      </div>
+      <ActivityFeedAnnouncer count={items.length} filter={filter} />
 
-      <FilterChips
-        items={chipItems}
-        value={activeFilter}
-        onValueChange={(v) => setActiveFilter(v as ActivityFilterId)}
-        ariaLabel="Filter activity"
-        className="border-b border-border"
-      />
+      <ActivityFilterChips value={filter} className="border-b border-border" />
 
       {groups.length === 0 ? (
         <div className="flex flex-col items-center gap-2 px-6 py-14 text-center" role="status">
@@ -77,6 +56,35 @@ export function ActivityFeed({ items }: ActivityFeedProps) {
             <NotificationGroup key={g.id} label={g.label} items={g.items} />
           ))}
         </div>
+      )}
+
+      {(hasPrevPage || hasNextPage) && (
+        <nav
+          aria-label="Activity pagination"
+          className="flex items-center justify-between border-t border-border px-6 py-3"
+        >
+          <span className="sr-only">Page {page}</span>
+          {hasPrevPage ? (
+            <Link
+              href={paginationHref(page - 1)}
+              className="text-caption font-bold text-coral-ink hover:text-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+            >
+              Newer
+            </Link>
+          ) : (
+            <span />
+          )}
+          {hasNextPage ? (
+            <Link
+              href={paginationHref(page + 1)}
+              className="text-caption font-bold text-coral-ink hover:text-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+            >
+              Older
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
       )}
     </Card>
   );

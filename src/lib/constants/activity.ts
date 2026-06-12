@@ -1,14 +1,8 @@
 import type React from "react";
 
 import { Check, Eye, Plus, WhatsApp } from "@/components/icons";
-import type {
-  ActivityFilterId,
-  ActivityGlanceRow,
-  ActivityIconKey,
-  ActivityItem,
-} from "@/lib/types";
+import type { ActivityFilterId, ActivityIconKey, ActivityItem } from "@/lib/types";
 import type { NotificationTone } from "@/lib/types/notifications";
-import { ACTIVITY_NOTIFICATIONS } from "@/lib/constants/notifications";
 
 export const ACTIVITY_ITEMS: ReadonlyArray<ActivityItem> = [
   { icon: "paid", title: "Sharma Sweets paid ₹4,725", meta: "2 min ago" },
@@ -36,22 +30,11 @@ export const ACTIVITY_ICON_MAP: Record<
 
 // ── Activity feed filter chips ────────────────────────────────────────────────
 
-export const ACTIVITY_FILTER_TONES: Record<ActivityFilterId, NotificationTone[]> = {
-  all: [],
-  payments: ["paid"],
-  views: ["info"],
-  overdue: ["overdue"],
-  whatsapp: ["whatsapp", "sent"],
-  customers: ["customer"],
-};
-
 export const ACTIVITY_FILTER_LABELS: Record<ActivityFilterId, string> = {
   all: "All",
   payments: "Payments",
   views: "Views",
-  overdue: "Overdue",
-  whatsapp: "WhatsApp",
-  customers: "Customers",
+  reminders: "Reminders",
 };
 
 export const ACTIVITY_GROUP_ORDER = ["today", "yesterday", "week", "earlier"] as const;
@@ -65,20 +48,10 @@ export const ACTIVITY_GROUP_LABELS: Record<string, string> = {
 
 // ── "This month at a glance" sidebar card ────────────────────────────────────
 
-type GlanceDef = { label: string; tone: NotificationTone; tones: NotificationTone[] };
+export type GlanceDef = { label: string; tone: NotificationTone; eventType: string };
 
-const GLANCE_DEFS: GlanceDef[] = [
-  { label: "Payments received", tone: "paid", tones: ["paid"] },
-  { label: "Invoice views", tone: "info", tones: ["info"] },
-  { label: "Overdue alerts", tone: "overdue", tones: ["overdue"] },
-  { label: "WhatsApp delivery", tone: "whatsapp", tones: ["whatsapp", "sent"] },
-  { label: "New customers", tone: "customer", tones: ["customer"] },
+export const GLANCE_DEFS: ReadonlyArray<GlanceDef> = [
+  { label: "Payments received", tone: "paid", eventType: "paid" },
+  { label: "Invoice views", tone: "info", eventType: "viewed" },
+  { label: "Reminders sent", tone: "whatsapp", eventType: "reminder_sent" },
 ];
-
-export const ACTIVITY_GLANCE_ROWS: ReadonlyArray<ActivityGlanceRow> = GLANCE_DEFS.map((r) => ({
-  label: r.label,
-  tone: r.tone,
-  count: ACTIVITY_NOTIFICATIONS.filter((n) => r.tones.includes(n.tone)).length,
-}));
-
-export const ACTIVITY_UNREAD_COUNT = ACTIVITY_NOTIFICATIONS.filter((n) => n.unread).length;

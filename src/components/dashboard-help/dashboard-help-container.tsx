@@ -1,11 +1,16 @@
 import { HelpCircle } from "@/components/icons";
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 
 export function DashboardHelpContainer() {
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Help" subtitle="Guides, FAQs, and support" />
+      <Topbar
+        title="Help"
+        subtitle="Guides, FAQs, and support"
+        notificationsSlot={<TopbarNotifications />}
+      />
 
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-7 max-mobile:p-4 max-mobile:pb-24">
         <div className="flex size-16 items-center justify-center rounded-2xl bg-info-soft">

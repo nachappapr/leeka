@@ -21,6 +21,8 @@ export interface NotificationPanelProps {
   groups: NotificationGroupData[];
   onMarkAllRead?: () => void;
   viewAllHref?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const TRIGGER_CLASSES =
@@ -91,9 +93,21 @@ function PanelBody({
 // NotificationPanel
 // ---------------------------------------------------------------------------
 
-export function NotificationPanel({ groups, onMarkAllRead, viewAllHref }: NotificationPanelProps) {
-  const [open, setOpen] = React.useState(false);
+export function NotificationPanel({
+  groups,
+  onMarkAllRead,
+  viewAllHref,
+  open: controlledOpen,
+  onOpenChange,
+}: NotificationPanelProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false);
   const isMobile = useIsMobile();
+
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = (value: boolean) => {
+    setInternalOpen(value);
+    onOpenChange?.(value);
+  };
 
   const unreadCount = groups.reduce((n, g) => n + g.items.filter((i) => i.unread).length, 0);
   const hasNotifications = groups.some((g) => g.items.length > 0);

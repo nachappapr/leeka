@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 import { CustomerDetailHeader } from "@/components/customers/customer-detail-header";
 import { CustomerContactCard } from "@/components/customers/customer-contact-card";
 import { CustomerStatTile } from "@/components/customers/customer-stat-tile";
@@ -116,7 +117,11 @@ export async function CustomerDetailContainer({ id }: CustomerDetailContainerPro
 
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Customer" subtitle="Profile & invoices" />
+      <Topbar
+        title="Customer"
+        subtitle="Profile & invoices"
+        notificationsSlot={<TopbarNotifications />}
+      />
 
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-4 max-mobile:p-4 max-mobile:pb-24">
         <CustomerDetailHeader customer={customer} />
