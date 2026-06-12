@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { Topbar } from "@/components/ui/custom/topbar";
-import { findInvoiceDetail } from "@/lib/constants";
+import { getDraftInvoice } from "@/lib/data/invoice";
 
 import { InvoiceEditForm } from "./invoice-edit-form";
 
@@ -9,15 +9,22 @@ interface InvoiceEditContainerProps {
   id: string;
 }
 
-export function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
-  const invoice = findInvoiceDetail(id);
-  if (!invoice) notFound();
+export async function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
+  const draft = await getDraftInvoice(id);
+  if (!draft) notFound();
+
+  const today = new Date();
+  const due = new Date(today);
+  due.setDate(due.getDate() + 30);
+
+  const isoDate = draft.isoDate;
+  const dueIsoDate = draft.dueIsoDate ?? due.toISOString().split("T")[0];
 
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Edit invoice" subtitle={invoice.id} />
+      <Topbar title="Edit invoice" subtitle={`#${id.toUpperCase()}`} />
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-4 max-mobile:p-4 max-mobile:pb-24">
-        <InvoiceEditForm invoice={invoice} />
+        <InvoiceEditForm draft={draft} isoDate={isoDate} dueIsoDate={dueIsoDate} />
       </div>
     </div>
   );

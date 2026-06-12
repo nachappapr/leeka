@@ -1,23 +1,5 @@
 import { z } from "zod";
 
-// Legacy UI schema (AP-12 form). Do NOT remove or rename these exports; Unit 2 will migrate callers.
-
-export const InvoiceEditItemSchema = z.object({
-  name: z.string().min(1, "Item name is required"),
-  qty: z.coerce.number().min(1, "Qty must be ≥ 1"),
-  price: z.coerce.number().min(0, "Price must be ≥ 0"),
-});
-
-export const InvoiceEditSchema = z.object({
-  customerName: z.string().min(1, "Customer name is required"),
-  phone: z.string().min(1, "Phone is required"),
-  email: z.string().email("Enter a valid email").or(z.literal("")),
-  items: z.array(InvoiceEditItemSchema).min(1, "Add at least one item"),
-  notes: z.string(),
-});
-
-export type InvoiceEditFormData = z.infer<typeof InvoiceEditSchema>;
-
 /**
  * One line item in an AP-13 draft invoice.
  * - unit_price: integer paise (e.g. 10000 = ₹100.00)
@@ -47,3 +29,20 @@ export const SaveInvoiceDraftSchema = z.object({
 });
 
 export type SaveInvoiceDraftInput = z.infer<typeof SaveInvoiceDraftSchema>;
+
+/**
+ * RHF form schema — items + notes only (customerId / invoiceId are held in
+ * React state, not form fields). Used with standardSchemaResolver in both
+ * the create and edit forms.
+ *
+ * Paise ↔ rupee boundary: unit_price and discount are stored as integer
+ * paise in this form state (matching DraftLineItemSchema), but the inputs
+ * display rupee values. Controller fields convert on change (×100) and on
+ * render (÷100).
+ */
+export const DraftFormSchema = z.object({
+  items: z.array(DraftLineItemSchema).min(1, "Add at least one item"),
+  notes: z.string().default(""),
+});
+
+export type DraftFormData = z.infer<typeof DraftFormSchema>;

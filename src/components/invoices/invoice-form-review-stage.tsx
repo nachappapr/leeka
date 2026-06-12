@@ -4,6 +4,7 @@
 
 import type { Invoice } from "@/lib/types";
 
+import type { InvoiceFormLivePreviewItem } from "./invoice-form-live-preview";
 import { InvoiceFormLivePreview } from "./invoice-form-live-preview";
 import { InvoiceFormReviewDesktopBar } from "./invoice-form-review-desktop-bar";
 
@@ -14,9 +15,9 @@ interface InvoiceFormReviewStageProps {
   invoiceIdNoHash: string;
   customerName: string;
   phone: string;
-  items: ReadonlyArray<{ name: string; qty: number; price: number }>;
+  items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  tax: number;
+  taxTotal: number;
   total: number;
   isoDate: string;
   dueIsoDate: string;
@@ -35,7 +36,7 @@ export function InvoiceFormReviewStage({
   phone,
   items,
   subtotal,
-  tax,
+  taxTotal,
   total,
   isoDate,
   dueIsoDate,
@@ -50,7 +51,7 @@ export function InvoiceFormReviewStage({
         phone={phone}
         items={items}
         subtotal={subtotal}
-        tax={tax}
+        taxTotal={taxTotal}
         total={total}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}

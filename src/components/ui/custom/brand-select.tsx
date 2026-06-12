@@ -16,6 +16,7 @@ export interface BrandSelectProps {
   onValueChange: (v: string) => void;
   options: BrandSelectOption[];
   leadingIcon?: React.ReactNode;
+  id?: string;
   ariaLabel?: string;
   placeholder?: string;
   className?: string;
@@ -26,14 +27,15 @@ export function BrandSelect({
   onValueChange,
   options,
   leadingIcon,
+  id,
   ariaLabel,
   placeholder,
   className,
 }: BrandSelectProps) {
   return (
     <Select.Root value={value} onValueChange={(v) => onValueChange(v ?? "")}>
-      {/* Trigger */}
       <Select.Trigger
+        id={id}
         aria-label={ariaLabel}
         className={cn(
           "w-full flex items-center gap-2.5 px-3.5 h-11 bg-card border border-line-strong rounded-md",

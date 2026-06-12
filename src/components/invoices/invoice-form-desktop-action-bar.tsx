@@ -14,6 +14,7 @@ import { InvoiceFormSaveDraftButton } from "./invoice-form-save-draft-button";
 
 interface InvoiceFormDesktopActionBarProps {
   canSend: boolean;
+  isPending: boolean;
   invoice: Invoice;
   onDiscard: () => void;
   /** Ghost-button label — "Discard" (create) vs "Discard changes" (edit). */
@@ -26,6 +27,7 @@ interface InvoiceFormDesktopActionBarProps {
 
 export function InvoiceFormDesktopActionBar({
   canSend,
+  isPending,
   invoice,
   onDiscard,
   discardLabel = "Discard",
@@ -41,7 +43,12 @@ export function InvoiceFormDesktopActionBar({
       )}
       <div className="flex-1" />
       <InvoiceFormSaveDraftButton invoice={invoice} />
-      <PillButton tone="whatsapp" type="submit" disabled={!canSend} aria-disabled={!canSend}>
+      <PillButton
+        tone="whatsapp"
+        type="submit"
+        disabled={!canSend || isPending}
+        aria-busy={isPending}
+      >
         <WhatsApp aria-hidden />
         Send on WhatsApp
       </PillButton>

@@ -1,17 +1,19 @@
 "use client";
 
 // Justified "use client": owns useForm, useFieldArray, useWatch, useState
-// (customer + view), useRouter, and event handler callbacks.
+// (customer + view), useTransition, useRouter, and event handler callbacks.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
-import { InvoiceEditSchema, type InvoiceEditFormData } from "@/lib/schema/invoice";
+import { saveInvoiceDraft } from "@/app/(app)/invoices/actions";
+import { DraftFormSchema, type DraftFormData } from "@/lib/schema/invoice";
 import type { SelectedCustomer } from "@/lib/types/customer";
 import type { Invoice } from "@/lib/types";
 import type { SavedItem } from "@/lib/types/item";
+import { estimateDraftTotals, toDraftSavePayload } from "@/lib/invoice/draft-form";
 import { formatRupees } from "@/lib/utils";
 
 import { InvoiceCreateHeader } from "./invoice-create-header";
@@ -19,27 +21,27 @@ import { InvoiceFormBody } from "./invoice-form-body";
 import { InvoiceFormDesktopActionBar } from "./invoice-form-desktop-action-bar";
 import { InvoiceFormItemPicker } from "./invoice-form-item-picker";
 import { InvoiceFormEditMobileBar } from "./invoice-form-edit-mobile-bar";
-import { InvoiceFormPreviewMobileBar } from "./invoice-form-preview-mobile-bar";
 import { InvoiceFormPreviewSidebar } from "./invoice-form-preview-sidebar";
-import { InvoiceFormReviewHeader } from "./invoice-form-review-header";
-import { InvoiceFormReviewStage } from "./invoice-form-review-stage";
+import { InvoiceFormReviewView } from "./invoice-form-review-view";
 
 interface InvoiceCreateFormProps {
   isoDate: string;
   dueIsoDate: string;
 }
 
+const EMPTY_ITEM = { name: "", hsn_sac: "", qty: 1, unit_price: 0, discount: 0, gst_rate: 5 };
+
 export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
   const [customer, setCustomer] = useState<SelectedCustomer | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-  // Focus management for view swap (WCAG 2.4.3). When the view changes from
-  // "edit" → "preview" we move focus to the review heading so assistive
-  // technology announces the new context. When returning "preview" → "edit"
-  // we restore focus to the "Preview invoice" CTA that triggered the swap.
-  // hasMountedRef guards the initial render so NO focus is stolen on page load.
+  // Focus management (WCAG 2.4.3): swap focus to the review heading on
+  // edit→preview, restore to the preview CTA on preview→edit.
+  // hasMountedRef prevents focus theft on the initial render.
   const reviewHeadingRef = useRef<HTMLHeadingElement>(null);
   const previewBtnRef = useRef<HTMLButtonElement>(null);
   const hasMountedRef = useRef(false);
@@ -49,38 +51,23 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
       hasMountedRef.current = true;
       return;
     }
-    if (view === "preview") {
-      reviewHeadingRef.current?.focus();
-    } else {
-      previewBtnRef.current?.focus();
-    }
+    if (view === "preview") reviewHeadingRef.current?.focus();
+    else previewBtnRef.current?.focus();
   }, [view]);
 
-  const form = useForm<InvoiceEditFormData>({
-    resolver: standardSchemaResolver(InvoiceEditSchema),
-    defaultValues: {
-      customerName: "",
-      phone: "",
-      email: "",
-      items: [{ name: "", qty: 1, price: 0 }],
-      notes: "",
-    },
+  const form = useForm<DraftFormData>({
+    resolver: standardSchemaResolver(DraftFormSchema),
+    defaultValues: { items: [{ ...EMPTY_ITEM }], notes: "" },
   });
 
-  const { register, control, handleSubmit, setValue } = form;
+  const { register, control, handleSubmit } = form;
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
-
   const watchedItems = useWatch({ control, name: "items" });
 
-  const subtotal = watchedItems.reduce(
-    (s, it) => s + (Number(it.qty) || 0) * (Number(it.price) || 0),
-    0,
-  );
-  const tax = Math.round(subtotal * 0.05);
-  const total = subtotal + tax;
+  const estimate = estimateDraftTotals(watchedItems);
 
-  const itemsValid = fields.some(
-    (it) => it.name && (Number(it.qty) || 0) * (Number(it.price) || 0) > 0,
+  const itemsValid = watchedItems.some(
+    (it) => it.name && (Number(it.qty) || 0) * (Number(it.unit_price) || 0) > 0,
   );
   const canSend = !!customer && itemsValid;
   const sendDisabledMsg = !customer
@@ -91,63 +78,63 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
 
   function handleSelectCustomer(c: SelectedCustomer) {
     setCustomer(c);
-    setValue("customerName", c.name);
-    setValue("phone", c.phone);
   }
-
   function handleClearCustomer() {
     setCustomer(null);
-    setValue("customerName", "");
-    setValue("phone", "");
   }
 
+  // Paise ↔ rupee boundary: SavedItem.default_price is in rupees; convert ×100.
   function handleAddFromSaved(item: SavedItem) {
-    append({ name: item.name, qty: 1, price: item.default_price ?? 0 });
+    append({
+      name: item.name,
+      hsn_sac: "",
+      qty: 1,
+      unit_price: Math.round((item.default_price ?? 0) * 100),
+      discount: 0,
+      gst_rate: 5,
+    });
     setPickerOpen(false);
   }
 
-  const onSubmit = (data: InvoiceEditFormData) => {
-    // TODO: wire to Server Action
-    console.log("Invoice create submitted:", data);
+  const onSubmit = (data: DraftFormData) => {
+    if (!customer) {
+      setSubmitError("Please select a customer before saving.");
+      return;
+    }
+    setSubmitError(null);
+    startTransition(async () => {
+      const result = await saveInvoiceDraft(toDraftSavePayload(customer.id, data));
+      if (result.ok) router.push(`/invoices/${result.data.invoiceId}`);
+      else setSubmitError(result.error);
+    });
   };
 
-  // Synthesized Invoice for SendChannelsModal
   const syntheticInvoice: Invoice = {
-    id: "INV-NEW",
+    id: "draft",
     customer: customer?.name ?? "New customer",
     city: "",
     isoDate,
-    amount: formatRupees(total),
+    amount: formatRupees(estimate.total / 100),
     status: "draft",
   };
 
   if (view === "preview") {
     return (
-      <>
-        <InvoiceFormReviewHeader
-          customerName={customer?.name}
-          onBack={() => setView("edit")}
-          headingRef={reviewHeadingRef}
-        />
-        <InvoiceFormReviewStage
-          invoiceIdNoHash=""
-          customerName={customer?.name ?? ""}
-          phone={customer?.phone ?? ""}
-          items={watchedItems}
-          subtotal={subtotal}
-          tax={tax}
-          total={total}
-          isoDate={isoDate}
-          dueIsoDate={dueIsoDate}
-          invoice={syntheticInvoice}
-          onBack={() => setView("edit")}
-        />
-        <InvoiceFormPreviewMobileBar
-          invoice={syntheticInvoice}
-          onEdit={() => setView("edit")}
-          onDiscard={() => router.push("/invoices")}
-        />
-      </>
+      <InvoiceFormReviewView
+        invoiceIdNoHash=""
+        customerName={customer?.name ?? ""}
+        phone={customer?.phone ?? ""}
+        items={watchedItems}
+        subtotal={estimate.subtotal}
+        taxTotal={estimate.tax_total}
+        total={estimate.total}
+        isoDate={isoDate}
+        dueIsoDate={dueIsoDate}
+        invoice={syntheticInvoice}
+        onBack={() => setView("edit")}
+        onDiscard={() => router.push("/invoices")}
+        headingRef={reviewHeadingRef}
+      />
     );
   }
 
@@ -161,21 +148,22 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
           onClearCustomer={handleClearCustomer}
           fields={fields}
           register={register}
-          onAddItem={() => append({ name: "", qty: 1, price: 0 })}
+          control={control}
+          onAddItem={() => append({ ...EMPTY_ITEM })}
           onRemoveItem={remove}
           onOpenPicker={() => setPickerOpen(true)}
-          subtotal={subtotal}
-          tax={tax}
-          total={total}
+          subtotal={estimate.subtotal / 100}
+          taxTotal={estimate.tax_total / 100}
+          total={estimate.total / 100}
           preview={
             <InvoiceFormPreviewSidebar
               invoiceIdNoHash=""
               customerName={customer?.name ?? ""}
               phone={customer?.phone ?? ""}
               items={watchedItems}
-              subtotal={subtotal}
-              tax={tax}
-              total={total}
+              subtotal={estimate.subtotal}
+              taxTotal={estimate.tax_total}
+              total={estimate.total}
               isoDate={isoDate}
               dueIsoDate={dueIsoDate}
             />
@@ -183,14 +171,24 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
           actionBar={
             <InvoiceFormDesktopActionBar
               canSend={canSend}
+              isPending={isPending}
               invoice={syntheticInvoice}
               onDiscard={() => router.push("/invoices")}
             />
           }
         />
+        <p
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="mt-3 text-body-sm text-overdue"
+        >
+          {submitError ?? ""}
+        </p>
       </form>
       <InvoiceFormEditMobileBar
         canPreview={canSend}
+        isPending={isPending}
         previewDisabledMsg={sendDisabledMsg}
         onPreview={() => setView("preview")}
         onDiscard={() => router.push("/invoices")}
@@ -202,6 +200,9 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
         onOpenChange={setPickerOpen}
         onSelect={handleAddFromSaved}
       />
+      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {isPending ? "Saving draft…" : ""}
+      </span>
     </>
   );
 }

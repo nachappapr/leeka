@@ -6,15 +6,16 @@
 import { Download } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 
+import type { InvoiceFormLivePreviewItem } from "./invoice-form-live-preview";
 import { InvoiceFormLivePreview } from "./invoice-form-live-preview";
 
 interface InvoiceFormPreviewSidebarProps {
   invoiceIdNoHash: string;
   customerName: string;
   phone: string;
-  items: ReadonlyArray<{ name: string; qty: number; price: number }>;
+  items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  tax: number;
+  taxTotal: number;
   total: number;
   isoDate: string;
   dueIsoDate: string;

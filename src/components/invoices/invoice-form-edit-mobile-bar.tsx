@@ -16,6 +16,7 @@ import { InvoiceFormMobileSheet } from "./invoice-form-mobile-sheet";
 
 interface InvoiceFormEditMobileBarProps {
   canPreview: boolean;
+  isPending: boolean;
   previewDisabledMsg?: string;
   onPreview: () => void;
   onDiscard: () => void;
@@ -33,6 +34,7 @@ interface InvoiceFormEditMobileBarProps {
 // they tap "Preview invoice" to enter the review view).
 export function InvoiceFormEditMobileBar({
   canPreview,
+  isPending,
   previewDisabledMsg,
   onPreview,
   onDiscard,
@@ -97,12 +99,12 @@ export function InvoiceFormEditMobileBar({
             tone="primary"
             size="md"
             className="flex-1 rounded-lg! aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
-            aria-disabled={!canPreview}
+            aria-disabled={!canPreview || isPending}
             aria-describedby={
               !canPreview && previewDisabledMsg ? "edit-bar-preview-hint" : undefined
             }
             onClick={() => {
-              if (canPreview) onPreview();
+              if (canPreview && !isPending) onPreview();
             }}
           >
             Preview invoice

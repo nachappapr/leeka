@@ -1,12 +1,24 @@
 import { formatInvoiceDate, formatRupees } from "@/lib/utils";
 
+// Paise ↔ rupee boundary: items carry paise values; display divides by 100.
+function paiseToRupees(paise: number): number {
+  return paise / 100;
+}
+
+export interface InvoiceFormLivePreviewItem {
+  name: string;
+  qty: number;
+  unit_price: number;
+  discount: number;
+}
+
 interface InvoiceFormLivePreviewProps {
   invoiceIdNoHash: string;
   customerName: string;
   phone: string;
-  items: ReadonlyArray<{ name: string; qty: number; price: number }>;
+  items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  tax: number;
+  taxTotal: number;
   total: number;
   isoDate: string;
   dueIsoDate: string;
@@ -18,7 +30,7 @@ export function InvoiceFormLivePreview({
   phone,
   items,
   subtotal,
-  tax,
+  taxTotal,
   total,
   isoDate,
   dueIsoDate,
@@ -80,19 +92,26 @@ export function InvoiceFormLivePreview({
             </tr>
           </thead>
           <tbody>
-            {visibleItems.map((it) => (
-              <tr key={it.name} className="border-b border-dashed border-border last:border-b-0">
-                <td className="py-1.5">
-                  <p className="font-semibold text-ink">{it.name}</p>
-                  <p className="text-ink-3">
-                    {it.qty} × {formatRupees(it.price)}
-                  </p>
-                </td>
-                <td className="py-1.5 text-right tabular font-bold">
-                  {formatRupees(it.qty * it.price)}
-                </td>
-              </tr>
-            ))}
+            {visibleItems.map((it, i) => {
+              const gross = Math.round(it.qty * it.unit_price);
+              const lineSubtotal = Math.max(0, gross - it.discount);
+              return (
+                <tr
+                  key={`${it.name}-${i}`}
+                  className="border-b border-dashed border-border last:border-b-0"
+                >
+                  <td className="py-1.5">
+                    <p className="font-semibold text-ink">{it.name}</p>
+                    <p className="text-ink-3">
+                      {it.qty} × {formatRupees(paiseToRupees(it.unit_price))}
+                    </p>
+                  </td>
+                  <td className="py-1.5 text-right tabular font-bold">
+                    {formatRupees(paiseToRupees(lineSubtotal))}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -101,16 +120,16 @@ export function InvoiceFormLivePreview({
       <dl className="mt-3">
         <div className="flex justify-between py-0.5 text-11 text-ink-2">
           <dt>Subtotal</dt>
-          <dd className="tabular">{formatRupees(subtotal)}</dd>
+          <dd className="tabular">{formatRupees(paiseToRupees(subtotal))}</dd>
         </div>
         <div className="flex justify-between py-0.5 text-11 text-ink-2">
-          <dt>GST · 5%</dt>
-          <dd className="tabular">{formatRupees(tax)}</dd>
+          <dt>GST</dt>
+          <dd className="tabular">{formatRupees(paiseToRupees(taxTotal))}</dd>
         </div>
         {/* text-ink on bg-coral = 5.73:1 ✓ WCAG AA */}
         <div className="mt-2 flex items-baseline justify-between rounded-sm bg-coral px-3 py-2.5 text-ink">
           <dt className="text-11 font-extrabold uppercase tracking-wider">TOTAL DUE</dt>
-          <dd className="tabular text-20 font-extrabold">{formatRupees(total)}</dd>
+          <dd className="tabular text-20 font-extrabold">{formatRupees(paiseToRupees(total))}</dd>
         </div>
       </dl>
 

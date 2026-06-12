@@ -2,7 +2,7 @@
 // the (client) invoice forms, so it rides their client boundary; the
 // interactive children (CustomerPicker, items editors) carry their own.
 
-import type { UseFormRegister } from "react-hook-form";
+import type { Control, UseFormRegister } from "react-hook-form";
 import type React from "react";
 
 import { Plus } from "@/components/icons";
@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/custom/card";
 import { FieldLabel } from "@/components/ui/custom/field-label";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { TextareaField } from "@/components/ui/custom/textarea-field";
-import type { InvoiceEditFormData } from "@/lib/schema/invoice";
+import type { DraftFormData } from "@/lib/schema/invoice";
 import type { SelectedCustomer } from "@/lib/types/customer";
 
 import { InvoiceFormCustomerPicker } from "./invoice-form-customer-picker";
@@ -25,13 +25,21 @@ export interface InvoiceFormBodyProps {
   customer: SelectedCustomer | null;
   onSelectCustomer: (c: SelectedCustomer) => void;
   onClearCustomer: () => void;
-  fields: Array<{ id: string; name: string; qty: number; price: number }>;
-  register: UseFormRegister<InvoiceEditFormData>;
+  fields: Array<{
+    id: string;
+    name: string;
+    qty: number;
+    unit_price: number;
+    discount: number;
+    gst_rate: number;
+  }>;
+  register: UseFormRegister<DraftFormData>;
+  control: Control<DraftFormData>;
   onAddItem: () => void;
   onRemoveItem: (i: number) => void;
   onOpenPicker: () => void;
   subtotal: number;
-  tax: number;
+  taxTotal: number;
   total: number;
   preview: React.ReactNode;
   actionBar: React.ReactNode;
@@ -45,17 +53,18 @@ export function InvoiceFormBody({
   onClearCustomer,
   fields,
   register,
+  control,
   onAddItem,
   onRemoveItem,
   onOpenPicker,
   subtotal,
-  tax,
+  taxTotal,
   total,
   preview,
   actionBar,
 }: InvoiceFormBodyProps) {
   const itemsValid = fields.some(
-    (it) => it.name && (Number(it.qty) || 0) * (Number(it.price) || 0) > 0,
+    (it) => it.name && (Number(it.qty) || 0) * (Number(it.unit_price) || 0) > 0,
   );
 
   return (
@@ -104,10 +113,20 @@ export function InvoiceFormBody({
                 Add item
               </PillButton>
             </div>
-            <InvoiceFormItemsTable fields={fields} register={register} remove={onRemoveItem} />
-            <InvoiceFormItemsMobile fields={fields} register={register} remove={onRemoveItem} />
+            <InvoiceFormItemsTable
+              fields={fields}
+              register={register}
+              control={control}
+              remove={onRemoveItem}
+            />
+            <InvoiceFormItemsMobile
+              fields={fields}
+              register={register}
+              control={control}
+              remove={onRemoveItem}
+            />
             <hr className="my-3.5 border-t border-border" />
-            <InvoiceFormTotalsStrip subtotal={subtotal} tax={tax} total={total} />
+            <InvoiceFormTotalsStrip subtotal={subtotal} taxTotal={taxTotal} total={total} />
           </div>
         </Card>
 

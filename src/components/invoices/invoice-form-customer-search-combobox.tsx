@@ -70,7 +70,7 @@ export function InvoiceFormCustomerSearchCombobox({
   function selectOption(i: number) {
     const c = matches[i];
     if (!c) return;
-    onSelect({ name: c.name, phone: c.phone });
+    onSelect({ id: c.id, name: c.name, phone: c.phone });
     setOpen(false);
     setQuery("");
     setActiveIndex(-1);

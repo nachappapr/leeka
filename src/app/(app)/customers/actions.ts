@@ -157,6 +157,7 @@ export async function searchCustomersAction(query: string): Promise<SearchCustom
   return {
     ok: true,
     data: results.map((row) => ({
+      id: row.id,
       name: row.name,
       phone: row.phone ?? "",
     })),
