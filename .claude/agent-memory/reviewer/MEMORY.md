@@ -16,3 +16,5 @@
 - [Inline style: CSS var setter vs. direct property](project-inline-style-bg-vs-css-var.md) — only CSS var setters (style={{ ['--x']: val }}) are sanctioned; direct property assignments (background:, color:) in style objects are Medium #12 even with eslint-disable; fix is bg-[--x] Tailwind class
 - [Migration version mismatch (AP-2)](project-migration-version-mismatch.md) — local file `20260610032034` vs remote-applied `20260610032202`; supabase db push will re-apply or fail; fix: rename local file to remote timestamp
 - [Auth surface raw button/input — confirmed OK](project-auth-surface-raw-elements.md) — auth-*-step components use raw button/input in custom focus-within containers; established pattern across all auth steps; not a #2 violation
+- [Zod 4 input/output split + as Resolver cast](project-zod-input-output-split-and-resolver-cast.md) — .default() fields make schema Input≠Output; as Resolver<DraftFormData> masks the gap; fix is explicit type param to standardSchemaResolver
+- [Scope creep: test units silently fixing prod tsc failures](project-scope-creep-test-unit-schema-change.md) — recurring pattern; flag as Medium #13 and prescribe FOLLOW-UP revert
