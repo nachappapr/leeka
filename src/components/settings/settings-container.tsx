@@ -9,7 +9,6 @@ import { PageHeader } from "@/components/ui/custom/page-header";
 import { SettingsSectionTabs } from "@/components/settings/settings-section-tabs";
 import { SettingsSectionAside } from "@/components/settings/settings-section-aside";
 import { TemplateSection } from "@/components/settings/template-section";
-import { TaxSection } from "@/components/settings/tax-section";
 import { NotificationsSection } from "@/components/settings/notifications-section";
 import { LanguageSection } from "@/components/settings/language-section";
 import { PlanSection } from "@/components/settings/plan-section";
@@ -19,9 +18,14 @@ import type { SettingsSectionId } from "@/lib/types/settings";
 interface SettingsContainerProps {
   notificationsSlot?: React.ReactNode;
   businessSlot?: React.ReactNode;
+  taxSlot?: React.ReactNode;
 }
 
-export function SettingsContainer({ notificationsSlot, businessSlot }: SettingsContainerProps) {
+export function SettingsContainer({
+  notificationsSlot,
+  businessSlot,
+  taxSlot,
+}: SettingsContainerProps) {
   const [section, setSection] = useState<SettingsSectionId>("business");
 
   return (
@@ -49,7 +53,7 @@ export function SettingsContainer({ notificationsSlot, businessSlot }: SettingsC
           <div className="flex flex-col gap-4" aria-live="polite">
             {section === "business" && businessSlot}
             {section === "template" && <TemplateSection />}
-            {section === "tax" && <TaxSection />}
+            {section === "tax" && taxSlot}
             {section === "notifications" && <NotificationsSection />}
             {section === "language" && <LanguageSection />}
             {section === "plan" && <PlanSection />}

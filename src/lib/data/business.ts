@@ -61,23 +61,15 @@ export async function getBusinessLogoSignedUrl(path: string): Promise<string | n
 export interface BusinessGstContext {
   gstEnabled: boolean;
   stateCode: string | null;
+  defaultGstRate: number;
 }
 
-/**
- * Returns the minimal GST context needed to compute invoice preview totals
- * with the same flags the server action uses.
- *
- * Fetches only gst_enabled + state_code — avoids over-selecting the full row
- * when the caller only needs GST flags (e.g. invoice create/edit containers).
- *
- * Server-only: never import this in a Client Component.
- */
 export async function getBusinessGstContext(): Promise<BusinessGstContext | null> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("businesses")
-    .select("gst_enabled, state_code")
+    .select("gst_enabled, state_code, default_gst_rate")
     .single();
 
   if (error) {
@@ -90,5 +82,32 @@ export async function getBusinessGstContext(): Promise<BusinessGstContext | null
   return {
     gstEnabled: data.gst_enabled ?? false,
     stateCode: data.state_code ?? null,
+    defaultGstRate: data.default_gst_rate ?? 18,
+  };
+}
+
+export interface BusinessTaxDefaults {
+  defaultGstRate: number;
+  gstEnabled: boolean;
+}
+
+export async function getBusinessTaxDefaults(): Promise<BusinessTaxDefaults | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("gst_enabled, default_gst_rate")
+    .single();
+
+  if (error) {
+    if (error.code !== "PGRST116") {
+      logger.error({ err: { code: error.code } }, "getBusinessTaxDefaults: query failed");
+    }
+    return null;
+  }
+
+  return {
+    defaultGstRate: data.default_gst_rate ?? 18,
+    gstEnabled: data.gst_enabled ?? true,
   };
 }

@@ -3,7 +3,7 @@
 // Justified "use client": owns useForm, useFieldArray, useWatch, useState
 // (customer + view), useTransition, useRouter, and event handler callbacks.
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -16,6 +16,7 @@ import type { SavedItem } from "@/lib/types/item";
 import { estimateDraftTotals, toDraftSavePayload } from "@/lib/invoice/draft-form";
 import { hasTotalsMismatch } from "@/lib/invoice/reconcile-totals";
 import { formatRupees } from "@/lib/utils";
+import { useViewFocusSwap } from "@/hooks/use-view-focus-swap";
 
 import { InvoiceCreateHeader } from "./invoice-create-header";
 import { InvoiceFormBody } from "./invoice-form-body";
@@ -30,15 +31,17 @@ interface InvoiceCreateFormProps {
   dueIsoDate: string;
   businessGstEnabled: boolean;
   businessStateCode: string | null;
+  businessDefaultGstRate: number;
 }
 
-const EMPTY_ITEM = { name: "", hsn_sac: "", qty: 1, unit_price: 0, discount: 0, gst_rate: 5 };
+const BASE_EMPTY_ITEM = { name: "", hsn_sac: "", qty: 1, unit_price: 0, discount: 0 };
 
 export function InvoiceCreateForm({
   isoDate,
   dueIsoDate,
   businessGstEnabled,
   businessStateCode,
+  businessDefaultGstRate,
 }: InvoiceCreateFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
@@ -47,25 +50,13 @@ export function InvoiceCreateForm({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  // Focus management (WCAG 2.4.3): swap focus to the review heading on
-  // edit→preview, restore to the preview CTA on preview→edit.
-  // hasMountedRef prevents focus theft on the initial render.
-  const reviewHeadingRef = useRef<HTMLHeadingElement>(null);
-  const previewBtnRef = useRef<HTMLButtonElement>(null);
-  const hasMountedRef = useRef(false);
+  const { reviewHeadingRef, previewBtnRef } = useViewFocusSwap(view);
 
-  useEffect(() => {
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      return;
-    }
-    if (view === "preview") reviewHeadingRef.current?.focus();
-    else previewBtnRef.current?.focus();
-  }, [view]);
+  const emptyItem = { ...BASE_EMPTY_ITEM, gst_rate: businessDefaultGstRate };
 
   const form = useForm<DraftFormData>({
     resolver: standardSchemaResolver(DraftFormSchema),
-    defaultValues: { items: [{ ...EMPTY_ITEM }], notes: "" },
+    defaultValues: { items: [{ ...emptyItem }], notes: "" },
   });
 
   const { register, control, handleSubmit } = form;
@@ -109,7 +100,7 @@ export function InvoiceCreateForm({
       qty: 1,
       unit_price: Math.round((item.default_price ?? 0) * 100),
       discount: 0,
-      gst_rate: 5,
+      gst_rate: businessDefaultGstRate,
     });
     setPickerOpen(false);
   }
@@ -177,7 +168,7 @@ export function InvoiceCreateForm({
           fields={fields}
           register={register}
           control={control}
-          onAddItem={() => append({ ...EMPTY_ITEM })}
+          onAddItem={() => append({ ...emptyItem })}
           onRemoveItem={remove}
           onOpenPicker={() => setPickerOpen(true)}
           subtotal={estimate.subtotal / 100}

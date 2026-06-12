@@ -3,7 +3,7 @@
 // Justified "use client": owns useForm, useFieldArray, useWatch, useState
 // (customer + view), useTransition, useRouter, and event handler callbacks.
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -17,6 +17,7 @@ import type { DraftInvoiceData } from "@/lib/data/invoice";
 import { estimateDraftTotals, toDraftSavePayload } from "@/lib/invoice/draft-form";
 import { hasTotalsMismatch } from "@/lib/invoice/reconcile-totals";
 import { formatRupees } from "@/lib/utils";
+import { useViewFocusSwap } from "@/hooks/use-view-focus-swap";
 
 import { InvoiceEditHeader } from "./invoice-edit-header";
 import { InvoiceFormBody } from "./invoice-form-body";
@@ -33,6 +34,7 @@ interface InvoiceEditFormProps {
   dueIsoDate: string;
   businessGstEnabled: boolean;
   businessStateCode: string | null;
+  businessDefaultGstRate: number;
 }
 
 function draftItemsToFormValues(items: DraftInvoiceData["items"]) {
@@ -52,6 +54,7 @@ export function InvoiceEditForm({
   dueIsoDate,
   businessGstEnabled,
   businessStateCode,
+  businessDefaultGstRate,
 }: InvoiceEditFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
@@ -65,21 +68,7 @@ export function InvoiceEditForm({
     state_code: draft.customerStateCode,
   });
 
-  // Focus management (WCAG 2.4.3): swap focus to the review heading on
-  // edit→preview, restore to the preview CTA on preview→edit.
-  // hasMountedRef prevents focus theft on the initial render.
-  const reviewHeadingRef = useRef<HTMLHeadingElement>(null);
-  const previewBtnRef = useRef<HTMLButtonElement>(null);
-  const hasMountedRef = useRef(false);
-
-  useEffect(() => {
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      return;
-    }
-    if (view === "preview") reviewHeadingRef.current?.focus();
-    else previewBtnRef.current?.focus();
-  }, [view]);
+  const { reviewHeadingRef, previewBtnRef } = useViewFocusSwap(view);
 
   const form = useForm<DraftFormData>({
     resolver: standardSchemaResolver(DraftFormSchema),
@@ -123,7 +112,7 @@ export function InvoiceEditForm({
       qty: 1,
       unit_price: Math.round((item.default_price ?? 0) * 100),
       discount: 0,
-      gst_rate: 5,
+      gst_rate: businessDefaultGstRate,
     });
     setPickerOpen(false);
   }
@@ -192,7 +181,14 @@ export function InvoiceEditForm({
           register={register}
           control={control}
           onAddItem={() =>
-            append({ name: "", hsn_sac: "", qty: 1, unit_price: 0, discount: 0, gst_rate: 5 })
+            append({
+              name: "",
+              hsn_sac: "",
+              qty: 1,
+              unit_price: 0,
+              discount: 0,
+              gst_rate: businessDefaultGstRate,
+            })
           }
           onRemoveItem={remove}
           onOpenPicker={() => setPickerOpen(true)}

@@ -36,6 +36,7 @@ export async function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
           dueIsoDate={dueIsoDate}
           businessGstEnabled={gstContext?.gstEnabled ?? false}
           businessStateCode={gstContext?.stateCode ?? null}
+          businessDefaultGstRate={gstContext?.defaultGstRate ?? 18}
         />
       </div>
     </div>

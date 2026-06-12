@@ -38,16 +38,6 @@ export const SETTINGS_LANGUAGES: ReadonlyArray<LanguageOption> = [
   { id: "gu", label: "ગુજરાતી", sub: "Gujarati", lang: "gu" },
 ];
 
-export const SETTINGS_TAX_TOGGLES: ReadonlyArray<{
-  id: string;
-  label: string;
-  defaultOn: boolean;
-}> = [
-  { id: "include-gst", label: "Include GST by default on new invoices", defaultOn: true },
-  { id: "show-hsn", label: "Show HSN/SAC code field", defaultOn: false },
-  { id: "tax-shipping", label: "Apply tax to shipping", defaultOn: false },
-];
-
 export const SETTINGS_NOTIFICATION_TOGGLES: ReadonlyArray<{
   id: string;
   label: string;

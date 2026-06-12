@@ -23,6 +23,7 @@ export async function InvoiceCreateContainer() {
           dueIsoDate={dueIsoDate}
           businessGstEnabled={gstContext?.gstEnabled ?? false}
           businessStateCode={gstContext?.stateCode ?? null}
+          businessDefaultGstRate={gstContext?.defaultGstRate ?? 18}
         />
       </div>
     </div>

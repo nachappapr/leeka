@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { BusinessSchema } from "@/lib/schema/business";
+import { TaxSchema } from "@/lib/schema/tax";
 import logger from "@/lib/logger";
 import { LOGO_ALLOWED_MIME_TYPES, LOGO_MAX_BYTES } from "@/lib/constants/business";
 import type { TablesUpdate } from "@/lib/types/database";
@@ -217,4 +218,46 @@ export async function uploadBusinessLogo(formData: FormData): Promise<UploadBusi
   }
 
   return { ok: true, path: storagePath };
+}
+
+// ── updateTaxDefaults ─────────────────────────────────────────────────────────
+
+export type UpdateTaxDefaultsResult = { ok: true } | { ok: false; error: string };
+
+export async function updateTaxDefaults(input: {
+  defaultGstRate: number;
+  gstEnabled: boolean;
+}): Promise<UpdateTaxDefaultsResult> {
+  const parsed = TaxSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const patch: TablesUpdate<"businesses"> = {
+    default_gst_rate: parsed.data.defaultGstRate,
+    gst_enabled: parsed.data.gstEnabled,
+  };
+
+  const { error } = await supabase.from("businesses").update(patch).eq("id", businessId);
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "updateTaxDefaults: update failed");
+    return { ok: false, error: "Failed to save tax defaults. Please try again." };
+  }
+
+  return { ok: true };
 }
