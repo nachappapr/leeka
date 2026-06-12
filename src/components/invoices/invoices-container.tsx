@@ -1,5 +1,6 @@
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 import { Card } from "@/components/ui/custom/card";
 import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
 import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
@@ -17,6 +18,7 @@ export function InvoicesContainer() {
           title="Invoices"
           subtitle="All your invoices"
           actions={<InvoiceListActionsTrigger />}
+          notificationsSlot={<TopbarNotifications />}
         />
         <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
           <EmptyStateSwitch

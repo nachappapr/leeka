@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useState } from "react";
 
 import { Topbar } from "@/components/ui/custom/topbar";
@@ -16,12 +17,20 @@ import { PlanSection } from "@/components/settings/plan-section";
 import { ItemsSection } from "@/components/settings/items-section";
 import type { SettingsSectionId } from "@/lib/types/settings";
 
-export function SettingsContainer() {
+interface SettingsContainerProps {
+  notificationsSlot?: React.ReactNode;
+}
+
+export function SettingsContainer({ notificationsSlot }: SettingsContainerProps) {
   const [section, setSection] = useState<SettingsSectionId>("business");
 
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Settings" subtitle="Manage business profile & preferences" />
+      <Topbar
+        title="Settings"
+        subtitle="Manage business profile & preferences"
+        notificationsSlot={notificationsSlot}
+      />
 
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
         <h1 className="sr-only">Settings</h1>

@@ -1,5 +1,6 @@
 import { getBusinessGstContext } from "@/lib/data/business";
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 
 import { InvoiceCreateForm } from "./invoice-create-form";
 
@@ -15,7 +16,7 @@ export async function InvoiceCreateContainer() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Create invoice" />
+      <Topbar title="Create invoice" notificationsSlot={<TopbarNotifications />} />
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-4 max-mobile:p-4 max-mobile:pb-24">
         <InvoiceCreateForm
           isoDate={isoDate}

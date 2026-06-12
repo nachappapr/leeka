@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 import { InvoiceActionsCard } from "@/components/invoices/invoice-actions-card";
 import { InvoiceActivityCard } from "@/components/invoices/invoice-activity-card";
 import { InvoiceDetailHeader } from "@/components/invoices/invoice-detail-header";
@@ -19,7 +20,7 @@ export function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Invoice" subtitle={invoice.id} />
+      <Topbar title="Invoice" subtitle={invoice.id} notificationsSlot={<TopbarNotifications />} />
 
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-4 max-mobile:p-4 max-mobile:pb-24">
         <InvoiceDetailHeader

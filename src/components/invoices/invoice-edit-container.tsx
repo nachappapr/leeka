@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getBusinessGstContext } from "@/lib/data/business";
 import { getDraftInvoice } from "@/lib/data/invoice";
 import { Topbar } from "@/components/ui/custom/topbar";
+import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 
 import { InvoiceEditForm } from "./invoice-edit-form";
 
@@ -23,7 +24,11 @@ export async function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <Topbar title="Edit invoice" subtitle={`#${id.toUpperCase()}`} />
+      <Topbar
+        title="Edit invoice"
+        subtitle={`#${id.toUpperCase()}`}
+        notificationsSlot={<TopbarNotifications />}
+      />
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-4 max-mobile:p-4 max-mobile:pb-24">
         <InvoiceEditForm
           draft={draft}
