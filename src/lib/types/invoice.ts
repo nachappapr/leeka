@@ -16,12 +16,6 @@ export interface InvoiceFilterChip {
   label: string;
 }
 
-// ── Invoice detail ──────────────────────────────────────────────────────────
-// Extends Invoice with line items, tax, due date, and issuer info needed by
-// the invoice detail page. Real data comes from the database later; the
-// INVOICE_DETAILS constant in src/lib/constants/invoices.ts seeds these for
-// the static implementation.
-
 export interface InvoiceLineItem {
   name: string;
   qty: number;
@@ -36,7 +30,33 @@ export interface InvoiceDetail extends Invoice {
   notes?: string;
 }
 
-// ── Invoice list sort/filter types ─────────────────────────────────────────
+/**
+ * Shape returned by saveInvoiceDraft on success — enough for the Unit 2
+ * preview panel without a separate fetch.
+ *
+ * All money values are integer paise.
+ */
+export interface SavedDraftLine {
+  position: number;
+  name: string;
+  hsn_sac: string | null;
+  qty: number;
+  unit_price: number;
+  discount: number;
+  gst_rate: number;
+  line_subtotal: number;
+  line_tax: number;
+  line_total: number;
+}
+
+export interface SaveDraftResult {
+  invoiceId: string;
+  status: "draft";
+  subtotal: number;
+  taxTotal: number;
+  total: number;
+  lines: SavedDraftLine[];
+}
 
 export type InvoiceSortId = "newest" | "oldest" | "amtHigh" | "amtLow" | "nameAZ";
 

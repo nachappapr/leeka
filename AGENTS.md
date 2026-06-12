@@ -151,6 +151,15 @@ Both tiers: every Server Action validates its inputs (zod schema or regex guard)
 
 ---
 
+## Code-quality non-negotiables (reviewer-enforced)
+
+Every implementer (`frontend-engineer`, `backend-engineer`) must follow these, and the `reviewer` gate MUST explicitly check both on every unit — a violation is a High finding that blocks human review:
+
+1. **No explicit `any`, and no ESLint suppressions.** No `as any`, `: any`, `<any>` casts, and no `eslint-disable` comments of any form to bypass a rule. If types are missing (e.g. Supabase RPC payloads), regenerate them (`mcp__supabase__generate_typescript_types`) or write a precise type — never cast around the gap. The sole standing exception is the data-driven CSS-variable case already defined in the design-system rules above.
+2. **Comments only on genuinely complex functions.** A comment is justified only where the logic is non-obvious (tax math, state machines, tricky invariants). No narrating comments, no per-line comments, no restating what the code already says.
+
+---
+
 ## Agent dispatch (mandatory routing rule)
 
 There is no top-level router agent **by design** — a subagent runs once and returns, so it cannot own the per-unit human-review gate. **The main conversation is the router.** Apply this deterministic rule before delegating any build/feature work; do not improvise routing.

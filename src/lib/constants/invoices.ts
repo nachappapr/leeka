@@ -68,8 +68,7 @@ export const INVOICES: ReadonlyArray<Invoice> = [
   },
 ];
 
-// "partial" and "pending" StatusPillStatus values are intentionally omitted —
-// the Bahi invoices design exposes only these 5 status filters.
+// "partial" and "pending" are intentionally omitted — the design exposes only these 5 status filters.
 export const INVOICES_FILTER_CHIPS: ReadonlyArray<InvoiceFilterChip> = [
   { id: "all", label: "All" },
   { id: "paid", label: "Paid" },
@@ -78,11 +77,6 @@ export const INVOICES_FILTER_CHIPS: ReadonlyArray<InvoiceFilterChip> = [
   { id: "overdue", label: "Overdue" },
   { id: "draft", label: "Draft" },
 ];
-
-// ── Invoice details ─────────────────────────────────────────────────────────
-// Static line items per invoice for the detail page. Item totals plus 5% GST
-// are not strictly equal to the rounded `amount` shown on the list — the
-// detail page recomputes totals from its line items.
 
 const ISSUER = "Raj Kumar";
 
@@ -183,7 +177,20 @@ export function findInvoiceDetail(idWithoutHash: string): InvoiceDetail | undefi
   return INVOICE_DETAILS.find((inv) => inv.id.replace("#", "") === idWithoutHash);
 }
 
-// ── Invoice list sort/filter constants ──────────────────────────────────────
+/** Standard Indian GST slab rates (percentage values). */
+export const GST_RATES = [0, 5, 12, 18, 28] as const;
+
+export type GstRate = (typeof GST_RATES)[number];
+
+export interface GstRateOption {
+  value: GstRate;
+  label: string;
+}
+
+export const GST_RATE_OPTIONS: ReadonlyArray<GstRateOption> = GST_RATES.map((r) => ({
+  value: r,
+  label: r === 0 ? "0% (Exempt)" : `${r}%`,
+}));
 
 export const INVOICE_SORTS: ReadonlyArray<InvoiceSortOption> = [
   { id: "newest", label: "Newest first", hint: "Most recent on top", iconKey: "arrowDown" },
