@@ -9,3 +9,5 @@
 - [AP-18 record payment RPC](project_ap18_record_payment.md) — record_payment RPC, FOR UPDATE concurrency lock, SUM recompute, overpayment guard, cognitive-complexity helper pattern, GRANT/REVOKE PUBLIC note
 - [AP-19 lifecycle actions](project_ap19_lifecycle_actions.md) — all 4 lifecycle RPCs: mark_invoice_paid, cancel_invoice, duplicate_invoice, delete_invoice; invoice_line_items has NO created_at/updated_at; invoices BEFORE INSERT trigger auto-generates public_token
 - [AP-20 overdue sweep](project_ap20_overdue_sweep.md) — sweep_overdue_invoices RPC, partial index, writable CTE pattern, cron route handler GET+POST, vercel.json, CRON_SECRET convention
+- [AP-25 WhatsApp send](project_ap25_whatsapp_send.md) — env-gated sendInvoice action, sendWhatsAppInvoice helper, writeDispatchLog pattern, 'skipped'/'sent'/'failed' statuses, no status/sent_at mutation
+- [AP-26 WhatsApp webhook viewed](project_ap26_whatsapp_webhook.md) — mark_message_status RPC, no-downgrade guard, partial unique index, timingSafeEqual sig verify, always-200 contract, isWhatsAppWebhookConfigured() pattern
