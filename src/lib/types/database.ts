@@ -680,7 +680,7 @@ export type Database = {
           {
             foreignKeyName: "reminder_rules_business_id_fkey";
             columns: ["business_id"];
-            isOneToOne: true;
+            isOneToOne: false;
             referencedRelation: "businesses";
             referencedColumns: ["id"];
           },
@@ -706,9 +706,17 @@ export type Database = {
         Returns: undefined;
       };
       get_public_invoice: { Args: { p_token: string }; Returns: Json };
+      issue_invoice: {
+        Args: { p_business_id: string; p_invoice_id: string };
+        Returns: Json;
+      };
       list_items: {
         Args: { p_business_id: string; p_limit?: number };
         Returns: Json;
+      };
+      next_invoice_number: {
+        Args: { p_business_id: string; p_issue_date?: string };
+        Returns: string;
       };
       save_invoice_draft: {
         Args: {

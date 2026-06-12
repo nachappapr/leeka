@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { SaveInvoiceDraftSchema } from "@/lib/schema/invoice";
 import { computeTotals } from "@/lib/invoice/compute-totals";
@@ -217,6 +218,82 @@ export async function saveInvoiceDraft(payload: unknown): Promise<SaveInvoiceDra
         sgst: l.sgst,
         igst: l.igst,
       })),
+    },
+  };
+}
+
+// ── issueInvoice ─────────────────────────────────────────────────────────────
+
+export type IssueInvoiceResult =
+  | { ok: true; data: { invoiceId: string; number: string; status: string } }
+  | { ok: false; error: string };
+
+const IssueInvoiceInputSchema = z.object({
+  invoiceId: z.string().uuid("Invalid invoice ID"),
+});
+
+interface IssueInvoiceRow {
+  invoice_id: string;
+  number: string;
+  status: string;
+}
+
+/**
+ * issueInvoice — AP-16 Unit 2 Server Action.
+ *
+ * Transitions a draft invoice to 'sent' and assigns the next sequential
+ * invoice number in one atomic RPC call. Number assignment is permanent:
+ * the gap-free guarantee is enforced in the RPC (see issue_invoice migration).
+ * Re-issuing an already-issued invoice is rejected before any sequence draw.
+ */
+export async function issueInvoice(invoiceId: unknown): Promise<IssueInvoiceResult> {
+  const parsed = IssueInvoiceInputSchema.safeParse({ invoiceId });
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid invoice ID" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase.rpc("issue_invoice", {
+    p_business_id: businessId,
+    p_invoice_id: parsed.data.invoiceId,
+  });
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "issueInvoice: RPC failed");
+    const msg: string = typeof error.message === "string" ? error.message : "";
+    if (msg.includes("not a member")) {
+      return { ok: false, error: "You are not a member of this business" };
+    }
+    if (msg.includes("not a draft") || msg.includes("already issued")) {
+      return { ok: false, error: "This invoice has already been issued" };
+    }
+    if (msg.includes("not found")) {
+      return { ok: false, error: "Invoice not found" };
+    }
+    return { ok: false, error: "Failed to issue invoice. Please try again." };
+  }
+
+  const row = data as unknown as IssueInvoiceRow;
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: row.invoice_id,
+      number: row.number,
+      status: row.status,
     },
   };
 }

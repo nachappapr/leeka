@@ -5,3 +5,4 @@
 - [AP-9 public invoice RPC](project_ap9_public_invoice_rpc.md) — gen_random_bytes in extensions schema, trigger SECURITY INVOKER, get_public_invoice SECURITY DEFINER, intentional anon WARN
 - [AP-10 customers CRUD](project_ap10_customers_crud.md) — GIN trgm index, btree composite, GSTIN constraint, upsert_customer/search_customers RPCs, p_name ordering deviation
 - [AP-14 GST split persistence](project_ap14_gst_split.md) — per-line cgst/sgst/igst columns, RPC rewrite (old signature DROPped), action wiring, camelCase return shape, round_off negative case proven
+- [AP-16 atomic invoice number RPC](project_ap16_atomic_invoice_number.md) — next_invoice_number + issue_invoice RPCs, YYYY-YY FY format, lpad-truncation fix, seeding decision, Json→unknown cast pattern
