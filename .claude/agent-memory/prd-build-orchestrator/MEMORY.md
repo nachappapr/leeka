@@ -14,3 +14,5 @@
 - [Epic 11 Email Delivery — AP-28 CLOSED](project-epic11-email-delivery.md) — send+tracking approved & migration applied to main 2026-06-12 (Option A); DB evidence on file; story-completion gate env-gated on Resend creds + invoices UI (analogous to Epic 10)
 - [Epic 12 Reminders — CLOSED](project-epic12-reminders.md) — AP-29/30 committed 7e9d31b on worktree branch a161e14398a2d9541 (NOT merged/pushed); migration live as 20260612124214; reminder_sent contract; radiogroup + border-ink-3 a11y precedents
 - [Epic 13 Activity & Notifications — CLOSED](project-epic13-activity-notifications.md) — AP-31/32 committed 1e15515 on worktree branch 2026-06-12; migration on main as 20260612124128; bell missing on invoices/settings until Epic 12 merges
+- [AP-33 Dashboard summary — CLOSED](project-ap33-dashboard-summary.md) — Epic 14; RPC + dashboard wiring shipped 2026-06-12 (parallel run with AP-34/35); UNCOMMITTED; RPC contract + parked follow-ups inside
+- [AP-34 Reports — CLOSED](project-ap34-reports.md) — Epic 14; RPC 20260612112000 + /reports UI shipped 2026-06-12; UNCOMMITTED; preset ranges (no free picker); recharts lazy-only

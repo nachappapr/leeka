@@ -14,3 +14,5 @@
 - [AP-28 email send + tracking](project_ap28_email_send_tracking.md) — Resend fetch wrapper, svix sig verify, mark_email_status RPC (bounced=terminal+notify, opened=viewed); migration applied to main 2026-06-12; COMPLETE
 - [AP-29 sendReminder action](project_ap29_send_reminder.md) — sendReminder SA, writeDispatchLog eventType refactor, "reminder_sent" hard contract with Epic 13, cognitive-complexity helper pattern
 - [AP-32 notifications pipeline](project_ap32_notifications_pipeline.md) — emit_paid_invoice_event + fan_out_invoice_notification triggers, notifications.meta column, mark-read Server Actions, type contract 'invoice_viewed'/'invoice_paid'/'reminder_sent'
+- [AP-33 dashboard_summary RPC](project_ap33_dashboard_summary.md) — single-round-trip aggregate: outstanding/overdue/paid_this_month/status_counts; STABLE SECURITY INVOKER, IST month boundary, zero-fill pattern
+- [AP-34 reports aggregation RPC](project_ap34_reports_aggregation.md) — get_reports_metrics, payments_business_paid_at_idx, zero-fill via generate_series, avg_days_to_pay epoch math, STABLE SECURITY DEFINER
