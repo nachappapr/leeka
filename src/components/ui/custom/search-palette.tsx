@@ -1,22 +1,54 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { Search } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import { StatusPill } from "@/components/ui/custom/status-pill";
-import { INVOICES } from "@/lib/constants/invoices";
-import { CUSTOMERS } from "@/lib/constants/customers";
+import { searchAction } from "@/app/(app)/search/actions";
 import { cn, initials } from "@/lib/utils";
+import type { SearchInvoiceHit, SearchCustomerHit } from "@/lib/types/search";
+import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
+
+const VALID_STATUSES = new Set<StatusPillStatus>([
+  "draft",
+  "sent",
+  "viewed",
+  "partial",
+  "pending",
+  "overdue",
+  "paid",
+]);
+
+function toStatusPillStatus(s: string): StatusPillStatus {
+  return VALID_STATUSES.has(s as StatusPillStatus) ? (s as StatusPillStatus) : "draft";
+}
 
 export function SearchPalette() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [cursor, setCursor] = useState(0);
+  const [invoices, setInvoices] = useState<SearchInvoiceHit[]>([]);
+  const [customers, setCustomers] = useState<SearchCustomerHit[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const [queryKey, setQueryKey] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
+
+  const clearResults = useCallback(() => {
+    setInvoices([]);
+    setCustomers([]);
+  }, []);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setQuery("");
+    clearResults();
+    inputRef.current?.blur();
+  }, [clearResults]);
 
   // ⌘K / Ctrl+K opens; Esc closes
   useEffect(() => {
@@ -27,59 +59,72 @@ export function SearchPalette() {
         setOpen(true);
       }
       if (e.key === "Escape" && open) {
-        setOpen(false);
-        inputRef.current?.blur();
+        close();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, close]);
 
   // Click outside → close
   useEffect(() => {
     if (!open) return;
     const onDoc = (e: MouseEvent) => {
       if (boxRef.current && !boxRef.current.contains(e.target as Node)) {
-        setOpen(false);
+        close();
       }
     };
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
-  }, [open]);
+  }, [open, close]);
 
-  const q = query.trim().toLowerCase();
-  const normPhone = (s: string) => s.replace(/\D/g, "");
-  const qPhone = normPhone(q);
+  // Debounced live search — schedules an RPC call ~200ms after the last keystroke.
+  // State updates live inside the async transition callback (never synchronously),
+  // satisfying react-hooks/set-state-in-effect.
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
 
-  const invMatches = q
-    ? INVOICES.filter(
-        (i) => i.customer.toLowerCase().includes(q) || i.id.toLowerCase().includes(q),
-      ).slice(0, 3)
-    : INVOICES.slice(0, 3);
+    const trimmed = query.trim();
+    if (!trimmed) return;
 
-  const custMatches = q
-    ? CUSTOMERS.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          (qPhone.length >= 3 && normPhone(c.phone).includes(qPhone)),
-      ).slice(0, 3)
-    : CUSTOMERS.slice(0, 3);
+    debounceRef.current = setTimeout(() => {
+      setQueryKey((k) => k + 1);
+      startTransition(async () => {
+        const results = await searchAction(trimmed);
+        setInvoices(results.invoices);
+        setCustomers(results.customers);
+        setCursor(0);
+      });
+    }, 200);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query]);
+
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setQuery(val);
+    if (!val.trim()) clearResults();
+  };
+
+  const q = query.trim();
 
   const flat = [
-    ...invMatches.map((i) => ({ kind: "invoice" as const, item: i })),
-    ...custMatches.map((c) => ({ kind: "customer" as const, item: c })),
+    ...invoices.map((hit) => ({ kind: "invoice" as const, item: hit })),
+    ...customers.map((hit) => ({ kind: "customer" as const, item: hit })),
   ];
-  const showEmpty = !!q && flat.length === 0;
+  const showEmpty = !!q && !isPending && flat.length === 0;
 
   const choose = (entry: (typeof flat)[number]) => {
     if (entry.kind === "invoice") {
-      router.push(`/invoices/${encodeURIComponent(entry.item.id)}`);
+      const inv = entry.item as SearchInvoiceHit;
+      const navId = inv.number ?? inv.invoiceUuid;
+      router.push(`/invoices/${encodeURIComponent(navId)}`);
     } else {
       router.push("/customers");
     }
-    setQuery("");
-    setOpen(false);
-    inputRef.current?.blur();
+    close();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -95,16 +140,16 @@ export function SearchPalette() {
     }
   };
 
-  // Live announcement for screen readers
   const announcement = (() => {
     if (!open) return "";
+    if (isPending && q) return "Searching…";
     if (showEmpty) return `No results for "${query}"`;
-    if (q) {
+    if (q && flat.length > 0) {
       const parts: string[] = [];
-      if (invMatches.length)
-        parts.push(`${invMatches.length} invoice${invMatches.length === 1 ? "" : "s"}`);
-      if (custMatches.length)
-        parts.push(`${custMatches.length} customer${custMatches.length === 1 ? "" : "s"}`);
+      if (invoices.length)
+        parts.push(`${invoices.length} invoice${invoices.length === 1 ? "" : "s"}`);
+      if (customers.length)
+        parts.push(`${customers.length} customer${customers.length === 1 ? "" : "s"}`);
       return parts.length ? parts.join(" and ") + " found" : "";
     }
     return "";
@@ -112,12 +157,10 @@ export function SearchPalette() {
 
   return (
     <div className="relative w-full max-w-xl" ref={boxRef}>
-      {/* Screen-reader live region for result count */}
-      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+      <div key={queryKey} role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
       </div>
 
-      {/* Input pill — combobox trigger */}
       <div
         className={cn(
           "flex h-10 items-center gap-2.5 rounded-full border bg-card px-3.5 transition-[border-color,box-shadow] duration-150",
@@ -134,13 +177,13 @@ export function SearchPalette() {
           aria-activedescendant={open && flat.length > 0 ? `sp-opt-${cursor}` : undefined}
           aria-autocomplete="list"
           aria-label="Search invoices and customers"
-          className="h-auto flex-1 bg-transparent py-0 text-body-sm text-ink outline-none placeholder:text-ink-3"
+          className={cn(
+            "h-auto flex-1 bg-transparent py-0 text-body-sm text-ink outline-none placeholder:text-ink-3 transition-opacity duration-150",
+            isPending && "opacity-60",
+          )}
           placeholder="Search invoices, customers..."
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setCursor(0);
-          }}
+          onChange={handleQueryChange}
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           autoComplete="off"
@@ -153,7 +196,6 @@ export function SearchPalette() {
         )}
       </div>
 
-      {/* Dropdown — overflow-hidden clips the scrollbar inside the border-radius */}
       {open && (
         <div
           id="sp-results"
@@ -173,33 +215,39 @@ export function SearchPalette() {
                 Try a customer name, phone, or invoice number.
               </p>
             </div>
-          ) : (
+          ) : flat.length > 0 ? (
             <>
-              {/* Scrollable results */}
-              <div className="max-h-115 overflow-y-auto scrollbar-none">
-                {invMatches.length > 0 && (
+              <div
+                className={cn(
+                  "max-h-115 overflow-y-auto scrollbar-none transition-opacity duration-150",
+                  isPending && "opacity-50",
+                )}
+              >
+                {invoices.length > 0 && (
                   <div role="group" aria-labelledby="sp-inv-lbl" className="py-2">
                     <div className="flex items-center justify-between px-4 pb-1.5 pt-2">
                       <span
                         id="sp-inv-lbl"
                         className="text-kicker font-black uppercase tracking-wider text-ink-3"
                       >
-                        {q ? "Invoices" : "Recent invoices"}
+                        Invoices
                       </span>
                       <span className="rounded-full border border-border bg-cream px-2 py-0.5 text-kicker font-black text-ink-3">
-                        {invMatches.length}
+                        {invoices.length}
                       </span>
                     </div>
-                    {invMatches.map((inv, idx) => (
+                    {invoices.map((inv, idx) => (
                       <div
-                        key={inv.id}
+                        key={inv.invoiceUuid}
                         id={`sp-opt-${idx}`}
                         role="option"
                         aria-selected={cursor === idx}
                         tabIndex={-1}
                         className={cn(
                           "flex w-full cursor-pointer items-center gap-3.5 px-5 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
-                          cursor === idx ? "bg-cream" : "hover:bg-cream",
+                          cursor === idx
+                            ? "bg-cream ring-1 ring-inset ring-coral-press"
+                            : "hover:bg-cream",
                         )}
                         onMouseEnter={() => setCursor(idx)}
                         onClick={() => choose({ kind: "invoice", item: inv })}
@@ -212,12 +260,12 @@ export function SearchPalette() {
                       >
                         <Avatar className="size-9 shrink-0">
                           <AvatarFallback className="bg-coral-soft text-label font-bold text-coral-ink">
-                            {initials(inv.customer)}
+                            {initials(inv.customerName ?? "")}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
                           <div className="truncate text-body-sm font-bold text-ink">
-                            {inv.customer}
+                            {inv.customerName}
                           </div>
                           <div className="mt-0.5 text-label text-ink-3">
                             {inv.id} · {inv.isoDate}
@@ -226,30 +274,30 @@ export function SearchPalette() {
                         <span className="shrink-0 text-body-sm font-bold text-ink-2">
                           {inv.amount}
                         </span>
-                        <StatusPill status={inv.status} size="sm" />
+                        <StatusPill status={toStatusPillStatus(inv.status)} size="sm" />
                       </div>
                     ))}
                   </div>
                 )}
-                {custMatches.length > 0 && (
+                {customers.length > 0 && (
                   <div
                     role="group"
                     aria-labelledby="sp-cust-lbl"
-                    className={cn("py-2", invMatches.length > 0 && "border-t border-border")}
+                    className={cn("py-2", invoices.length > 0 && "border-t border-border")}
                   >
                     <div className="flex items-center justify-between px-4 pb-1.5 pt-2">
                       <span
                         id="sp-cust-lbl"
                         className="text-kicker font-black uppercase tracking-wider text-ink-3"
                       >
-                        {q ? "Customers" : "Top customers"}
+                        Customers
                       </span>
                       <span className="rounded-full border border-border bg-cream px-2 py-0.5 text-kicker font-black text-ink-3">
-                        {custMatches.length}
+                        {customers.length}
                       </span>
                     </div>
-                    {custMatches.map((cust, idx) => {
-                      const fi = invMatches.length + idx;
+                    {customers.map((cust, idx) => {
+                      const fi = invoices.length + idx;
                       return (
                         <div
                           key={cust.id}
@@ -259,7 +307,9 @@ export function SearchPalette() {
                           tabIndex={-1}
                           className={cn(
                             "flex w-full cursor-pointer items-center gap-3.5 px-5 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
-                            cursor === fi ? "bg-cream" : "hover:bg-cream",
+                            cursor === fi
+                              ? "bg-cream ring-1 ring-inset ring-coral-press"
+                              : "hover:bg-cream",
                           )}
                           onMouseEnter={() => setCursor(fi)}
                           onClick={() => choose({ kind: "customer", item: cust })}
@@ -279,22 +329,8 @@ export function SearchPalette() {
                             <div className="truncate text-body-sm font-bold text-ink">
                               {cust.name}
                             </div>
-                            <div className="mt-0.5 text-label text-ink-3">
-                              {cust.phone}
-                              {cust.invoiceCount
-                                ? ` · ${cust.invoiceCount} invoice${cust.invoiceCount === 1 ? "" : "s"}`
-                                : ""}
-                            </div>
+                            <div className="mt-0.5 text-label text-ink-3">{cust.phone}</div>
                           </div>
-                          {cust.outstanding ? (
-                            <span className="shrink-0 text-body-sm font-bold text-overdue-ink">
-                              {cust.outstanding} due
-                            </span>
-                          ) : (
-                            <span className="shrink-0 text-body-sm font-semibold text-ink-3">
-                              All clear
-                            </span>
-                          )}
                         </div>
                       );
                     })}
@@ -302,7 +338,6 @@ export function SearchPalette() {
                 )}
               </div>
 
-              {/* Footer — outside the scroll area */}
               <div className="flex shrink-0 items-center gap-4 border-t border-border bg-cream px-5 py-3">
                 <span className="flex items-center gap-1 text-label text-ink-3">
                   <kbd className="inline-block rounded border border-border bg-surface px-1 py-0.5 font-sans text-kicker font-semibold text-ink-2">
@@ -327,7 +362,13 @@ export function SearchPalette() {
                 </span>
               </div>
             </>
-          )}
+          ) : q && isPending ? (
+            <div className="px-6 py-6 text-center text-body-sm text-ink-3">Searching…</div>
+          ) : !q ? (
+            <div className="px-6 py-6 text-center text-body-sm text-ink-3">
+              Type to search invoices and customers.
+            </div>
+          ) : null}
         </div>
       )}
     </div>
