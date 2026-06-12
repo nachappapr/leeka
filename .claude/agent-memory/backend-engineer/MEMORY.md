@@ -7,4 +7,4 @@
 - [AP-14 GST split persistence](project_ap14_gst_split.md) — per-line cgst/sgst/igst columns, RPC rewrite (old signature DROPped), action wiring, camelCase return shape, round_off negative case proven
 - [AP-16 atomic invoice number RPC](project_ap16_atomic_invoice_number.md) — next_invoice_number + issue_invoice RPCs, YYYY-YY FY format, lpad-truncation fix, seeding decision, Json→unknown cast pattern
 - [AP-18 record payment RPC](project_ap18_record_payment.md) — record_payment RPC, FOR UPDATE concurrency lock, SUM recompute, overpayment guard, cognitive-complexity helper pattern, GRANT/REVOKE PUBLIC note
-- [AP-19 lifecycle actions](project_ap19_lifecycle_actions.md) — mark_invoice_paid (outstanding SUM under lock, drift-only path) + cancel_invoice (guarded UPDATE, not a refund) RPCs + Server Actions
+- [AP-19 lifecycle actions](project_ap19_lifecycle_actions.md) — all 4 lifecycle RPCs: mark_invoice_paid, cancel_invoice, duplicate_invoice, delete_invoice; invoice_line_items has NO created_at/updated_at; invoices BEFORE INSERT trigger auto-generates public_token

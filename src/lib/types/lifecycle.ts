@@ -47,3 +47,43 @@ export interface CancelInvoiceData {
 export type CancelInvoiceResult =
   | { ok: true; data: CancelInvoiceData }
   | { ok: false; error: string };
+
+/**
+ * Shape returned by the duplicate_invoice RPC on success.
+ */
+export interface DuplicateInvoiceRow {
+  invoice_id: string;
+  status: InvoiceStatus;
+}
+
+/**
+ * Success data shape surfaced by the duplicateInvoice Server Action.
+ */
+export interface DuplicateInvoiceData {
+  invoiceId: string;
+  status: InvoiceStatus;
+}
+
+export type DuplicateInvoiceResult =
+  | { ok: true; data: DuplicateInvoiceData }
+  | { ok: false; error: string };
+
+/**
+ * Shape returned by the delete_invoice RPC on success.
+ */
+export interface DeleteInvoiceRow {
+  invoice_id: string;
+  deleted: boolean;
+}
+
+/**
+ * Success data shape surfaced by the deleteInvoice Server Action.
+ */
+export interface DeleteInvoiceData {
+  invoiceId: string;
+  deleted: boolean;
+}
+
+export type DeleteInvoiceResult =
+  | { ok: true; data: DeleteInvoiceData }
+  | { ok: false; error: string };

@@ -28,3 +28,25 @@ export const CancelInvoiceSchema = z.object({
 });
 
 export type CancelInvoiceInput = z.infer<typeof CancelInvoiceSchema>;
+
+/**
+ * Server Action input schema for AP-19 duplicateInvoice.
+ *
+ * - invoiceId: UUID of the invoice to duplicate (any status is valid)
+ */
+export const DuplicateInvoiceSchema = z.object({
+  invoiceId: z.string().uuid("Invalid invoice ID"),
+});
+
+export type DuplicateInvoiceInput = z.infer<typeof DuplicateInvoiceSchema>;
+
+/**
+ * Server Action input schema for AP-19 deleteInvoice.
+ *
+ * - invoiceId: UUID of the draft invoice to delete
+ */
+export const DeleteInvoiceSchema = z.object({
+  invoiceId: z.string().uuid("Invalid invoice ID"),
+});
+
+export type DeleteInvoiceInput = z.infer<typeof DeleteInvoiceSchema>;

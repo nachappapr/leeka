@@ -4,7 +4,12 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { SaveInvoiceDraftSchema } from "@/lib/schema/invoice";
 import { RecordPaymentSchema } from "@/lib/schema/payment";
-import { MarkInvoicePaidSchema, CancelInvoiceSchema } from "@/lib/schema/lifecycle";
+import {
+  MarkInvoicePaidSchema,
+  CancelInvoiceSchema,
+  DuplicateInvoiceSchema,
+  DeleteInvoiceSchema,
+} from "@/lib/schema/lifecycle";
 import { computeTotals } from "@/lib/invoice/compute-totals";
 import logger from "@/lib/logger";
 import type { SaveDraftResult } from "@/lib/types/invoice";
@@ -14,6 +19,10 @@ import type {
   MarkInvoicePaidRow,
   CancelInvoiceResult,
   CancelInvoiceRow,
+  DuplicateInvoiceResult,
+  DuplicateInvoiceRow,
+  DeleteInvoiceResult,
+  DeleteInvoiceRow,
 } from "@/lib/types/lifecycle";
 
 export type SaveInvoiceDraftResult =
@@ -520,6 +529,137 @@ export async function cancelInvoice(payload: unknown): Promise<CancelInvoiceResu
     data: {
       invoiceId: row.invoice_id,
       status: row.status,
+    },
+  };
+}
+
+// ── duplicateInvoice ──────────────────────────────────────────────────────────
+
+function mapDuplicateInvoiceError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("invoice not found")) return "Invoice not found";
+  return "Failed to duplicate invoice. Please try again.";
+}
+
+/**
+ * duplicateInvoice — AP-19 Unit 2 Server Action.
+ *
+ * Clones any invoice (any status) into a fresh draft. All line items are copied
+ * verbatim with their computed amounts; header lifecycle fields (number, status,
+ * amount_paid, paid_at, sent_at, viewed_at, public_token, pdf_url, due_date) are
+ * reset to draft defaults. Payments and invoice_events are NOT copied.
+ *
+ * businessId is looked up server-side from the caller's session membership.
+ */
+export async function duplicateInvoice(payload: unknown): Promise<DuplicateInvoiceResult> {
+  const parsed = DuplicateInvoiceSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid invoice ID",
+    };
+  }
+
+  const { invoiceId } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase.rpc("duplicate_invoice", {
+    p_business_id: businessId,
+    p_invoice_id: invoiceId,
+  });
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "duplicateInvoice: RPC failed");
+    return { ok: false, error: mapDuplicateInvoiceError(error.message) };
+  }
+
+  const row = data as unknown as DuplicateInvoiceRow;
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: row.invoice_id,
+      status: row.status,
+    },
+  };
+}
+
+// ── deleteInvoice ─────────────────────────────────────────────────────────────
+
+function mapDeleteInvoiceError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("invoice not found")) return "Invoice not found";
+  if (msg.includes("cannot delete a non-draft"))
+    return "Only draft invoices can be deleted — cancel issued invoices instead";
+  return "Failed to delete invoice. Please try again.";
+}
+
+/**
+ * deleteInvoice — AP-19 Unit 2 Server Action.
+ *
+ * Hard-deletes a DRAFT invoice and all its line items. Issued invoices are a
+ * permanent legal/audit record and must be cancelled, not deleted — the RPC
+ * enforces this with a status guard that raises for any non-draft status.
+ *
+ * businessId is looked up server-side from the caller's session membership.
+ */
+export async function deleteInvoice(payload: unknown): Promise<DeleteInvoiceResult> {
+  const parsed = DeleteInvoiceSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid invoice ID",
+    };
+  }
+
+  const { invoiceId } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase.rpc("delete_invoice", {
+    p_business_id: businessId,
+    p_invoice_id: invoiceId,
+  });
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "deleteInvoice: RPC failed");
+    return { ok: false, error: mapDeleteInvoiceError(error.message) };
+  }
+
+  const row = data as unknown as DeleteInvoiceRow;
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: row.invoice_id,
+      deleted: row.deleted,
     },
   };
 }
