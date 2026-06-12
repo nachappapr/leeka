@@ -1,12 +1,24 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useRef, useState } from "react";
+import * as React from "react";
 
 import { ExportInvoicesModal } from "@/components/invoices/export-invoices-modal";
 import { INVOICE_SORTS } from "@/lib/constants/invoices";
 import type { Invoice } from "@/lib/types";
 import type { InvoiceSortId } from "@/lib/types/invoice";
+import type { InvoiceStatusFilter } from "@/lib/types/invoice";
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
+import type { ExportFormat, ExportStatusId } from "@/lib/types/invoice-export";
+
+const VALID_EXPORT_STATUS_IDS: ReadonlyArray<ExportStatusId> = [
+  "all",
+  "paid",
+  "sent",
+  "viewed",
+  "overdue",
+  "draft",
+] as const;
 
 interface InvoiceListActionsContextValue {
   sort: InvoiceSortId;
@@ -16,9 +28,16 @@ interface InvoiceListActionsContextValue {
   sortLabel: string;
   filterLabel: string;
   exportOpen: boolean;
-  openExport: () => void;
+  /**
+   * Opens the export modal. `format` defaults to "pdf" (preserves mobile sheet behaviour).
+   * `focusRef` is the element to restore focus to when the modal closes.
+   */
+  openExport: (format?: ExportFormat, focusRef?: React.RefObject<HTMLElement | null>) => void;
   closeExport: () => void;
   invoices: ReadonlyArray<Invoice>;
+  /** Desktop single-select chip filter value; default "all". */
+  desktopFilter: InvoiceStatusFilter;
+  setDesktopFilter: (filter: InvoiceStatusFilter) => void;
 }
 
 const InvoiceListActionsContext = createContext<InvoiceListActionsContextValue | null>(null);
@@ -34,15 +53,30 @@ export function useInvoiceListActions(): InvoiceListActionsContextValue {
 interface InvoiceListActionsProviderProps {
   children: React.ReactNode;
   invoices: ReadonlyArray<Invoice>;
+  /** Seed the desktop chip filter from a URL search param on first render. Optional — defaults to "all". */
+  initialDesktopFilter?: InvoiceStatusFilter;
 }
 
 export function InvoiceListActionsProvider({
   children,
   invoices,
+  initialDesktopFilter,
 }: InvoiceListActionsProviderProps) {
   const [sort, setSort] = useState<InvoiceSortId>("newest");
   const [statuses, setStatuses] = useState<StatusPillStatus[]>([]);
   const [exportOpen, setExportOpen] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("pdf");
+  const [desktopFilter, setDesktopFilter] = useState<InvoiceStatusFilter>(
+    initialDesktopFilter ?? "all",
+  );
+  const [announce, setAnnounce] = useState("");
+  const [exportFinalFocus, setExportFinalFocus] =
+    useState<React.RefObject<HTMLElement | null> | null>(null);
+
+  // Incremented each time the modal opens so the modal remounts with fresh
+  // state (key-reset pattern — avoids setState-in-effect lint violations).
+  const openKeyRef = useRef(0);
+  const [openKey, setOpenKey] = useState(0);
 
   const sortLabel = useMemo(
     () => INVOICE_SORTS.find((s) => s.id === sort)?.label ?? INVOICE_SORTS[0].label,
@@ -57,6 +91,36 @@ export function InvoiceListActionsProvider({
     [statuses],
   );
 
+  const openExport = useMemo(
+    () =>
+      (format: ExportFormat = "pdf", focusRef?: React.RefObject<HTMLElement | null>) => {
+        openKeyRef.current += 1;
+        setOpenKey(openKeyRef.current);
+        setExportFormat(format);
+        setExportFinalFocus(focusRef ?? null);
+        setExportOpen(true);
+      },
+    [],
+  );
+
+  // Compute initial statuses to seed the modal: mobile statuses take priority,
+  // then fall back to the desktop chip filter (if not "all"), else "all".
+  const exportInitialStatuses = useMemo<ReadonlyArray<ExportStatusId>>(() => {
+    if (statuses.length > 0) {
+      const validSet = new Set<string>(VALID_EXPORT_STATUS_IDS);
+      const valid = statuses.reduce<ExportStatusId[]>((acc, s) => {
+        if (validSet.has(s)) acc.push(s as ExportStatusId);
+        return acc;
+      }, []);
+      return valid.length > 0 ? valid : ["all"];
+    }
+    if (desktopFilter !== "all") {
+      const validSet = new Set<string>(VALID_EXPORT_STATUS_IDS);
+      return validSet.has(desktopFilter) ? [desktopFilter as ExportStatusId] : ["all"];
+    }
+    return ["all"];
+  }, [statuses, desktopFilter]);
+
   const value = useMemo<InvoiceListActionsContextValue>(
     () => ({
       sort,
@@ -66,22 +130,31 @@ export function InvoiceListActionsProvider({
       sortLabel,
       filterLabel,
       exportOpen,
-      openExport: () => setExportOpen(true),
+      openExport,
       closeExport: () => setExportOpen(false),
       invoices,
+      desktopFilter,
+      setDesktopFilter,
     }),
-    [sort, statuses, sortLabel, filterLabel, exportOpen, invoices],
+    [sort, statuses, sortLabel, filterLabel, exportOpen, openExport, invoices, desktopFilter],
   );
 
   return (
     <InvoiceListActionsContext.Provider value={value}>
       {children}
       <ExportInvoicesModal
+        key={openKey}
         open={exportOpen}
         onClose={() => setExportOpen(false)}
         invoices={invoices}
-        initialFormat="pdf"
+        initialFormat={exportFormat}
+        initialStatuses={exportInitialStatuses}
+        finalFocus={exportFinalFocus ?? undefined}
+        onAnnounce={setAnnounce}
       />
+      <p role="status" aria-live="polite" aria-atomic className="sr-only">
+        {announce}
+      </p>
     </InvoiceListActionsContext.Provider>
   );
 }

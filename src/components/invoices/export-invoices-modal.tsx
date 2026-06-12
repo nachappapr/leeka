@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import type React from "react";
 
 import { XIcon, Download } from "@/components/icons";
 import { cn, parseRupeeString } from "@/lib/utils";
 import { INVOICES } from "@/lib/constants/invoices";
 import { EXPORT_DATE_PRESETS, EXPORT_STATUS_CHIPS } from "@/lib/constants/invoice-export";
+import { buildExportUrl } from "@/lib/invoice/export-url";
 import { ExportFormatTabs } from "@/components/invoices/export-format-tabs";
 import { ExportSummaryBox } from "@/components/invoices/export-summary-box";
 import { ExportChip } from "@/components/invoices/export-chip";
@@ -35,10 +37,15 @@ export interface ExportInvoicesModalProps {
   open: boolean;
   onClose: () => void;
   initialFormat?: ExportFormat;
+  /** Status chips pre-seeded from the active list filters. Reset on each open via key-reset. */
+  initialStatuses?: ReadonlyArray<ExportStatusId>;
   invoices?: ReadonlyArray<Invoice>;
+  /** Element to restore focus to when the modal closes (WCAG 2.4.3). */
+  finalFocus?: React.RefObject<HTMLElement | null>;
+  /** Called with the download announcement string before onClose fires (Finding 3). */
+  onAnnounce?: (message: string) => void;
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
 function slugify(s: string): string {
   return (s || "")
     .toLowerCase()
@@ -46,20 +53,20 @@ function slugify(s: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-// ── Public component — controlled open/close ──────────────────────────────
-// The Dialog primitive owns focus trap, Esc-to-close, scroll-lock, aria-modal,
-// and initial focus. No manual versions needed here.
 export function ExportInvoicesModal({
   open,
   onClose,
   initialFormat = "csv",
+  initialStatuses = ["all"],
   invoices = INVOICES,
+  finalFocus,
+  onAnnounce,
 }: ExportInvoicesModalProps) {
   const [format, setFormat] = useState<ExportFormat>(initialFormat);
   const [range, setRange] = useState<ExportDateRangeId>("this-month");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [statuses, setStatuses] = useState<ReadonlyArray<ExportStatusId>>(["all"]);
+  const [statuses, setStatuses] = useState<ReadonlyArray<ExportStatusId>>(initialStatuses);
   const [customer, setCustomer] = useState("all");
   const [cols, setCols] = useState<ExportColState>({ items: true, tax: true, notes: false });
 
@@ -81,7 +88,6 @@ export function ExportInvoicesModal({
       statuses.includes("all") || (statuses as ReadonlyArray<string>).includes(i.status);
     return okStatus && (customer === "all" || i.customer === customer);
   });
-  const canExport = matches.length > 0;
   const totalAmt = matches.reduce((s, i) => s + parseRupeeString(i.amount), 0);
   const rangeLabel = EXPORT_DATE_PRESETS.find((r) => r.id === range)?.label ?? "This month";
   const datePart =
@@ -90,6 +96,25 @@ export function ExportInvoicesModal({
       : slugify(rangeLabel);
   const filename = `arthapatra-invoices-${datePart}.${format}`;
 
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (format === "csv") {
+        const url = buildExportUrl({ statuses, range, from, to, customer });
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        onAnnounce?.(`Downloading ${filename} — ${matches.length} invoices`);
+      }
+      // PDF path: close only — Epic 8 is deferred.
+      onClose();
+    },
+    [format, statuses, range, from, to, customer, filename, matches.length, onClose, onAnnounce],
+  );
+
   return (
     <Modal
       open={open}
@@ -97,15 +122,8 @@ export function ExportInvoicesModal({
         if (!o) onClose();
       }}
     >
-      <ModalContent>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (canExport) onClose();
-          }}
-          className="contents"
-        >
-          {/* ── Header ──────────────────────────────────────────────────── */}
+      <ModalContent finalFocus={finalFocus}>
+        <form onSubmit={handleSubmit} className="contents">
           <ModalHeader>
             <div className="flex-1 min-w-0">
               <div className="inline-block bg-coral-soft text-coral-ink text-kicker font-black tracking-wider uppercase rounded-full px-2.5 py-1 mb-2.5">
@@ -119,7 +137,6 @@ export function ExportInvoicesModal({
             <ModalClose aria-label="Close export dialog" />
           </ModalHeader>
 
-          {/* ── Body ────────────────────────────────────────────────────── */}
           <ModalBody>
             <section className="mb-4.5">
               <FieldLabel id="export-format-label">Format</FieldLabel>
@@ -203,25 +220,22 @@ export function ExportInvoicesModal({
               </section>
             )}
 
-            {/* Live count region — kept alongside ModalDescription for specificity */}
             <ExportSummaryBox matchCount={matches.length} totalAmt={totalAmt} filename={filename} />
           </ModalBody>
 
-          {/* ── Footer ──────────────────────────────────────────────────── */}
           <ModalFooter>
             <button
               type="button"
               aria-label="Cancel export"
               onClick={onClose}
-              className="flex-none flex items-center justify-center gap-2 h-12 px-3.5 rounded-lg bg-card border-[1.5px] border-line-strong text-ink text-body font-bold transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 max-mobile:w-12 max-mobile:px-0"
+              className="flex-none flex items-center justify-center gap-2 h-12 px-3.5 rounded-lg bg-card border-[1.5px] border-ink-3 text-ink text-body font-bold transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 max-mobile:w-12 max-mobile:px-0"
             >
               <XIcon size={18} aria-hidden />
               <span className="max-mobile:hidden">Cancel</span>
             </button>
             <button
               type="submit"
-              aria-disabled={!canExport}
-              className="flex flex-1 items-center justify-center gap-2 h-12 min-w-0 rounded-lg bg-primary text-white text-body font-bold shadow-press transition-[background-color,opacity] hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 aria-disabled:opacity-55 aria-disabled:cursor-not-allowed"
+              className="flex flex-1 items-center justify-center gap-2 h-12 min-w-0 rounded-lg bg-primary text-white text-body font-bold shadow-press transition-[background-color,opacity] hover:bg-coral-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
             >
               <Download size={18} strokeWidth={2.4} aria-hidden />
               Export {format.toUpperCase()}

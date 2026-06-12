@@ -103,7 +103,7 @@ export function InvoiceListActionsSheet({
               label="Export as PDF"
               onClick={() => {
                 onViewChange(null);
-                openExport();
+                openExport(undefined, triggerRef);
               }}
             />
 

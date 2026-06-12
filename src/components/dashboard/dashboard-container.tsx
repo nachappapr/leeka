@@ -11,15 +11,22 @@ import { HeroGrid } from "@/components/dashboard/hero-grid";
 import { InvoicesCard } from "@/components/dashboard/invoices-card";
 import { EmptyDashboard } from "@/components/dashboard/empty-dashboard";
 import { ACTIVITY_ITEMS, AGING_BUCKETS } from "@/lib/constants";
-import { INVOICES } from "@/lib/constants/invoices";
+import { getDashboardSummary, getRecentInvoices } from "@/lib/data/dashboard";
+import type { Invoice } from "@/lib/types";
+import type { DashboardSummary } from "@/lib/types/dashboard";
 
-function PopulatedDashboard() {
+interface PopulatedDashboardProps {
+  summary: DashboardSummary;
+  invoices: ReadonlyArray<Invoice>;
+}
+
+function PopulatedDashboard({ summary, invoices }: PopulatedDashboardProps) {
   return (
     <div className="flex flex-col gap-5 max-mobile:gap-3.5">
       <DashboardGreeting />
-      <HeroGrid />
+      <HeroGrid summary={summary} />
       <div className="grid grid-cols-[2fr_1fr] gap-5 max-tablet:grid-cols-1 max-mobile:gap-3.5">
-        <InvoicesCard />
+        <InvoicesCard invoices={invoices} />
         <div className="flex flex-col gap-5">
           <ActivityCard items={ACTIVITY_ITEMS} />
           <MoneyAwaitedCard buckets={AGING_BUCKETS} />
@@ -29,9 +36,13 @@ function PopulatedDashboard() {
   );
 }
 
-export function DashboardContainer() {
+export async function DashboardContainer() {
+  const [summary, invoices] = await Promise.all([getDashboardSummary(), getRecentInvoices()]);
+
+  const hasInvoices = invoices.length > 0;
+
   return (
-    <InvoiceListActionsProvider invoices={INVOICES}>
+    <InvoiceListActionsProvider invoices={invoices}>
       <div className="flex flex-1 flex-col">
         <Topbar
           title="Dashboard"
@@ -40,7 +51,14 @@ export function DashboardContainer() {
           actions={<InvoiceListActionsTrigger />}
         />
         <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
-          <EmptyStateSwitch empty={<EmptyDashboard />} populated={<PopulatedDashboard />} />
+          {hasInvoices ? (
+            <EmptyStateSwitch
+              empty={<EmptyDashboard />}
+              populated={<PopulatedDashboard summary={summary} invoices={invoices} />}
+            />
+          ) : (
+            <EmptyDashboard />
+          )}
         </div>
         <MobileTabBar />
       </div>

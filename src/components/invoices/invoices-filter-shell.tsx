@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
+import { useMemo, type ReactNode } from "react";
 
 import { FilterChips, type FilterChipsItem } from "@/components/ui/custom/filter-chips";
 import { InvoicesMobileList } from "@/components/invoices/invoices-mobile-list";
@@ -19,16 +18,7 @@ interface InvoicesFilterShellProps {
 }
 
 export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellProps) {
-  const searchParams = useSearchParams();
-  const initialFilter = searchParams.get("filter") as InvoiceStatusFilter | null;
-  const [filter, setFilter] = useState<InvoiceStatusFilter>(
-    initialFilter && INVOICES_FILTER_CHIPS.some((chip) => chip.id === initialFilter)
-      ? initialFilter
-      : "all",
-  );
-
-  // Mobile list driven by shared provider (sort + multi-status filter from the sheet)
-  const { sort, statuses } = useInvoiceListActions();
+  const { sort, statuses, desktopFilter, setDesktopFilter } = useInvoiceListActions();
 
   const chipItems = useMemo<ReadonlyArray<FilterChipsItem>>(
     () =>
@@ -43,13 +33,12 @@ export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellPro
     [invoices],
   );
 
-  // Desktop: single-select filter from the chip row
   const filteredInvoices = useMemo(
-    () => (filter === "all" ? invoices : invoices.filter((inv) => inv.status === filter)),
-    [invoices, filter],
+    () =>
+      desktopFilter === "all" ? invoices : invoices.filter((inv) => inv.status === desktopFilter),
+    [invoices, desktopFilter],
   );
 
-  // Mobile: multi-status + sort from the sheet provider
   const mobileInvoices = useMemo(
     () => applyInvoiceSortFilter(invoices, sort, statuses),
     [invoices, sort, statuses],
@@ -59,16 +48,14 @@ export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellPro
     <>
       {header}
       <Card>
-        {/* Desktop filter chips — hidden on mobile (sheet controls mobile) */}
         <div className="max-mobile:hidden">
           <FilterChips
             items={chipItems}
-            value={filter}
-            onValueChange={(id) => setFilter(id as InvoiceStatusFilter)}
+            value={desktopFilter}
+            onValueChange={(id) => setDesktopFilter(id as InvoiceStatusFilter)}
             ariaLabel="Filter invoices by status"
           />
         </div>
-        {/* Desktop announces the chip-filtered count; mobile announces the sheet-filtered count */}
         <p role="status" className="sr-only max-mobile:hidden">
           Showing {filteredInvoices.length} invoice
           {filteredInvoices.length === 1 ? "" : "s"}
@@ -77,11 +64,8 @@ export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellPro
           Showing {mobileInvoices.length} invoice
           {mobileInvoices.length === 1 ? "" : "s"}
         </p>
-        {/* Desktop table — hidden on mobile */}
         <InvoicesTable invoices={filteredInvoices} />
-        {/* Mobile list — driven by sheet provider state */}
         <div className="min-mobile:hidden">
-          {/* Active sort/filter summary chips + Clear (mirrors dashboard) */}
           <InvoiceListFilterSummary />
           <div className="p-4">
             <InvoicesMobileList invoices={mobileInvoices} />

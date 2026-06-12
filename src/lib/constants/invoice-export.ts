@@ -1,3 +1,4 @@
+import { currentIndianFY } from "@/lib/invoice/export-url";
 import type {
   ExportColState,
   ExportDateRangeId,
@@ -21,7 +22,8 @@ export const EXPORT_DATE_PRESETS: ReadonlyArray<{
   { id: "this-month", label: "This month" },
   { id: "last-month", label: "Last month" },
   { id: "this-quarter", label: "This quarter" },
-  { id: "fy", label: "FY 2025–26" },
+  // Label is computed at module load time from the real calendar date (AC5).
+  { id: "fy", label: currentIndianFY().label },
   { id: "all", label: "All time" },
   { id: "custom", label: "Custom…" },
 ];

@@ -2,9 +2,13 @@ import Link from "next/link";
 import { ChevronRight } from "@/components/icons";
 import { Card } from "@/components/ui/custom/card";
 import { DashboardInvoicesShell } from "@/components/dashboard/dashboard-invoices-shell";
-import { INVOICES } from "@/lib/constants";
+import type { Invoice } from "@/lib/types";
 
-export function InvoicesCard() {
+interface InvoicesCardProps {
+  invoices: ReadonlyArray<Invoice>;
+}
+
+export function InvoicesCard({ invoices }: InvoicesCardProps) {
   return (
     <Card
       title="Recent invoices"
@@ -18,7 +22,7 @@ export function InvoicesCard() {
         </Link>
       }
     >
-      <DashboardInvoicesShell invoices={INVOICES} />
+      <DashboardInvoicesShell invoices={invoices} />
     </Card>
   );
 }

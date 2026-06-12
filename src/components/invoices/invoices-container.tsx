@@ -8,11 +8,22 @@ import { InvoiceListActionsProvider } from "@/components/invoices/invoice-list-a
 import { InvoiceListActionsTrigger } from "@/components/invoices/invoice-list-actions-trigger";
 import { InvoicesFilterShell } from "@/components/invoices/invoices-filter-shell";
 import { InvoicesPageHeader } from "@/components/invoices/invoices-page-header";
-import { INVOICES } from "@/lib/constants";
+import { INVOICES, INVOICES_FILTER_CHIPS } from "@/lib/constants";
+import type { InvoiceStatusFilter } from "@/lib/types";
 
-export function InvoicesContainer() {
+interface InvoicesContainerProps {
+  initialFilter?: string;
+}
+
+export function InvoicesContainer({ initialFilter }: InvoicesContainerProps) {
+  const validatedFilter: InvoiceStatusFilter | undefined = INVOICES_FILTER_CHIPS.some(
+    (chip) => chip.id === initialFilter,
+  )
+    ? (initialFilter as InvoiceStatusFilter)
+    : undefined;
+
   return (
-    <InvoiceListActionsProvider invoices={INVOICES}>
+    <InvoiceListActionsProvider invoices={INVOICES} initialDesktopFilter={validatedFilter}>
       <div className="flex flex-1 flex-col">
         <Topbar
           title="Invoices"

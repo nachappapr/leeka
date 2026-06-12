@@ -26,12 +26,12 @@ export function EmptyDashboardHero() {
           Welcome to ArthaPatra
         </div>
 
-        <h1 className="mt-3.5 mb-2.5 text-h1 font-extrabold tracking-tight">
+        <h2 className="mt-3.5 mb-2.5 text-h1 font-extrabold tracking-tight">
           Namaste, Raj{" "}
           <span aria-hidden="true" className="inline-block -rotate-6">
             👋
           </span>
-        </h1>
+        </h2>
 
         <p className="max-w-135 text-body font-medium leading-relaxed text-white/92">
           Send your first invoice in under a minute. We&rsquo;ll keep track of who&rsquo;s paid,

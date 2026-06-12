@@ -1,28 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 
 import { Download } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
-import { ExportInvoicesModal } from "@/components/invoices/export-invoices-modal";
-import { INVOICES } from "@/lib/constants/invoices";
+import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
 
 export function ExportTrigger() {
-  const [open, setOpen] = useState(false);
+  const { exportOpen, openExport } = useInvoiceListActions();
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <>
-      <PillButton
-        tone="outline"
-        size="md"
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-        aria-expanded={open}
-      >
-        <Download aria-hidden />
-        Export
-      </PillButton>
-      <ExportInvoicesModal open={open} onClose={() => setOpen(false)} invoices={INVOICES} />
-    </>
+    <PillButton
+      ref={triggerRef}
+      tone="outline"
+      size="md"
+      onClick={() => openExport("csv", triggerRef)}
+      aria-haspopup="dialog"
+      aria-expanded={exportOpen}
+      aria-label="Export"
+    >
+      <Download aria-hidden />
+      Export
+    </PillButton>
   );
 }
