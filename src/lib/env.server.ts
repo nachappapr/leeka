@@ -30,6 +30,14 @@ const serverSchema = z.object({
   // Never NEXT_PUBLIC_: these are secrets and must never reach the browser.
   WHATSAPP_APP_SECRET: z.string().min(1).optional(),
   WHATSAPP_WEBHOOK_VERIFY_TOKEN: z.string().min(1).optional(),
+  // AP-28: Resend email credentials — all optional so the server starts without
+  // them. isEmailConfigured() gates any live HTTP call at runtime.
+  // Never NEXT_PUBLIC_: api key and from address are secrets.
+  RESEND_API_KEY: z.string().min(1).optional(),
+  EMAIL_FROM: z.string().min(1).optional(),
+  // AP-28: Resend webhook signing secret (whsec_… format from Resend dashboard).
+  // isEmailWebhookConfigured() gates svix signature verification at call-time.
+  RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),
 });
 
 function parseEnv<T extends z.ZodTypeAny>(
@@ -58,6 +66,9 @@ export const serverEnv = parseEnv(serverSchema, {
   WHATSAPP_API_VERSION: process.env.WHATSAPP_API_VERSION,
   WHATSAPP_APP_SECRET: process.env.WHATSAPP_APP_SECRET,
   WHATSAPP_WEBHOOK_VERIFY_TOKEN: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  EMAIL_FROM: process.env.EMAIL_FROM,
+  RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
 });
 
 export type ServerEnv = typeof serverEnv;
@@ -83,4 +94,23 @@ export function isWhatsAppConfigured(): boolean {
  */
 export function isWhatsAppWebhookConfigured(): boolean {
   return Boolean(serverEnv.WHATSAPP_APP_SECRET && serverEnv.WHATSAPP_WEBHOOK_VERIFY_TOKEN);
+}
+
+/**
+ * Returns true when both required Resend credentials are present (RESEND_API_KEY
+ * and EMAIL_FROM). When false, sendInvoiceEmail skips the live HTTP call and
+ * records a 'skipped' message_log row instead — this is the expected dev/CI path
+ * before Resend account + domain are provisioned (AP-28).
+ */
+export function isEmailConfigured(): boolean {
+  return Boolean(serverEnv.RESEND_API_KEY && serverEnv.EMAIL_FROM);
+}
+
+/**
+ * Returns true when the Resend webhook signing secret is present. When false,
+ * the email webhook route returns a benign skip response — expected in dev/CI
+ * before the Resend webhook is registered (AP-28).
+ */
+export function isEmailWebhookConfigured(): boolean {
+  return Boolean(serverEnv.RESEND_WEBHOOK_SECRET);
 }
