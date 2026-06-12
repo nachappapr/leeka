@@ -19,3 +19,4 @@
 - [AP-36 business settings backend](project_ap36_business_settings.md) — business-logos bucket (private, 2MB, MIME-gated), Storage RLS via foldername()[1]::uuid, updateBusinessProfile/uploadBusinessLogo SAs, getBusinessLogoSignedUrl helper; ALTER TABLE storage.objects forbidden
 - [AP-38 invoice template](project_ap38_invoice_template.md) — accent_color + footer_message on businesses, getBusinessId exported, TemplateSchema + updateInvoiceTemplate SA
 - [AP-39 notification settings](project_ap39_notification_settings.md) — notification_settings table, (select auth.uid()) RLS pattern, getNotificationSettings/updateNotificationSettings SAs, no Pro gate
+- [AP-41 search_all RPC](project_ap41_search_all.md) — GIN on invoices.number + btree(business_id,total), search_all SECURITY INVOKER setof jsonb, amount paise-band logic, idle=recent rows, customer outstanding omitted, searchAction SA
