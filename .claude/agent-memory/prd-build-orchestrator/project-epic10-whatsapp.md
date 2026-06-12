@@ -1,10 +1,12 @@
 ---
 name: project-epic10-whatsapp
-description: Epic 10 WhatsApp Delivery — AP-25 built env-gated (no live creds yet); status/PDF/webhook de-scoped; AP-26/27 pending
+description: Epic 10 WhatsApp Delivery — AP-25 + AP-26 APPROVED & committed (env-gated, no live creds yet); AP-27 onboarding docs pending
 type: project
 ---
 
-Epic 10 (WhatsApp Delivery), AP-25 "Cloud API send" implemented & gated 2026-06-12, awaiting human review (not yet committed).
+Epic 10 (WhatsApp Delivery): AP-25 "Cloud API send" and AP-26 "delivery/read webhook → viewed" both APPROVED by the user and committed 2026-06-12 (AP-25 = `ae2d34f`, AP-26 = `c7c2c48`); Notion checkboxes ticked with deviation notes. AP-27 (onboarding docs, P1·S) is the only open Epic 10 unit.
+
+**AP-26 confirmed judgment calls (user-approved):** unconfigured POST returns 200 `{skipped:true}` (not 503) so Meta's retry/disable logic never trips; env var names are `WHATSAPP_APP_SECRET` + `WHATSAPP_WEBHOOK_VERIFY_TOKEN`. Migration `20260612112416` (mark_message_status RPC + provider_msg_id partial unique index) is applied remotely AND committed.
 
 **Three binding decisions (relayed from human review, 2026-06-12):**
 1. **Env-gated build.** No Meta WABA/template/token exists. The full Cloud API send path is built against the contract, but the live POST is gated behind `WHATSAPP_*` env presence (all optional in `src/lib/env.server.ts`; `isWhatsAppConfigured()` helper). When unconfigured, `sendInvoice` SKIPS the live call, writes a `message_log` row `status='skipped'` + `invoice_events`, and returns `{ ok:true, data:{ skipped:true } }` — never throws. Mirrors AP-4 test-OTP precedent. Live-delivery verification deferred.
