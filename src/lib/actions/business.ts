@@ -72,7 +72,7 @@ export async function createBusiness(input: {
 
 // ── Shared business_members helper ───────────────────────────────────────────
 
-async function getBusinessId(
+export async function getBusinessId(
   supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string,
 ): Promise<string | null> {

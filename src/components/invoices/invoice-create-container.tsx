@@ -1,4 +1,4 @@
-import { getBusinessGstContext } from "@/lib/data/business";
+import { getBusinessGstContext, getBusinessTemplate } from "@/lib/data/business";
 import { Topbar } from "@/components/ui/custom/topbar";
 import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 
@@ -12,7 +12,10 @@ export async function InvoiceCreateContainer() {
   const isoDate = today.toISOString().split("T")[0];
   const dueIsoDate = due.toISOString().split("T")[0];
 
-  const gstContext = await getBusinessGstContext();
+  const [gstContext, template] = await Promise.all([
+    getBusinessGstContext(),
+    getBusinessTemplate(),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -24,6 +27,8 @@ export async function InvoiceCreateContainer() {
           businessGstEnabled={gstContext?.gstEnabled ?? false}
           businessStateCode={gstContext?.stateCode ?? null}
           businessDefaultGstRate={gstContext?.defaultGstRate ?? 18}
+          accentColor={template?.accentColor ?? "#F46A39"}
+          footerMessage={template?.footerMessage ?? "Thank you for your business!"}
         />
       </div>
     </div>

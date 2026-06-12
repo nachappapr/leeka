@@ -29,6 +29,10 @@ interface InvoiceFormLivePreviewProps {
   roundOff: number;
   isoDate: string;
   dueIsoDate: string;
+  /** Hex accent colour from the business's invoice template. */
+  accentColor?: string;
+  /** Footer message from the business's invoice template. Empty string omits the line. */
+  footerMessage?: string;
 }
 
 export function InvoiceFormLivePreview({
@@ -44,6 +48,8 @@ export function InvoiceFormLivePreview({
   roundOff,
   isoDate,
   dueIsoDate,
+  accentColor = "#F46A39",
+  footerMessage = "Thank you for your business!",
 }: InvoiceFormLivePreviewProps) {
   const showCgstSgst = cgst + sgst > 0;
   const showIgst = igst > 0;
@@ -54,13 +60,14 @@ export function InvoiceFormLivePreview({
     <section
       aria-label="Invoice preview"
       className="rounded-lg border border-border bg-card p-7 text-caption shadow-card"
+      // eslint-disable-next-line no-restricted-syntax -- data-driven CSS var; accent colour set per business template
+      style={{ ["--accent" as string]: accentColor }}
     >
       {/* Header row */}
       <div className="flex items-start justify-between">
         {/* Vendor identity */}
         <div>
-          {/* text-ink on bg-coral = 5.73:1 ✓ WCAG AA */}
-          <div className="flex size-11 items-center justify-center rounded-md bg-coral text-body font-extrabold text-ink">
+          <div className="flex size-11 items-center justify-center rounded-md bg-(--accent) text-body font-extrabold text-white">
             RK
           </div>
           <p className="mt-2 text-body font-extrabold text-ink">Raj Kumar Trading</p>
@@ -69,7 +76,6 @@ export function InvoiceFormLivePreview({
         {/* Invoice meta */}
         <div className="text-right">
           <p className="text-10 font-extrabold uppercase tracking-wider text-ink-3">Invoice</p>
-          {/* text-coral-ink on bg-card = 12.93:1 ✓ WCAG AA */}
           <p className="text-title-sm font-extrabold text-coral-ink">{invoiceIdNoHash}</p>
           <time dateTime={isoDate} className="mt-1.5 block text-11 text-ink-3">
             {formatInvoiceDate(isoDate)}
@@ -158,15 +164,15 @@ export function InvoiceFormLivePreview({
             <dd className="tabular">{formatRupees(paiseToRupees(roundOff))}</dd>
           </div>
         )}
-        {/* text-ink on bg-coral = 5.73:1 ✓ WCAG AA */}
-        <div className="mt-2 flex items-baseline justify-between rounded-sm bg-coral px-3 py-2.5 text-ink">
+        <div className="mt-2 flex items-baseline justify-between rounded-sm bg-(--accent) px-3 py-2.5 text-white">
           <dt className="text-11 font-extrabold uppercase tracking-wider">TOTAL DUE</dt>
           <dd className="tabular text-20 font-extrabold">{formatRupees(paiseToRupees(total))}</dd>
         </div>
       </dl>
 
-      {/* Footer line */}
-      <p className="mt-3.5 text-center text-11 italic text-ink-3">Thank you for your business!</p>
+      {footerMessage && (
+        <p className="mt-3.5 text-center text-11 italic text-ink-3">{footerMessage}</p>
+      )}
     </section>
   );
 }

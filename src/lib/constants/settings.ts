@@ -29,6 +29,15 @@ export const SETTINGS_ACCENTS: ReadonlyArray<string> = [
   "#1F1A14",
 ];
 
+export const SETTINGS_ACCENT_LABELS: Readonly<Record<string, string>> = {
+  "#F46A39": "Coral",
+  "#0E8F8A": "Teal",
+  "#7A4FCC": "Purple",
+  "#E85D5D": "Red",
+  "#1F9D55": "Green",
+  "#1F1A14": "Ink",
+};
+
 export const SETTINGS_LANGUAGES: ReadonlyArray<LanguageOption> = [
   { id: "en", label: "English", sub: "English" },
   { id: "hi", label: "हिंदी", sub: "Hindi", lang: "hi" },

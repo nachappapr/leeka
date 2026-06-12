@@ -7,6 +7,10 @@ import { InvoicePreviewMetaCell } from "./invoice-preview-meta-cell";
 
 interface InvoicePreviewCardProps {
   invoice: InvoiceDetail;
+  /** Hex accent colour from the business's invoice template. */
+  accentColor?: string;
+  /** Footer message from the business's invoice template. Empty string omits the line. */
+  footerMessage?: string;
 }
 
 function formatDueRelative(dueIso: string): string {
@@ -22,17 +26,25 @@ function formatDueRelative(dueIso: string): string {
   return `${Math.abs(diffDays)} days overdue`;
 }
 
-export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
+export function InvoicePreviewCard({
+  invoice,
+  accentColor = "#F46A39",
+  footerMessage = "Thank you for your business!",
+}: InvoicePreviewCardProps) {
   const subtotal = invoice.items.reduce((sum, it) => sum + it.qty * it.unitPrice, 0);
   const tax = Math.round((subtotal * invoice.taxPct) / 100);
   const total = subtotal + tax;
 
   return (
-    <article className="rounded-2xl bg-card p-8 shadow-card max-mobile:p-4.5">
+    <article
+      className="rounded-2xl bg-card p-8 shadow-card max-mobile:p-4.5"
+      // eslint-disable-next-line no-restricted-syntax -- data-driven CSS var; accent colour set per business template
+      style={{ ["--accent" as string]: accentColor }}
+    >
       {/* Header: business identity (left) | invoice meta (right) — stacks on mobile */}
       <div className="flex items-start justify-between gap-4 max-mobile:flex-col">
         <div>
-          <div className="flex size-14 items-center justify-center rounded-xl bg-coral text-22 font-black text-white">
+          <div className="flex size-14 items-center justify-center rounded-xl bg-(--accent) text-22 font-black text-white">
             RK
           </div>
           <h2 className="mt-3 text-title font-black text-ink">Raj Kumar Trading</h2>
@@ -45,7 +57,7 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
 
         <div className="text-right max-mobile:text-left">
           <div className="text-kicker uppercase text-ink-3">Invoice</div>
-          <div className="text-h2 font-black tracking-snug text-coral">{invoice.id}</div>
+          <div className="text-h2 font-black tracking-snug text-(--accent)">{invoice.id}</div>
           <div className="mt-1.5">
             <StatusPill status={invoice.status} />
           </div>
@@ -144,9 +156,11 @@ export function InvoicePreviewCard({ invoice }: InvoicePreviewCardProps) {
         </div>
       </div>
 
-      <p className="mt-7 rounded-nav-item bg-background px-4.5 py-3.5 text-center text-caption italic text-ink-2">
-        Thank you for your business!
-      </p>
+      {footerMessage && (
+        <p className="mt-7 rounded-nav-item bg-background px-4.5 py-3.5 text-center text-caption italic text-ink-2">
+          {footerMessage}
+        </p>
+      )}
     </article>
   );
 }

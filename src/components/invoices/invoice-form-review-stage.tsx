@@ -28,6 +28,8 @@ interface InvoiceFormReviewStageProps {
   roundOff: number;
   isoDate: string;
   dueIsoDate: string;
+  accentColor?: string;
+  footerMessage?: string;
   // Review-stage-specific props
   invoice: Invoice;
   onBack: () => void;
@@ -50,6 +52,8 @@ export function InvoiceFormReviewStage({
   roundOff,
   isoDate,
   dueIsoDate,
+  accentColor,
+  footerMessage,
   invoice,
   onBack,
 }: InvoiceFormReviewStageProps) {
@@ -68,6 +72,8 @@ export function InvoiceFormReviewStage({
         roundOff={roundOff}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
+        accentColor={accentColor}
+        footerMessage={footerMessage}
       />
 
       <InvoiceFormReviewDesktopBar invoice={invoice} onBack={onBack} />

@@ -1,42 +1,21 @@
-"use client";
-
-import { useState } from "react";
-
-import { Card } from "@/components/ui/custom/card";
-import { FieldLabel } from "@/components/ui/custom/field-label";
-import { InputField } from "@/components/ui/custom/input-field";
-import { AccentSwatch } from "@/components/settings/accent-swatch";
+import { getBusinessTemplate } from "@/lib/data/business";
 import { SETTINGS_ACCENTS } from "@/lib/constants/settings";
+import { TemplateForm } from "@/components/settings/template-form";
 
-export function TemplateSection() {
-  const [accent, setAccent] = useState(SETTINGS_ACCENTS[0]);
+const DEFAULT_FOOTER = "Thank you for your business!";
 
-  return (
-    <Card title="Invoice template" headingLevel={3}>
-      <div className="flex flex-col gap-5 p-6">
-        <div>
-          <FieldLabel id="accent-label">Accent colour</FieldLabel>
-          <div
-            className="mt-1.5 flex flex-wrap gap-2.5"
-            role="radiogroup"
-            aria-labelledby="accent-label"
-          >
-            {SETTINGS_ACCENTS.map((color) => (
-              <AccentSwatch
-                key={color}
-                color={color}
-                selected={accent === color}
-                onSelect={() => setAccent(color)}
-              />
-            ))}
-          </div>
-        </div>
+export async function TemplateSection() {
+  const template = await getBusinessTemplate();
 
-        <div>
-          <FieldLabel htmlFor="tpl-footer">Footer message</FieldLabel>
-          <InputField id="tpl-footer" defaultValue="Thank you for your business!" size="web" />
-        </div>
-      </div>
-    </Card>
-  );
+  const rawAccent = template?.accentColor ?? SETTINGS_ACCENTS[0];
+  const accentColor = (SETTINGS_ACCENTS as readonly string[]).includes(rawAccent)
+    ? rawAccent
+    : (SETTINGS_ACCENTS[0] ?? "#F46A39");
+
+  const prefill = {
+    accentColor,
+    footerMessage: template?.footerMessage ?? DEFAULT_FOOTER,
+  };
+
+  return <TemplateForm prefill={prefill} />;
 }

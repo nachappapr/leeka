@@ -26,6 +26,8 @@ interface InvoiceFormPreviewSidebarProps {
   roundOff: number;
   isoDate: string;
   dueIsoDate: string;
+  accentColor?: string;
+  footerMessage?: string;
 }
 
 export function InvoiceFormPreviewSidebar(props: InvoiceFormPreviewSidebarProps) {

@@ -86,6 +86,32 @@ export async function getBusinessGstContext(): Promise<BusinessGstContext | null
   };
 }
 
+export interface BusinessTemplate {
+  accentColor: string;
+  footerMessage: string;
+}
+
+export async function getBusinessTemplate(): Promise<BusinessTemplate | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("accent_color, footer_message")
+    .single();
+
+  if (error) {
+    if (error.code !== "PGRST116") {
+      logger.error({ err: { code: error.code } }, "getBusinessTemplate: query failed");
+    }
+    return null;
+  }
+
+  return {
+    accentColor: data.accent_color ?? "#F46A39",
+    footerMessage: data.footer_message ?? "Thank you for your business!",
+  };
+}
+
 export interface BusinessTaxDefaults {
   defaultGstRate: number;
   gstEnabled: boolean;

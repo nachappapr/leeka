@@ -32,6 +32,8 @@ interface InvoiceCreateFormProps {
   businessGstEnabled: boolean;
   businessStateCode: string | null;
   businessDefaultGstRate: number;
+  accentColor: string;
+  footerMessage: string;
 }
 
 const BASE_EMPTY_ITEM = { name: "", hsn_sac: "", qty: 1, unit_price: 0, discount: 0 };
@@ -42,6 +44,8 @@ export function InvoiceCreateForm({
   businessGstEnabled,
   businessStateCode,
   businessDefaultGstRate,
+  accentColor,
+  footerMessage,
 }: InvoiceCreateFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
@@ -149,6 +153,8 @@ export function InvoiceCreateForm({
         roundOff={estimate.round_off}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
+        accentColor={accentColor}
+        footerMessage={footerMessage}
         invoice={syntheticInvoice}
         onBack={() => setView("edit")}
         onDiscard={() => router.push("/invoices")}
@@ -191,6 +197,8 @@ export function InvoiceCreateForm({
               roundOff={estimate.round_off}
               isoDate={isoDate}
               dueIsoDate={dueIsoDate}
+              accentColor={accentColor}
+              footerMessage={footerMessage}
             />
           }
           actionBar={

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { SettingsContainer } from "@/components/settings/settings-container";
 import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
 import { BusinessSection } from "@/components/settings/business-section";
+import { TemplateSection } from "@/components/settings/template-section";
 import { TaxSection } from "@/components/settings/tax-section";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export default function SettingsPage() {
     <SettingsContainer
       notificationsSlot={<TopbarNotifications />}
       businessSlot={<BusinessSection />}
+      templateSlot={<TemplateSection />}
       taxSlot={<TaxSection />}
     />
   );

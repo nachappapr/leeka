@@ -9,13 +9,18 @@ import { InvoiceDetailMobileFooter } from "@/components/invoices/invoice-detail-
 import { InvoicePreviewCard } from "@/components/invoices/invoice-preview-card";
 import { InvoiceStatusTipCard } from "@/components/invoices/invoice-status-tip-card";
 import { findInvoiceDetail } from "@/lib/constants";
+import { getBusinessTemplate } from "@/lib/data/business";
 
 interface InvoiceDetailContainerProps {
   id: string;
 }
 
-export function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
-  const invoice = findInvoiceDetail(id);
+export async function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
+  const [invoice, template] = await Promise.all([
+    Promise.resolve(findInvoiceDetail(id)),
+    getBusinessTemplate(),
+  ]);
+
   if (!invoice) notFound();
 
   return (
@@ -30,7 +35,11 @@ export function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
         />
 
         <div className="grid grid-cols-[minmax(0,1fr)_380px] gap-5 max-tablet:grid-cols-1">
-          <InvoicePreviewCard invoice={invoice} />
+          <InvoicePreviewCard
+            invoice={invoice}
+            accentColor={template?.accentColor ?? "#F46A39"}
+            footerMessage={template?.footerMessage ?? "Thank you for your business!"}
+          />
 
           <div className="flex flex-col gap-5">
             <div className="max-mobile:hidden">

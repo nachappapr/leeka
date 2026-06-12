@@ -26,6 +26,8 @@ export interface InvoiceFormReviewViewProps {
   roundOff: number;
   isoDate: string;
   dueIsoDate: string;
+  accentColor?: string;
+  footerMessage?: string;
   invoice: Invoice;
   onBack: () => void;
   onDiscard: () => void;
@@ -45,6 +47,8 @@ export function InvoiceFormReviewView({
   roundOff,
   isoDate,
   dueIsoDate,
+  accentColor,
+  footerMessage,
   invoice,
   onBack,
   onDiscard,
@@ -70,6 +74,8 @@ export function InvoiceFormReviewView({
         roundOff={roundOff}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
+        accentColor={accentColor}
+        footerMessage={footerMessage}
         invoice={invoice}
         onBack={onBack}
       />
