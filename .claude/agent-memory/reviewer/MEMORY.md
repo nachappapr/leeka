@@ -19,3 +19,5 @@
 - [Zod 4 input/output split + as Resolver cast](project-zod-input-output-split-and-resolver-cast.md) — .default() fields make schema Input≠Output; as Resolver<DraftFormData> masks the gap; fix is explicit type param to standardSchemaResolver
 - [Scope creep: test units silently fixing prod tsc failures](project-scope-creep-test-unit-schema-change.md) — recurring pattern; flag as Medium #13 and prescribe FOLLOW-UP revert
 - [Notification mutation user-scoping](project-notification-mutation-user-scoping.md) — markAllNotificationsRead scopes by business_id RLS only (not user_id); acceptable now (single-owner), but flag if multi-member lands
+- [eslint-disable for no-img-element not sanctioned](project-eslint-disable-img-element.md) — use next/image with unoptimized prop; disable comment is High code-quality violation; only CSS-var exception is allowed
+- [stateCode silent null-overwrite on partial save](project-statecode-silent-erase.md) — AP-36: stateCode absent from form but included in update payload as null; every save erases DB state_code; High data-integrity

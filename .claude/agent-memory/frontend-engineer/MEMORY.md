@@ -3,3 +3,4 @@
 - [Auth Server Actions pattern](project-auth-server-actions.md) — sendOtp/verifyOtp in src/lib/actions/auth.ts, useTransition pattern, AuthActionResult type, text-overdue for errors
 - [RHF standardSchemaResolver schema split pattern](feedback-rhf-standard-schema-resolver.md) — RESOLVED AP-13: split into DraftFormLineItemSchema (z.number, form layer) + DraftLineItemSchema (z.coerce, server layer); never cast the resolver
 - [Epic 12 reminders UI patterns](project-epic12-reminders.md) — AP-29 reminder modal, AP-30 settings panel; skipped vs failed distinction; max-lines/cognitive-complexity ESLint limits; render-phase reset pattern
+- [AP-36 business profile settings](project-ap36-business-profile.md) — slot pattern for SC in client container, Server/Client split, logo upload flow, standardSchemaResolver convention

@@ -16,3 +16,4 @@
 - [Epic 13 Activity & Notifications — CLOSED](project-epic13-activity-notifications.md) — AP-31/32 committed 1e15515 on worktree branch 2026-06-12; migration on main as 20260612124128; bell missing on invoices/settings until Epic 12 merges
 - [AP-33 Dashboard summary — CLOSED](project-ap33-dashboard-summary.md) — Epic 14; RPC + dashboard wiring shipped 2026-06-12 (parallel run with AP-34/35); UNCOMMITTED; RPC contract + parked follow-ups inside
 - [AP-34 Reports — CLOSED](project-ap34-reports.md) — Epic 14; RPC 20260612112000 + /reports UI shipped 2026-06-12; UNCOMMITTED; preset ranges (no free picker); recharts lazy-only
+- [Epic 15 Settings — AP-36 IN PROGRESS](project-epic15-settings.md) — entire settings UI pre-exists STATIC; AP-36 wires business profile + first-ever Storage logo upload; updateBusinessProfile action doesn't exist yet; PDF leg of AC deferred (Epic 8 skipped)
