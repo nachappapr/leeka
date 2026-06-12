@@ -4,3 +4,8 @@ import { formatAmount } from "./notifications";
 export function formatRupees(amount: number): string {
   return `₹${formatAmount(amount)}`;
 }
+
+/** Convert an integer paise value to a ₹-prefixed Indian-locale string. */
+export function formatPaise(paise: number): string {
+  return formatRupees(paise / 100);
+}

@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { serverEnv } from "@/lib/env.server";
 
 // Routes that never require authentication
-const PUBLIC_ROUTES = ["/auth", "/api/pay", "/api/webhooks"];
+const PUBLIC_ROUTES = ["/auth", "/pay", "/api/pay", "/api/webhooks"];
 // Paths to skip entirely (Next.js internals + static files)
 const SKIP_PREFIXES = ["/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml"];
 
