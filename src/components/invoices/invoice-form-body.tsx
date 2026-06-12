@@ -39,8 +39,15 @@ export interface InvoiceFormBodyProps {
   onRemoveItem: (i: number) => void;
   onOpenPicker: () => void;
   subtotal: number;
-  taxTotal: number;
   total: number;
+  /** Intra-state CGST, in rupees. */
+  cgst: number;
+  /** Intra-state SGST, in rupees. */
+  sgst: number;
+  /** Inter-state IGST, in rupees. */
+  igst: number;
+  /** Round-off adjustment, in rupees (may be negative). */
+  roundOff: number;
   preview: React.ReactNode;
   actionBar: React.ReactNode;
 }
@@ -58,8 +65,11 @@ export function InvoiceFormBody({
   onRemoveItem,
   onOpenPicker,
   subtotal,
-  taxTotal,
   total,
+  cgst,
+  sgst,
+  igst,
+  roundOff,
   preview,
   actionBar,
 }: InvoiceFormBodyProps) {
@@ -126,7 +136,14 @@ export function InvoiceFormBody({
               remove={onRemoveItem}
             />
             <hr className="my-3.5 border-t border-border" />
-            <InvoiceFormTotalsStrip subtotal={subtotal} taxTotal={taxTotal} total={total} />
+            <InvoiceFormTotalsStrip
+              subtotal={subtotal}
+              total={total}
+              cgst={cgst}
+              sgst={sgst}
+              igst={igst}
+              roundOff={roundOff}
+            />
           </div>
         </Card>
 

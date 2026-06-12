@@ -18,8 +18,15 @@ interface InvoiceFormLivePreviewProps {
   phone: string;
   items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  taxTotal: number;
   total: number;
+  /** Intra-state CGST in paise. Show CGST+SGST rows when cgst+sgst > 0. */
+  cgst: number;
+  /** Intra-state SGST in paise. */
+  sgst: number;
+  /** Inter-state IGST in paise. Show IGST row when igst > 0. */
+  igst: number;
+  /** Round-off in paise (may be negative). Show row when nonzero. */
+  roundOff: number;
   isoDate: string;
   dueIsoDate: string;
 }
@@ -30,11 +37,17 @@ export function InvoiceFormLivePreview({
   phone,
   items,
   subtotal,
-  taxTotal,
   total,
+  cgst,
+  sgst,
+  igst,
+  roundOff,
   isoDate,
   dueIsoDate,
 }: InvoiceFormLivePreviewProps) {
+  const showCgstSgst = cgst + sgst > 0;
+  const showIgst = igst > 0;
+  const showRoundOff = roundOff !== 0;
   const visibleItems = items.filter((it) => it.name.trim().length > 0);
 
   return (
@@ -122,10 +135,29 @@ export function InvoiceFormLivePreview({
           <dt>Subtotal</dt>
           <dd className="tabular">{formatRupees(paiseToRupees(subtotal))}</dd>
         </div>
-        <div className="flex justify-between py-0.5 text-11 text-ink-2">
-          <dt>GST</dt>
-          <dd className="tabular">{formatRupees(paiseToRupees(taxTotal))}</dd>
-        </div>
+        {showCgstSgst ? (
+          <>
+            <div className="flex justify-between py-0.5 text-11 text-ink-2">
+              <dt>CGST</dt>
+              <dd className="tabular">{formatRupees(paiseToRupees(cgst))}</dd>
+            </div>
+            <div className="flex justify-between py-0.5 text-11 text-ink-2">
+              <dt>SGST</dt>
+              <dd className="tabular">{formatRupees(paiseToRupees(sgst))}</dd>
+            </div>
+          </>
+        ) : showIgst ? (
+          <div className="flex justify-between py-0.5 text-11 text-ink-2">
+            <dt>IGST</dt>
+            <dd className="tabular">{formatRupees(paiseToRupees(igst))}</dd>
+          </div>
+        ) : null}
+        {showRoundOff && (
+          <div className="flex justify-between py-0.5 text-11 text-ink-2">
+            <dt>Round off</dt>
+            <dd className="tabular">{formatRupees(paiseToRupees(roundOff))}</dd>
+          </div>
+        )}
         {/* text-ink on bg-coral = 5.73:1 ✓ WCAG AA */}
         <div className="mt-2 flex items-baseline justify-between rounded-sm bg-coral px-3 py-2.5 text-ink">
           <dt className="text-11 font-extrabold uppercase tracking-wider">TOTAL DUE</dt>

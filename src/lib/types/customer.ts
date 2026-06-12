@@ -29,9 +29,11 @@ export interface CustomerSavePayload {
 // The minimal customer shape the invoice form's CustomerPicker selects/holds.
 // `id` is the customer UUID — required for saveInvoiceDraft's customerId field.
 // `last` is an optional "last invoice …" hint not present on every record.
+// `state_code` is used to derive isInterstate for GST preview parity (AP-15).
 export interface SelectedCustomer {
   id: string;
   name: string;
   phone: string;
   last?: string;
+  state_code?: string | null;
 }

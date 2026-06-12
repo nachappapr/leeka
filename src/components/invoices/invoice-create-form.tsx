@@ -14,6 +14,7 @@ import type { SelectedCustomer } from "@/lib/types/customer";
 import type { Invoice } from "@/lib/types";
 import type { SavedItem } from "@/lib/types/item";
 import { estimateDraftTotals, toDraftSavePayload } from "@/lib/invoice/draft-form";
+import { hasTotalsMismatch } from "@/lib/invoice/reconcile-totals";
 import { formatRupees } from "@/lib/utils";
 
 import { InvoiceCreateHeader } from "./invoice-create-header";
@@ -27,11 +28,18 @@ import { InvoiceFormReviewView } from "./invoice-form-review-view";
 interface InvoiceCreateFormProps {
   isoDate: string;
   dueIsoDate: string;
+  businessGstEnabled: boolean;
+  businessStateCode: string | null;
 }
 
 const EMPTY_ITEM = { name: "", hsn_sac: "", qty: 1, unit_price: 0, discount: 0, gst_rate: 5 };
 
-export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProps) {
+export function InvoiceCreateForm({
+  isoDate,
+  dueIsoDate,
+  businessGstEnabled,
+  businessStateCode,
+}: InvoiceCreateFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
   const [customer, setCustomer] = useState<SelectedCustomer | null>(null);
@@ -64,7 +72,17 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
   const watchedItems = useWatch({ control, name: "items" });
 
-  const estimate = estimateDraftTotals(watchedItems);
+  // Mirror the server action's isInterstate derivation (actions.ts:131-134):
+  // false when either state_code absent; true only when both present and differ.
+  const isInterstate =
+    Boolean(businessStateCode) &&
+    Boolean(customer?.state_code) &&
+    businessStateCode !== customer?.state_code;
+
+  const estimate = estimateDraftTotals(watchedItems, {
+    gstEnabled: businessGstEnabled,
+    isInterstate,
+  });
 
   const itemsValid = watchedItems.some(
     (it) => it.name && (Number(it.qty) || 0) * (Number(it.unit_price) || 0) > 0,
@@ -104,8 +122,15 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
     setSubmitError(null);
     startTransition(async () => {
       const result = await saveInvoiceDraft(toDraftSavePayload(customer.id, data));
-      if (result.ok) router.push(`/invoices/${result.data.invoiceId}`);
-      else setSubmitError(result.error);
+      if (result.ok) {
+        if (hasTotalsMismatch(estimate, result.data)) {
+          setSubmitError("Saved totals did not match the preview. Please review and try again.");
+          return;
+        }
+        router.push(`/invoices/${result.data.invoiceId}`);
+      } else {
+        setSubmitError(result.error);
+      }
     });
   };
 
@@ -126,8 +151,11 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
         phone={customer?.phone ?? ""}
         items={watchedItems}
         subtotal={estimate.subtotal}
-        taxTotal={estimate.tax_total}
         total={estimate.total}
+        cgst={estimate.cgst}
+        sgst={estimate.sgst}
+        igst={estimate.igst}
+        roundOff={estimate.round_off}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
         invoice={syntheticInvoice}
@@ -153,8 +181,11 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
           onRemoveItem={remove}
           onOpenPicker={() => setPickerOpen(true)}
           subtotal={estimate.subtotal / 100}
-          taxTotal={estimate.tax_total / 100}
           total={estimate.total / 100}
+          cgst={estimate.cgst / 100}
+          sgst={estimate.sgst / 100}
+          igst={estimate.igst / 100}
+          roundOff={estimate.round_off / 100}
           preview={
             <InvoiceFormPreviewSidebar
               invoiceIdNoHash=""
@@ -162,8 +193,11 @@ export function InvoiceCreateForm({ isoDate, dueIsoDate }: InvoiceCreateFormProp
               phone={customer?.phone ?? ""}
               items={watchedItems}
               subtotal={estimate.subtotal}
-              taxTotal={estimate.tax_total}
               total={estimate.total}
+              cgst={estimate.cgst}
+              sgst={estimate.sgst}
+              igst={estimate.igst}
+              roundOff={estimate.round_off}
               isoDate={isoDate}
               dueIsoDate={dueIsoDate}
             />

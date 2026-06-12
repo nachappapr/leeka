@@ -15,6 +15,7 @@ import type { Invoice } from "@/lib/types";
 import type { SavedItem } from "@/lib/types/item";
 import type { DraftInvoiceData } from "@/lib/data/invoice";
 import { estimateDraftTotals, toDraftSavePayload } from "@/lib/invoice/draft-form";
+import { hasTotalsMismatch } from "@/lib/invoice/reconcile-totals";
 import { formatRupees } from "@/lib/utils";
 
 import { InvoiceEditHeader } from "./invoice-edit-header";
@@ -30,9 +31,28 @@ interface InvoiceEditFormProps {
   draft: DraftInvoiceData;
   isoDate: string;
   dueIsoDate: string;
+  businessGstEnabled: boolean;
+  businessStateCode: string | null;
 }
 
-export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormProps) {
+function draftItemsToFormValues(items: DraftInvoiceData["items"]) {
+  return items.map((it) => ({
+    name: it.name,
+    hsn_sac: it.hsn_sac ?? "",
+    qty: it.qty,
+    unit_price: it.unit_price,
+    discount: it.discount,
+    gst_rate: it.gst_rate,
+  }));
+}
+
+export function InvoiceEditForm({
+  draft,
+  isoDate,
+  dueIsoDate,
+  businessGstEnabled,
+  businessStateCode,
+}: InvoiceEditFormProps) {
   const router = useRouter();
   const [view, setView] = useState<"edit" | "preview">("edit");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -42,6 +62,7 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
     id: draft.customerId,
     name: draft.customerName,
     phone: draft.customerPhone,
+    state_code: draft.customerStateCode,
   });
 
   // Focus management (WCAG 2.4.3): swap focus to the review heading on
@@ -63,14 +84,7 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
   const form = useForm<DraftFormData>({
     resolver: standardSchemaResolver(DraftFormSchema),
     defaultValues: {
-      items: draft.items.map((it) => ({
-        name: it.name,
-        hsn_sac: it.hsn_sac ?? "",
-        qty: it.qty,
-        unit_price: it.unit_price,
-        discount: it.discount,
-        gst_rate: it.gst_rate,
-      })),
+      items: draftItemsToFormValues(draft.items),
       notes: draft.notes ?? "",
     },
   });
@@ -79,7 +93,17 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
   const { fields, append, remove } = useFieldArray({ control, name: "items" });
   const watchedItems = useWatch({ control, name: "items" });
 
-  const estimate = estimateDraftTotals(watchedItems);
+  // Mirror the server action's isInterstate derivation (actions.ts:131-134):
+  // false when either state_code absent; true only when both present and differ.
+  const isInterstate =
+    Boolean(businessStateCode) &&
+    Boolean(customer?.state_code) &&
+    businessStateCode !== customer?.state_code;
+
+  const estimate = estimateDraftTotals(watchedItems, {
+    gstEnabled: businessGstEnabled,
+    isInterstate,
+  });
 
   const itemsValid = watchedItems.some(
     (it) => it.name && (Number(it.qty) || 0) * (Number(it.unit_price) || 0) > 0,
@@ -90,13 +114,6 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
     : !itemsValid
       ? "Add at least one item with a price"
       : undefined;
-
-  function handleSelectCustomer(c: SelectedCustomer) {
-    setCustomer(c);
-  }
-  function handleClearCustomer() {
-    setCustomer(null);
-  }
 
   // Paise ↔ rupee boundary: SavedItem.default_price is in rupees; convert ×100.
   function handleAddFromSaved(item: SavedItem) {
@@ -119,14 +136,17 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
     setSubmitError(null);
     startTransition(async () => {
       const result = await saveInvoiceDraft(toDraftSavePayload(customer.id, data, draft.invoiceId));
-      if (result.ok) router.push(`/invoices/${draft.invoiceId}`);
-      else setSubmitError(result.error);
+      if (result.ok) {
+        if (hasTotalsMismatch(estimate, result.data)) {
+          setSubmitError("Saved totals did not match the preview. Please review and try again.");
+          return;
+        }
+        router.push(`/invoices/${draft.invoiceId}`);
+      } else {
+        setSubmitError(result.error);
+      }
     });
   };
-
-  function handleDeleteInvoice() {
-    fireDeleteInvoiceToast(draft.invoiceId, () => router.push("/invoices"));
-  }
 
   const syntheticInvoice: Invoice = {
     id: draft.invoiceId,
@@ -145,8 +165,11 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
         phone={customer?.phone ?? draft.customerPhone}
         items={watchedItems}
         subtotal={estimate.subtotal}
-        taxTotal={estimate.tax_total}
         total={estimate.total}
+        cgst={estimate.cgst}
+        sgst={estimate.sgst}
+        igst={estimate.igst}
+        roundOff={estimate.round_off}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
         invoice={syntheticInvoice}
@@ -163,8 +186,8 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
       <form aria-label="Edit invoice" onSubmit={handleSubmit(onSubmit)}>
         <InvoiceFormBody
           customer={customer}
-          onSelectCustomer={handleSelectCustomer}
-          onClearCustomer={handleClearCustomer}
+          onSelectCustomer={setCustomer}
+          onClearCustomer={() => setCustomer(null)}
           fields={fields}
           register={register}
           control={control}
@@ -174,8 +197,11 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
           onRemoveItem={remove}
           onOpenPicker={() => setPickerOpen(true)}
           subtotal={estimate.subtotal / 100}
-          taxTotal={estimate.tax_total / 100}
           total={estimate.total / 100}
+          cgst={estimate.cgst / 100}
+          sgst={estimate.sgst / 100}
+          igst={estimate.igst / 100}
+          roundOff={estimate.round_off / 100}
           preview={
             <InvoiceFormPreviewSidebar
               invoiceIdNoHash={draft.invoiceId}
@@ -183,8 +209,11 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
               phone={customer?.phone ?? draft.customerPhone}
               items={watchedItems}
               subtotal={estimate.subtotal}
-              taxTotal={estimate.tax_total}
               total={estimate.total}
+              cgst={estimate.cgst}
+              sgst={estimate.sgst}
+              igst={estimate.igst}
+              roundOff={estimate.round_off}
               isoDate={isoDate}
               dueIsoDate={dueIsoDate}
             />
@@ -197,7 +226,9 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
               invoice={syntheticInvoice}
               onDiscard={() => router.push(`/invoices/${draft.invoiceId}`)}
               discardLabel="Discard changes"
-              onDelete={handleDeleteInvoice}
+              onDelete={() =>
+                fireDeleteInvoiceToast(draft.invoiceId, () => router.push("/invoices"))
+              }
             />
           }
         />
@@ -216,7 +247,7 @@ export function InvoiceEditForm({ draft, isoDate, dueIsoDate }: InvoiceEditFormP
         previewDisabledMsg={sendDisabledMsg}
         onPreview={() => setView("preview")}
         onDiscard={() => router.push(`/invoices/${draft.invoiceId}`)}
-        onDelete={handleDeleteInvoice}
+        onDelete={() => fireDeleteInvoiceToast(draft.invoiceId, () => router.push("/invoices"))}
         invoice={syntheticInvoice}
         buttonRef={previewBtnRef}
       />

@@ -37,7 +37,12 @@ export function InvoiceFormCustomerAddNewPanel({
     });
     setSaving(false);
     if (result.ok) {
-      onSave({ id: result.data.id, name: newName.trim(), phone: newPhone.trim() });
+      onSave({
+        id: result.data.id,
+        name: newName.trim(),
+        phone: newPhone.trim(),
+        state_code: result.data.state_code,
+      });
     }
   }
 

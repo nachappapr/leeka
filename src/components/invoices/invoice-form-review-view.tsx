@@ -15,8 +15,15 @@ export interface InvoiceFormReviewViewProps {
   phone: string;
   items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  taxTotal: number;
   total: number;
+  /** Intra-state CGST in paise. */
+  cgst: number;
+  /** Intra-state SGST in paise. */
+  sgst: number;
+  /** Inter-state IGST in paise. */
+  igst: number;
+  /** Round-off in paise (may be negative). */
+  roundOff: number;
   isoDate: string;
   dueIsoDate: string;
   invoice: Invoice;
@@ -31,8 +38,11 @@ export function InvoiceFormReviewView({
   phone,
   items,
   subtotal,
-  taxTotal,
   total,
+  cgst,
+  sgst,
+  igst,
+  roundOff,
   isoDate,
   dueIsoDate,
   invoice,
@@ -53,8 +63,11 @@ export function InvoiceFormReviewView({
         phone={phone}
         items={items}
         subtotal={subtotal}
-        taxTotal={taxTotal}
         total={total}
+        cgst={cgst}
+        sgst={sgst}
+        igst={igst}
+        roundOff={roundOff}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
         invoice={invoice}

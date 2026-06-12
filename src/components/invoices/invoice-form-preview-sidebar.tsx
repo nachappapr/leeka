@@ -15,8 +15,15 @@ interface InvoiceFormPreviewSidebarProps {
   phone: string;
   items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  taxTotal: number;
   total: number;
+  /** Intra-state CGST in paise. */
+  cgst: number;
+  /** Intra-state SGST in paise. */
+  sgst: number;
+  /** Inter-state IGST in paise. */
+  igst: number;
+  /** Round-off in paise (may be negative). */
+  roundOff: number;
   isoDate: string;
   dueIsoDate: string;
 }

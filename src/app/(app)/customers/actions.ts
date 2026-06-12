@@ -71,8 +71,7 @@ export async function upsertCustomerAction(
 
   const { name, phone, email, gstin, billingAddress } = parsed.data;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any).rpc("upsert_customer", {
+  const { data, error } = await supabase.rpc("upsert_customer", {
     p_business_id: businessId,
     p_name: name,
     p_customer_id: payload.id ?? undefined,
@@ -131,8 +130,7 @@ export async function searchCustomersAction(query: string): Promise<SearchCustom
     return { ok: false, error: "No business found for this account" };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase as any).rpc("search_customers", {
+  const { data, error } = await supabase.rpc("search_customers", {
     p_business_id: businessId,
     p_query: parsed.data,
   });
@@ -160,6 +158,7 @@ export async function searchCustomersAction(query: string): Promise<SearchCustom
       id: row.id,
       name: row.name,
       phone: row.phone ?? "",
+      state_code: row.state_code,
     })),
   };
 }

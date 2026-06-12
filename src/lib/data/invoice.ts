@@ -8,6 +8,7 @@ export interface DraftInvoiceData {
   customerId: string;
   customerName: string;
   customerPhone: string;
+  customerStateCode: string | null;
   notes: string | null;
   isoDate: string;
   dueIsoDate: string | null;
@@ -22,6 +23,12 @@ export interface DraftInvoiceData {
   subtotal: number;
   taxTotal: number;
   total: number;
+  gstEnabled: boolean;
+  isInterstate: boolean;
+  cgst: number;
+  sgst: number;
+  igst: number;
+  roundOff: number;
 }
 
 /**
@@ -48,8 +55,14 @@ export async function getDraftInvoice(invoiceId: string): Promise<DraftInvoiceDa
       subtotal,
       tax_total,
       total,
+      gst_enabled,
+      is_interstate,
+      cgst,
+      sgst,
+      igst,
+      round_off,
       customer_id,
-      customers ( id, name, phone ),
+      customers ( id, name, phone, state_code ),
       invoice_line_items (
         position,
         name,
@@ -84,6 +97,7 @@ export async function getDraftInvoice(invoiceId: string): Promise<DraftInvoiceDa
     customerId: data.customer_id,
     customerName: customer.name,
     customerPhone: customer.phone ?? "",
+    customerStateCode: customer.state_code ?? null,
     notes: data.notes,
     isoDate: data.issue_date,
     dueIsoDate: data.due_date,
@@ -98,5 +112,11 @@ export async function getDraftInvoice(invoiceId: string): Promise<DraftInvoiceDa
     subtotal: data.subtotal,
     taxTotal: data.tax_total,
     total: data.total,
+    gstEnabled: data.gst_enabled ?? false,
+    isInterstate: data.is_interstate ?? false,
+    cgst: data.cgst ?? 0,
+    sgst: data.sgst ?? 0,
+    igst: data.igst ?? 0,
+    roundOff: data.round_off ?? 0,
   };
 }

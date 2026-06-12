@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
-import { Topbar } from "@/components/ui/custom/topbar";
+import { getBusinessGstContext } from "@/lib/data/business";
 import { getDraftInvoice } from "@/lib/data/invoice";
+import { Topbar } from "@/components/ui/custom/topbar";
 
 import { InvoiceEditForm } from "./invoice-edit-form";
 
@@ -10,7 +11,7 @@ interface InvoiceEditContainerProps {
 }
 
 export async function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
-  const draft = await getDraftInvoice(id);
+  const [draft, gstContext] = await Promise.all([getDraftInvoice(id), getBusinessGstContext()]);
   if (!draft) notFound();
 
   const today = new Date();
@@ -24,7 +25,13 @@ export async function InvoiceEditContainer({ id }: InvoiceEditContainerProps) {
     <div className="flex flex-1 flex-col">
       <Topbar title="Edit invoice" subtitle={`#${id.toUpperCase()}`} />
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-4 max-mobile:p-4 max-mobile:pb-24">
-        <InvoiceEditForm draft={draft} isoDate={isoDate} dueIsoDate={dueIsoDate} />
+        <InvoiceEditForm
+          draft={draft}
+          isoDate={isoDate}
+          dueIsoDate={dueIsoDate}
+          businessGstEnabled={gstContext?.gstEnabled ?? false}
+          businessStateCode={gstContext?.stateCode ?? null}
+        />
       </div>
     </div>
   );

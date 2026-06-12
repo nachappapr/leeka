@@ -17,8 +17,15 @@ interface InvoiceFormReviewStageProps {
   phone: string;
   items: ReadonlyArray<InvoiceFormLivePreviewItem>;
   subtotal: number;
-  taxTotal: number;
   total: number;
+  /** Intra-state CGST in paise. */
+  cgst: number;
+  /** Intra-state SGST in paise. */
+  sgst: number;
+  /** Inter-state IGST in paise. */
+  igst: number;
+  /** Round-off in paise (may be negative). */
+  roundOff: number;
   isoDate: string;
   dueIsoDate: string;
   // Review-stage-specific props
@@ -36,8 +43,11 @@ export function InvoiceFormReviewStage({
   phone,
   items,
   subtotal,
-  taxTotal,
   total,
+  cgst,
+  sgst,
+  igst,
+  roundOff,
   isoDate,
   dueIsoDate,
   invoice,
@@ -51,8 +61,11 @@ export function InvoiceFormReviewStage({
         phone={phone}
         items={items}
         subtotal={subtotal}
-        taxTotal={taxTotal}
         total={total}
+        cgst={cgst}
+        sgst={sgst}
+        igst={igst}
+        roundOff={roundOff}
         isoDate={isoDate}
         dueIsoDate={dueIsoDate}
       />

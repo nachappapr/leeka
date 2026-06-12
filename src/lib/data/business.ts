@@ -30,3 +30,38 @@ export async function getBusinessForUser(): Promise<Business | null> {
 
   return data;
 }
+
+export interface BusinessGstContext {
+  gstEnabled: boolean;
+  stateCode: string | null;
+}
+
+/**
+ * Returns the minimal GST context needed to compute invoice preview totals
+ * with the same flags the server action uses.
+ *
+ * Fetches only gst_enabled + state_code — avoids over-selecting the full row
+ * when the caller only needs GST flags (e.g. invoice create/edit containers).
+ *
+ * Server-only: never import this in a Client Component.
+ */
+export async function getBusinessGstContext(): Promise<BusinessGstContext | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("gst_enabled, state_code")
+    .single();
+
+  if (error) {
+    if (error.code !== "PGRST116") {
+      logger.error({ err: { code: error.code } }, "getBusinessGstContext: query failed");
+    }
+    return null;
+  }
+
+  return {
+    gstEnabled: data.gst_enabled ?? false,
+    stateCode: data.state_code ?? null,
+  };
+}
