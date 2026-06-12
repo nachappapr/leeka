@@ -25,3 +25,17 @@ export type SendInvoiceResult = { ok: true; data: SendInvoiceData } | { ok: fals
 export type SendInvoiceEmailResult =
   | { ok: true; data: SendInvoiceEmailData }
   | { ok: false; error: string };
+
+export type ReminderOutcome = "sent" | "failed" | "skipped";
+
+export interface SendReminderData {
+  invoiceId: string;
+  messageLogId: string;
+  outcome: ReminderOutcome;
+  /** True when the channel credentials are not yet configured (dev/CI path). */
+  skipped?: boolean;
+}
+
+export type SendReminderResult =
+  | { ok: true; data: SendReminderData }
+  | { ok: false; error: string };

@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { Check, Edit, WhatsApp } from "@/components/icons";
+import { Bell, Check, Edit, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
 import { cn } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
 import { InvoiceDetailMobileSheet } from "./invoice-detail-mobile-sheet";
+import { ReminderChannelsModal } from "./reminder-channels-modal";
 
 interface InvoiceDetailMobileFooterProps {
   invoice: Invoice;
@@ -18,6 +19,7 @@ interface InvoiceDetailMobileFooterProps {
 // viewport — MobileTabBar is removed from invoice detail pages.
 export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooterProps) {
   const [sendOpen, setSendOpen] = useState(false);
+  const [reminderOpen, setReminderOpen] = useState(false);
   const invoiceId = invoice.id;
   const status = invoice.status;
   const isPaid = status === "paid";
@@ -80,12 +82,12 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
     >
       <PillButton
         type="button"
-        tone="whatsapp"
+        tone="outline"
         size="md"
         className="flex-1 rounded-lg!"
-        onClick={() => setSendOpen(true)}
+        onClick={() => setReminderOpen(true)}
       >
-        <WhatsApp aria-hidden />
+        <Bell aria-hidden />
         Remind
       </PillButton>
       <PillButton tone="primary" size="md" className="flex-1 rounded-lg!">
@@ -93,11 +95,11 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         Mark paid
       </PillButton>
       <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
-      <SendChannelsModal
+      <ReminderChannelsModal
         invoice={invoice}
         invoiceUuid={invoice.invoiceUuid ?? ""}
-        open={sendOpen}
-        onOpenChange={setSendOpen}
+        open={reminderOpen}
+        onOpenChange={setReminderOpen}
       />
     </footer>
   );

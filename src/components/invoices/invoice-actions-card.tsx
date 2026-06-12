@@ -8,6 +8,7 @@ import type { Invoice } from "@/lib/types";
 import { InvoiceActionsDraft } from "./invoice-actions-draft";
 import { InvoiceActionsOpen } from "./invoice-actions-open";
 import { InvoiceActionsPaid } from "./invoice-actions-paid";
+import { ReminderChannelsModal } from "./reminder-channels-modal";
 
 interface InvoiceActionsCardProps {
   invoice: Invoice;
@@ -15,6 +16,7 @@ interface InvoiceActionsCardProps {
 
 export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
   const [sendOpen, setSendOpen] = useState(false);
+  const [reminderOpen, setReminderOpen] = useState(false);
 
   const status = invoice.status;
   const invoiceId = invoice.id;
@@ -34,7 +36,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
             <InvoiceActionsOpen
               invoiceId={invoiceId}
               isOverdue={isOverdue}
-              onSend={() => setSendOpen(true)}
+              onSend={() => setReminderOpen(true)}
             />
           )}
         </div>
@@ -44,6 +46,12 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
         invoiceUuid={invoice.invoiceUuid ?? ""}
         open={sendOpen}
         onOpenChange={setSendOpen}
+      />
+      <ReminderChannelsModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={reminderOpen}
+        onOpenChange={setReminderOpen}
       />
     </>
   );

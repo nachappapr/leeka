@@ -27,7 +27,11 @@ import type {
   DeleteInvoiceResult,
   DeleteInvoiceRow,
 } from "@/lib/types/lifecycle";
-import type { SendInvoiceResult, SendInvoiceEmailResult } from "@/lib/types/send";
+import type {
+  SendInvoiceResult,
+  SendInvoiceEmailResult,
+  SendReminderResult,
+} from "@/lib/types/send";
 
 export type SaveInvoiceDraftResult =
   | { ok: true; data: SaveDraftResult }
@@ -692,6 +696,17 @@ interface DispatchWriteParams {
   outcome: "sent" | "failed" | "skipped";
   providerMsgId: string | null;
   logError: string | null;
+  /**
+   * Event type written to invoice_events. Defaults to `${channel}.dispatched`
+   * for initial send actions. sendReminder passes "reminder_sent" — this is a
+   * hard contract with Epic 13's notifications trigger; do not change.
+   */
+  eventType?: string;
+  /**
+   * Extra fields merged into the invoice_events.meta JSON. sendReminder passes
+   * `{ source: "manual" }` to distinguish manual from future auto reminders.
+   */
+  eventMeta?: Record<string, unknown>;
 }
 
 /**
@@ -700,11 +715,28 @@ interface DispatchWriteParams {
  * regardless of whether a live API call was made. Supports both 'whatsapp'
  * and 'email' channels via the channel param.
  *
+ * eventType defaults to `${channel}.dispatched` so existing sendInvoice /
+ * sendInvoiceEmail callers are byte-for-byte equivalent in effect. Callers
+ * that need a different event type (e.g. sendReminder → "reminder_sent") pass
+ * it explicitly.
+ *
  * Returns the created message_log id, or an empty string when the insert fails
  * (the outer action already logs the insert error).
  */
 async function writeDispatchLog(params: DispatchWriteParams): Promise<string> {
-  const { supabase, businessId, invoiceId, channel, outcome, providerMsgId, logError } = params;
+  const {
+    supabase,
+    businessId,
+    invoiceId,
+    channel,
+    outcome,
+    providerMsgId,
+    logError,
+    eventType,
+    eventMeta,
+  } = params;
+
+  const resolvedEventType = eventType ?? `${channel}.dispatched`;
 
   const { data: logRow, error: logErr } = await supabase
     .from("message_log")
@@ -729,9 +761,9 @@ async function writeDispatchLog(params: DispatchWriteParams): Promise<string> {
   const { error: eventErr } = await supabase.from("invoice_events").insert({
     business_id: businessId,
     invoice_id: invoiceId,
-    type: `${channel}.dispatched`,
+    type: resolvedEventType,
     channel,
-    meta: { outcome, provider_msg_id: providerMsgId },
+    meta: { outcome, provider_msg_id: providerMsgId, ...eventMeta },
   });
 
   if (eventErr) {
@@ -1014,4 +1046,219 @@ export async function sendInvoiceEmail(invoiceId: unknown): Promise<SendInvoiceE
   }
 
   return { ok: true, data: { invoiceId: uuid, messageLogId, outcome: "sent" } };
+}
+
+// ── sendReminder ──────────────────────────────────────────────────────────────
+
+const SendReminderInputSchema = z.object({
+  invoiceId: z.string().uuid("Invalid invoice ID"),
+  channel: z.enum(["whatsapp", "email"]),
+});
+
+interface InvoiceForReminder {
+  id: string;
+  number: string | null;
+  status: string;
+  public_token: string | null;
+  total: number;
+  amount_paid: number;
+  customers: { phone: string | null; email: string | null; name: string } | null;
+}
+
+interface ReminderDispatchParams {
+  supabase: Awaited<ReturnType<typeof createClient>>;
+  businessId: string;
+  invoice: InvoiceForReminder;
+}
+
+async function dispatchReminderWhatsApp(
+  params: ReminderDispatchParams & { phone: string },
+): Promise<SendReminderResult> {
+  const { supabase, businessId, invoice, phone } = params;
+  const invoiceId = invoice.id;
+  const appBase = serverEnv.NEXT_PUBLIC_APP_URL ?? serverEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const payUrl = `${appBase}/pay/${invoice.public_token!}`;
+  const invoiceNumber = invoice.number ?? invoiceId;
+
+  if (!isWhatsAppConfigured()) {
+    logger.info({ invoiceId }, "sendReminder: WhatsApp not configured — skipping dispatch");
+    const messageLogId = await writeDispatchLog({
+      supabase,
+      businessId,
+      invoiceId,
+      channel: "whatsapp",
+      outcome: "skipped",
+      providerMsgId: null,
+      logError: "WhatsApp not configured",
+      eventType: "reminder_sent",
+      eventMeta: { source: "manual" },
+    });
+    return { ok: true, data: { invoiceId, messageLogId, outcome: "skipped", skipped: true } };
+  }
+
+  const sendResult = await sendWhatsAppInvoice({ recipientPhone: phone, invoiceNumber, payUrl });
+  const outcome = sendResult.ok ? "sent" : "failed";
+  const providerMsgId = sendResult.ok ? sendResult.providerMsgId : null;
+  const logError = sendResult.ok ? null : sendResult.error;
+
+  const messageLogId = await writeDispatchLog({
+    supabase,
+    businessId,
+    invoiceId,
+    channel: "whatsapp",
+    outcome,
+    providerMsgId,
+    logError,
+    eventType: "reminder_sent",
+    eventMeta: { source: "manual" },
+  });
+
+  if (!sendResult.ok) {
+    return { ok: false, error: `Reminder send failed: ${sendResult.error}` };
+  }
+  return { ok: true, data: { invoiceId, messageLogId, outcome: "sent" } };
+}
+
+async function dispatchReminderEmail(
+  params: ReminderDispatchParams & { recipientEmail: string; customerName: string },
+): Promise<SendReminderResult> {
+  const { supabase, businessId, invoice, recipientEmail, customerName } = params;
+  const invoiceId = invoice.id;
+  const appBase = serverEnv.NEXT_PUBLIC_APP_URL ?? serverEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const payUrl = `${appBase}/pay/${invoice.public_token!}`;
+  const invoiceNumber = invoice.number ?? invoiceId;
+
+  if (!isEmailConfigured()) {
+    logger.info({ invoiceId }, "sendReminder: email not configured — skipping dispatch");
+    const messageLogId = await writeDispatchLog({
+      supabase,
+      businessId,
+      invoiceId,
+      channel: "email",
+      outcome: "skipped",
+      providerMsgId: null,
+      logError: "Email not configured",
+      eventType: "reminder_sent",
+      eventMeta: { source: "manual" },
+    });
+    return { ok: true, data: { invoiceId, messageLogId, outcome: "skipped", skipped: true } };
+  }
+
+  const sendResult = await sendEmailInvoice({
+    recipientEmail,
+    invoiceNumber,
+    payUrl,
+    customerName,
+  });
+  const outcome = sendResult.ok ? "sent" : "failed";
+  const providerMsgId = sendResult.ok ? sendResult.providerMsgId : null;
+  const logError = sendResult.ok ? null : sendResult.error;
+
+  const messageLogId = await writeDispatchLog({
+    supabase,
+    businessId,
+    invoiceId,
+    channel: "email",
+    outcome,
+    providerMsgId,
+    logError,
+    eventType: "reminder_sent",
+    eventMeta: { source: "manual" },
+  });
+
+  if (!sendResult.ok) {
+    return { ok: false, error: `Reminder send failed: ${sendResult.error}` };
+  }
+  return { ok: true, data: { invoiceId, messageLogId, outcome: "sent" } };
+}
+
+/**
+ * sendReminder — AP-29 Server Action (manual payment reminder dispatch).
+ *
+ * Dispatches a reminder to the invoice's customer via WhatsApp or email.
+ * Uses the same send helpers as sendInvoice / sendInvoiceEmail but writes
+ * event type "reminder_sent" instead of "<channel>.dispatched" — this is a
+ * hard contract with Epic 13's notifications trigger; never change the type.
+ *
+ * Binding decisions:
+ * - DOES NOT touch invoices.status or any lifecycle field (reminder is read-only
+ *   on the invoice row; only message_log and invoice_events are written).
+ * - ENV-GATED: when channel credentials are absent the live call is skipped;
+ *   a 'skipped' log row is written and { ok:true, data:{ skipped:true } } is
+ *   returned — expected dev/CI path until WABA/Resend are provisioned.
+ * - Requires public_token (invoice must be issued); guards on paid/cancelled.
+ * - No de-duplication of manual reminders — allowed to send multiple.
+ * - invoice_events.meta carries { source: "manual" } to distinguish from
+ *   future auto reminders (Epic 13 / AP-30 cron).
+ */
+export async function sendReminder(payload: unknown): Promise<SendReminderResult> {
+  const parsed = SendReminderInputSchema.safeParse(payload);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid reminder payload" };
+  }
+
+  const { invoiceId, channel } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data: invoiceRow, error: invoiceErr } = await supabase
+    .from("invoices")
+    .select("id, number, status, public_token, total, amount_paid, customers(phone, email, name)")
+    .eq("id", invoiceId)
+    .eq("business_id", businessId)
+    .single();
+
+  if (invoiceErr || !invoiceRow) {
+    if (invoiceErr && invoiceErr.code !== "PGRST116") {
+      logger.error({ err: { code: invoiceErr.code } }, "sendReminder: invoice fetch failed");
+    }
+    return { ok: false, error: "Invoice not found" };
+  }
+
+  const invoice = invoiceRow as unknown as InvoiceForReminder;
+
+  if (!invoice.public_token) {
+    return {
+      ok: false,
+      error: "Invoice has not been issued yet — issue it before sending a reminder",
+    };
+  }
+
+  if (invoice.status === "paid") {
+    return { ok: false, error: "This invoice is already paid" };
+  }
+
+  if (invoice.status === "cancelled") {
+    return { ok: false, error: "Cancelled invoices cannot be reminded" };
+  }
+
+  const customer = Array.isArray(invoice.customers) ? invoice.customers[0] : invoice.customers;
+  const dispatchBase: ReminderDispatchParams = { supabase, businessId, invoice };
+
+  if (channel === "whatsapp") {
+    const phone = customer?.phone ?? null;
+    if (!phone) {
+      return { ok: false, error: "Customer has no phone number on file" };
+    }
+    return dispatchReminderWhatsApp({ ...dispatchBase, phone });
+  }
+
+  const recipientEmail = customer?.email ?? null;
+  if (!recipientEmail) {
+    return { ok: false, error: "Customer has no email address on file" };
+  }
+  const customerName = customer?.name ?? "Customer";
+  return dispatchReminderEmail({ ...dispatchBase, recipientEmail, customerName });
 }

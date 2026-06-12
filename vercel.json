@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/overdue-sweep",
       "schedule": "30 19 * * *"
+    },
+    {
+      "path": "/api/cron/send-reminders",
+      "schedule": "45 19 * * *"
     }
   ]
 }

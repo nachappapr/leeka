@@ -12,3 +12,4 @@
 - [AP-25 WhatsApp send](project_ap25_whatsapp_send.md) — env-gated sendInvoice action, sendWhatsAppInvoice helper, writeDispatchLog pattern, 'skipped'/'sent'/'failed' statuses, no status/sent_at mutation
 - [AP-26 WhatsApp webhook viewed](project_ap26_whatsapp_webhook.md) — mark_message_status RPC, no-downgrade guard, partial unique index, timingSafeEqual sig verify, always-200 contract, isWhatsAppWebhookConfigured() pattern
 - [AP-28 email send + tracking](project_ap28_email_send_tracking.md) — Resend fetch wrapper, svix sig verify, mark_email_status RPC (bounced=terminal+notify, opened=viewed); migration applied to main 2026-06-12; COMPLETE
+- [AP-29 sendReminder action](project_ap29_send_reminder.md) — sendReminder SA, writeDispatchLog eventType refactor, "reminder_sent" hard contract with Epic 13, cognitive-complexity helper pattern
