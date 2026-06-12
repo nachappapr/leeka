@@ -3,9 +3,11 @@
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { SaveInvoiceDraftSchema } from "@/lib/schema/invoice";
+import { RecordPaymentSchema } from "@/lib/schema/payment";
 import { computeTotals } from "@/lib/invoice/compute-totals";
 import logger from "@/lib/logger";
 import type { SaveDraftResult } from "@/lib/types/invoice";
+import type { RecordPaymentResult, RecordPaymentRow } from "@/lib/types/payment";
 
 export type SaveInvoiceDraftResult =
   | { ok: true; data: SaveDraftResult }
@@ -294,6 +296,84 @@ export async function issueInvoice(invoiceId: unknown): Promise<IssueInvoiceResu
       invoiceId: row.invoice_id,
       number: row.number,
       status: row.status,
+    },
+  };
+}
+
+// ── recordPayment ─────────────────────────────────────────────────────────────
+
+function mapRecordPaymentError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("invoice not found")) return "Invoice not found";
+  if (msg.includes("already paid")) return "This invoice has already been paid";
+  if (msg.includes("not payable"))
+    return "This invoice cannot accept payments in its current state";
+  if (msg.includes("overpayment") || msg.includes("exceed"))
+    return "Payment would exceed the invoice total";
+  if (msg.includes("greater than zero")) return "Payment amount must be greater than zero";
+  return "Failed to record payment. Please try again.";
+}
+
+/**
+ * recordPayment — AP-18 Server Action.
+ *
+ * Records a single payment against an invoice and atomically recomputes
+ * amount_paid and status via the record_payment RPC. Partial payments set
+ * status to 'partial'; a payment that brings amount_paid >= total sets status
+ * to 'paid' and stamps paid_at. Overpayment (sum > total) is hard-rejected.
+ *
+ * businessId is looked up server-side from the caller's session membership —
+ * clients never supply it directly, preventing cross-tenant spoofing.
+ */
+export async function recordPayment(payload: unknown): Promise<RecordPaymentResult> {
+  const parsed = RecordPaymentSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid payment data",
+    };
+  }
+
+  const { invoiceId, amount, method, reference, note } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase.rpc("record_payment", {
+    p_business_id: businessId,
+    p_invoice_id: invoiceId,
+    p_amount: amount,
+    p_method: method,
+    p_reference: reference,
+    p_note: note,
+  });
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "recordPayment: RPC failed");
+    return { ok: false, error: mapRecordPaymentError(error.message) };
+  }
+
+  const row = data as unknown as RecordPaymentRow;
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: row.invoice_id,
+      amountPaid: row.amount_paid,
+      status: row.status,
+      paidAt: row.paid_at,
     },
   };
 }

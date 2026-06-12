@@ -6,3 +6,4 @@
 - [AP-14 GST engine — CLOSED](project-ap14-gst-engine.md) — all 3 units approved 2026-06-12 (compute, persistence, flag-sourcing).
 - [AP-15 Live preview parity — CLOSED](project-ap15-live-preview-parity.md) — both units approved 2026-06-12; preview==persisted verified in-app, PDF + pay-page parity legs deferred to their own epics.
 - [AP-16 Invoice numbering — CLOSED](project-ap16-invoice-numbering.md) — Epic 6; all 3 units approved 2026-06-12, story-completion gate passed, committed 075ef3f, tree clean, advisors clean of AP-16; FY format YYYY-YY confirmed
+- [AP-17 Issue invoice — CLOSED](project-ap17-issue-invoice.md) — Epic 7; satisfied by AP-16's issue_invoice RPC + issueInvoice action; PDF half of AC deferred to AP-21 (Option A, 2026-06-12). Do NOT re-open over stale PRD checkbox.
