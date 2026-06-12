@@ -4,10 +4,17 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { SaveInvoiceDraftSchema } from "@/lib/schema/invoice";
 import { RecordPaymentSchema } from "@/lib/schema/payment";
+import { MarkInvoicePaidSchema, CancelInvoiceSchema } from "@/lib/schema/lifecycle";
 import { computeTotals } from "@/lib/invoice/compute-totals";
 import logger from "@/lib/logger";
 import type { SaveDraftResult } from "@/lib/types/invoice";
 import type { RecordPaymentResult, RecordPaymentRow } from "@/lib/types/payment";
+import type {
+  MarkInvoicePaidResult,
+  MarkInvoicePaidRow,
+  CancelInvoiceResult,
+  CancelInvoiceRow,
+} from "@/lib/types/lifecycle";
 
 export type SaveInvoiceDraftResult =
   | { ok: true; data: SaveDraftResult }
@@ -374,6 +381,145 @@ export async function recordPayment(payload: unknown): Promise<RecordPaymentResu
       amountPaid: row.amount_paid,
       status: row.status,
       paidAt: row.paid_at,
+    },
+  };
+}
+
+// ── markInvoicePaid ──────────────────────────────────────────────────────────
+
+function mapMarkInvoicePaidError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("invoice not found")) return "Invoice not found";
+  if (msg.includes("already paid")) return "This invoice has already been paid";
+  if (msg.includes("not payable")) return "This invoice cannot be paid in its current state";
+  return "Failed to mark invoice as paid. Please try again.";
+}
+
+/**
+ * markInvoicePaid — AP-19 Unit 1 Server Action.
+ *
+ * Settles an invoice fully by inserting one payment row for the outstanding
+ * amount (total minus sum of existing payments) and transitioning status to
+ * 'paid'. Uses the mark_invoice_paid RPC which locks the invoice row FOR UPDATE
+ * to prevent concurrent over-collection.
+ *
+ * businessId is looked up server-side from the caller's session membership.
+ */
+export async function markInvoicePaid(payload: unknown): Promise<MarkInvoicePaidResult> {
+  const parsed = MarkInvoicePaidSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid invoice data",
+    };
+  }
+
+  const { invoiceId, method } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase.rpc("mark_invoice_paid", {
+    p_business_id: businessId,
+    p_invoice_id: invoiceId,
+    p_method: method,
+  });
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "markInvoicePaid: RPC failed");
+    return { ok: false, error: mapMarkInvoicePaidError(error.message) };
+  }
+
+  const row = data as unknown as MarkInvoicePaidRow;
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: row.invoice_id,
+      amountPaid: row.amount_paid,
+      status: row.status,
+      paidAt: row.paid_at,
+    },
+  };
+}
+
+// ── cancelInvoice ─────────────────────────────────────────────────────────────
+
+function mapCancelInvoiceError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("invoice not found")) return "Invoice not found";
+  if (msg.includes("cannot cancel a draft"))
+    return "Drafts cannot be cancelled — delete them instead";
+  if (msg.includes("cannot cancel a paid")) return "Paid invoices cannot be cancelled";
+  if (msg.includes("already cancelled")) return "This invoice has already been cancelled";
+  return "Failed to cancel invoice. Please try again.";
+}
+
+/**
+ * cancelInvoice — AP-19 Unit 1 Server Action.
+ *
+ * Transitions a sent/viewed/partial/overdue/pending invoice to 'cancelled'.
+ * Does not affect amount_paid or payments (cancel is not a refund). Uses the
+ * cancel_invoice RPC which locks the invoice row FOR UPDATE to prevent races
+ * with concurrent status transitions.
+ *
+ * businessId is looked up server-side from the caller's session membership.
+ */
+export async function cancelInvoice(payload: unknown): Promise<CancelInvoiceResult> {
+  const parsed = CancelInvoiceSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid invoice ID",
+    };
+  }
+
+  const { invoiceId } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase.rpc("cancel_invoice", {
+    p_business_id: businessId,
+    p_invoice_id: invoiceId,
+  });
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "cancelInvoice: RPC failed");
+    return { ok: false, error: mapCancelInvoiceError(error.message) };
+  }
+
+  const row = data as unknown as CancelInvoiceRow;
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: row.invoice_id,
+      status: row.status,
     },
   };
 }
