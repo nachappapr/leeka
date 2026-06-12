@@ -4,6 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
 import type { Tables } from "@/lib/types/database";
 
+/** Signed-URL TTL for business logos (1 hour). */
+const LOGO_SIGNED_URL_EXPIRY_SECONDS = 3600;
+
 export type Business = Tables<"businesses">;
 
 /**
@@ -29,6 +32,30 @@ export async function getBusinessForUser(): Promise<Business | null> {
   }
 
   return data;
+}
+
+/**
+ * Returns a short-lived signed URL for a business logo stored in the private
+ * business-logos bucket. Returns null if the path is empty or the signing fails.
+ *
+ * Server-only: never import this in a Client Component.
+ * The bucket is private — never construct or expose a public URL.
+ */
+export async function getBusinessLogoSignedUrl(path: string): Promise<string | null> {
+  if (!path) return null;
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.storage
+    .from("business-logos")
+    .createSignedUrl(path, LOGO_SIGNED_URL_EXPIRY_SECONDS);
+
+  if (error || !data?.signedUrl) {
+    logger.error({ err: { message: error?.message } }, "getBusinessLogoSignedUrl: signing failed");
+    return null;
+  }
+
+  return data.signedUrl;
 }
 
 export interface BusinessGstContext {

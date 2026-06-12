@@ -69,6 +69,8 @@ export const BusinessSchema = z.object({
     .refine((val) => !val || val.includes("@"), { message: "Invalid UPI ID format" })
     .optional()
     .or(z.literal("")),
+
+  logoUrl: z.string().optional().or(z.literal("")),
 });
 
 export type BusinessFormData = z.infer<typeof BusinessSchema>;

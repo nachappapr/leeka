@@ -8,7 +8,6 @@ import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
 import { PageHeader } from "@/components/ui/custom/page-header";
 import { SettingsSectionTabs } from "@/components/settings/settings-section-tabs";
 import { SettingsSectionAside } from "@/components/settings/settings-section-aside";
-import { BusinessSection } from "@/components/settings/business-section";
 import { TemplateSection } from "@/components/settings/template-section";
 import { TaxSection } from "@/components/settings/tax-section";
 import { NotificationsSection } from "@/components/settings/notifications-section";
@@ -19,9 +18,10 @@ import type { SettingsSectionId } from "@/lib/types/settings";
 
 interface SettingsContainerProps {
   notificationsSlot?: React.ReactNode;
+  businessSlot?: React.ReactNode;
 }
 
-export function SettingsContainer({ notificationsSlot }: SettingsContainerProps) {
+export function SettingsContainer({ notificationsSlot, businessSlot }: SettingsContainerProps) {
   const [section, setSection] = useState<SettingsSectionId>("business");
 
   return (
@@ -47,7 +47,7 @@ export function SettingsContainer({ notificationsSlot }: SettingsContainerProps)
           <SettingsSectionAside activeSection={section} onSectionChange={setSection} />
 
           <div className="flex flex-col gap-4" aria-live="polite">
-            {section === "business" && <BusinessSection />}
+            {section === "business" && businessSlot}
             {section === "template" && <TemplateSection />}
             {section === "tax" && <TaxSection />}
             {section === "notifications" && <NotificationsSection />}

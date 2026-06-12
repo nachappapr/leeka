@@ -1,3 +1,14 @@
+/** Allowed MIME types for business logo uploads. Shared by client (UX validation) and server (security boundary). */
+export const LOGO_ALLOWED_MIME_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/svg+xml",
+] as const;
+
+/** Maximum logo file size in bytes (2 MB). */
+export const LOGO_MAX_BYTES = 2 * 1024 * 1024;
+
 export const INDIA_STATES = [
   { code: "01", name: "Jammu & Kashmir" },
   { code: "02", name: "Himachal Pradesh" },
