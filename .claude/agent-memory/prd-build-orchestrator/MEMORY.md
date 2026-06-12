@@ -13,3 +13,4 @@
 - [Epic 10 WhatsApp — CLOSED](project-epic10-whatsapp.md) — AP-25/26/27 all shipped 2026-06-12; env-gated send (no WABA creds); invoiceUuid="" until list/detail go live
 - [Epic 11 Email Delivery — AP-28 CLOSED](project-epic11-email-delivery.md) — send+tracking approved & migration applied to main 2026-06-12 (Option A); DB evidence on file; story-completion gate env-gated on Resend creds + invoices UI (analogous to Epic 10)
 - [Epic 12 Reminders — CLOSED](project-epic12-reminders.md) — AP-29/30 committed 7e9d31b on worktree branch a161e14398a2d9541 (NOT merged/pushed); migration live as 20260612124214; reminder_sent contract; radiogroup + border-ink-3 a11y precedents
+- [Epic 13 Activity & Notifications — CLOSED](project-epic13-activity-notifications.md) — AP-31/32 committed 1e15515 on worktree branch 2026-06-12; migration on main as 20260612124128; bell missing on invoices/settings until Epic 12 merges
