@@ -19,10 +19,11 @@ async function OnboardingContainer({ prefillName }: OnboardingContainerProps) {
   }
 
   const displayName = profile?.display_name ?? null;
+  const phone = profile?.phone ?? null;
 
   return (
     <main>
-      <OnboardingClient prefillName={prefillName} displayName={displayName} />
+      <OnboardingClient prefillName={prefillName} displayName={displayName} phone={phone} />
     </main>
   );
 }

@@ -16,6 +16,7 @@ import type { BizTypeId } from "@/lib/constants/auth";
 
 interface OnboardingFormProps {
   displayName?: string | null;
+  phone?: string | null;
   register: UseFormRegister<OnboardingBusinessFormData>;
   errors: FieldErrors<OnboardingBusinessFormData>;
   setValue: UseFormSetValue<OnboardingBusinessFormData>;
@@ -29,6 +30,7 @@ interface OnboardingFormProps {
 
 function OnboardingForm({
   displayName,
+  phone,
   register,
   errors,
   setValue,
@@ -43,7 +45,7 @@ function OnboardingForm({
     <section className="flex flex-col px-14 pt-9 pb-12 max-tablet:px-10 max-tablet:pt-8 max-tablet:pb-10 max-mobile:px-6 max-mobile:pt-6 max-mobile:pb-9">
       <div className="mx-auto w-full max-w-120">
         <OnboardingTopbar />
-        <OnboardingWelcomeChip displayName={displayName} />
+        <OnboardingWelcomeChip displayName={displayName} phone={phone} />
         <OnboardingProgress />
 
         <p className="text-kicker font-extrabold uppercase tracking-widest text-coral-ink">

@@ -69,7 +69,7 @@ function OnboardingDetailsPanel({
             placeholder="Select state…"
             ariaLabel="State"
             ariaDescribedBy={errors.stateCode ? "ob-state-error" : "ob-state-hint"}
-            className="h-14 border-[1.5px] border-line bg-surface text-17 font-semibold text-ink hover:border-line-strong data-popup-open:border-coral focus-visible:ring-coral/14"
+            className="h-14 border-[1.5px] border-line bg-surface font-semibold text-ink hover:border-line-strong data-popup-open:border-coral focus-visible:ring-coral/14"
           />
           {errors.stateCode ? (
             <p

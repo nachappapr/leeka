@@ -35,7 +35,7 @@ export function BrandSelect({
   className,
 }: BrandSelectProps) {
   return (
-    <Select.Root value={value} onValueChange={(v) => onValueChange(v ?? "")}>
+    <Select.Root items={options} value={value} onValueChange={(v) => onValueChange(v ?? "")}>
       <Select.Trigger
         id={id}
         aria-label={ariaLabel}

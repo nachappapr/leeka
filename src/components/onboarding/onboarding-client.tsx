@@ -13,9 +13,10 @@ import { OnboardingInvoicePreview } from "@/components/onboarding/onboarding-inv
 interface OnboardingClientProps {
   prefillName?: string;
   displayName?: string | null;
+  phone?: string | null;
 }
 
-function OnboardingClient({ prefillName, displayName }: OnboardingClientProps) {
+function OnboardingClient({ prefillName, displayName, phone }: OnboardingClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -64,6 +65,7 @@ function OnboardingClient({ prefillName, displayName }: OnboardingClientProps) {
     <div className="grid min-h-screen items-start grid-cols-[1.05fr_0.95fr] max-tablet:grid-cols-1">
       <OnboardingForm
         displayName={displayName}
+        phone={phone}
         register={register}
         errors={errors}
         setValue={setValue}
