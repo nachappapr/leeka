@@ -19,4 +19,5 @@
 - [Epic 15 Settings](project-epic15-settings.md) — AP-36/37 committed; AP-39 built 2026-06-13 awaiting review (notification_settings table + toggle wiring); AP-38 concurrent lane; AP-40 pending
 - [AP-41 Search](project-ap41-search.md) — Epic 16; started 2026-06-13; mixed unit split backend-first; pg_trgm ready; mock-detail nav boundary is a follow-up not a fix
 - [AP-44 Connection pooling — CLOSED](project-ap44-connection-pooling.md) — Epic 17; doc-only unit 2026-06-13, UNCOMMITTED; app intentionally HTTP-only; load test deferred to live invoices UI
-- [AP-45 Plan gating — CLOSED](project-ap45-plan-gating.md) — Epic 18; approved+committed ad2e5d3 2026-06-13; 2 deviations ratified (issue CTA wiring, sent_at cap); Notion ticked + deviation comment; home.ts copy follow-up owned by user; AP-46 Razorpay still open
+- [AP-45 Plan gating — CLOSED](project-ap45-plan-gating.md) — Epic 18; approved+committed ad2e5d3 2026-06-13; 2 deviations ratified (issue CTA wiring, sent_at cap); Notion ticked + deviation comment; home.ts copy follow-up owned by user
+- [AP-46 Razorpay billing — CLOSED (build)](project-ap46-razorpay-billing.md) — Epic 18 LAST unit; commit c02bcab 2026-06-13; env-gated/INERT; pricing from DB plans table; CHECK plan_% MCP-verified; go-live blocked on Razorpay provisioning (one-time UPDATE plans SQL); Epic 18 build-complete
