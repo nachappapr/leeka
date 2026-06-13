@@ -18,7 +18,6 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
     label: "Invoices",
     href: "/invoices",
     icon: FileText,
-    badge: 3,
     inMobileTab: true,
   },
   {

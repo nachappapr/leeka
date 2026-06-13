@@ -54,9 +54,11 @@ interface AppSidebarProps {
   businessName: string;
   planLabel: string;
   initials: string;
+  /** Live overdue-invoice count shown on the Invoices item; omit/0 hides the badge */
+  invoiceBadge?: number;
 }
 
-export function AppSidebar({ businessName, planLabel, initials }: AppSidebarProps) {
+export function AppSidebar({ businessName, planLabel, initials, invoiceBadge }: AppSidebarProps) {
   const pathname = usePathname();
   const { setOpen } = useSidebar();
   const [isPending, startTransition] = React.useTransition();
@@ -101,11 +103,12 @@ export function AppSidebar({ businessName, planLabel, initials }: AppSidebarProp
               {NAV_MAIN.map((item) => {
                 const isActive = isNavItemActive(item.href, pathname, allHrefs);
                 const Icon = item.icon;
+                const badge = item.href === "/invoices" ? invoiceBadge : item.badge;
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       isActive={isActive}
-                      tooltip={item.badge != null ? `${item.label} (${item.badge})` : item.label}
+                      tooltip={badge != null ? `${item.label} (${badge})` : item.label}
                       className={navButtonClass}
                       render={
                         <Link href={item.href} aria-current={isActive ? "page" : undefined} />
@@ -113,9 +116,9 @@ export function AppSidebar({ businessName, planLabel, initials }: AppSidebarProp
                     >
                       <Icon className="size-4 shrink-0" aria-hidden />
                       <span className="flex-1">{item.label}</span>
-                      {item.badge != null && (
+                      {badge != null && (
                         <span className="ml-auto rounded-full bg-overdue px-2 py-px text-kicker font-black text-white group-data-[collapsible=icon]:hidden">
-                          {item.badge}
+                          {badge}
                         </span>
                       )}
                     </SidebarMenuButton>

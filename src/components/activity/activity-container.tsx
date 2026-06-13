@@ -1,5 +1,4 @@
 import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
-import { EmptyStateSwitch } from "@/components/ui/custom/empty-state-switch";
 import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
 import { Topbar } from "@/components/ui/custom/topbar";
 import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
@@ -34,29 +33,26 @@ export async function ActivityContainer({ filter, page }: ActivityContainerProps
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
         <ActivityPageHeader unreadCount={unreadCount} />
 
-        <EmptyStateSwitch
-          empty={
-            <EmptyTableState
-              icon="Bell"
-              title="No activity yet"
-              body="When you send invoices and get paid, the timeline will show up here."
-            />
-          }
-          populated={
-            <div className="flex gap-5 max-tablet:flex-col">
-              <div className="min-w-0 flex-1">
-                <ActivityFeed items={items} filter={filter} page={page} hasNextPage={hasNextPage} />
-              </div>
-              <aside
-                aria-label="Activity summary"
-                className="flex w-72 shrink-0 flex-col gap-5 max-tablet:hidden"
-              >
-                <ActivityGlanceCard rows={glanceRows} />
-                <ActivityPrefsCard />
-              </aside>
+        {items.length === 0 ? (
+          <EmptyTableState
+            icon="Bell"
+            title="No activity yet"
+            body="When you send invoices and get paid, the timeline will show up here."
+          />
+        ) : (
+          <div className="flex gap-5 max-tablet:flex-col">
+            <div className="min-w-0 flex-1">
+              <ActivityFeed items={items} filter={filter} page={page} hasNextPage={hasNextPage} />
             </div>
-          }
-        />
+            <aside
+              aria-label="Activity summary"
+              className="flex w-72 shrink-0 flex-col gap-5 max-tablet:hidden"
+            >
+              <ActivityGlanceCard rows={glanceRows} />
+              <ActivityPrefsCard />
+            </aside>
+          </div>
+        )}
       </div>
 
       <MobileTabBar />
