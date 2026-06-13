@@ -10,7 +10,6 @@ import { SettingsSectionTabs } from "@/components/settings/settings-section-tabs
 import { SettingsSectionAside } from "@/components/settings/settings-section-aside";
 import { NotificationsSection } from "@/components/settings/notifications-section";
 import { LanguageSection } from "@/components/settings/language-section";
-import { PlanSection } from "@/components/settings/plan-section";
 import { ItemsSection } from "@/components/settings/items-section";
 import type { SettingsSectionId } from "@/lib/types/settings";
 
@@ -19,6 +18,7 @@ interface SettingsContainerProps {
   businessSlot?: React.ReactNode;
   templateSlot?: React.ReactNode;
   taxSlot?: React.ReactNode;
+  planSlot?: React.ReactNode;
 }
 
 export function SettingsContainer({
@@ -26,6 +26,7 @@ export function SettingsContainer({
   businessSlot,
   templateSlot,
   taxSlot,
+  planSlot,
 }: SettingsContainerProps) {
   const [section, setSection] = useState<SettingsSectionId>("business");
 
@@ -57,7 +58,7 @@ export function SettingsContainer({
             {section === "tax" && taxSlot}
             {section === "notifications" && <NotificationsSection />}
             {section === "language" && <LanguageSection />}
-            {section === "plan" && <PlanSection />}
+            {section === "plan" && planSlot}
             {section === "items" && <ItemsSection />}
           </div>
         </div>

@@ -1,8 +1,24 @@
 import { Check, Sparkles } from "@/components/icons";
-import { PillButton } from "@/components/ui/custom/pill-button";
 import { SETTINGS_PLAN_FEATURES } from "@/lib/constants/settings";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
+import type { PlanRow } from "@/lib/data/plan";
 
-export function PlanSection() {
+const BILLING_PERIOD_LABEL: Record<string, string> = {
+  monthly: "month",
+  yearly: "year",
+  annual: "year",
+};
+
+interface PlanSectionProps {
+  proPlan: PlanRow | null;
+}
+
+export function PlanSection({ proPlan }: PlanSectionProps) {
+  const amount = proPlan?.amount_inr;
+  const periodLabel = proPlan?.billing_period
+    ? (BILLING_PERIOD_LABEL[proPlan.billing_period] ?? proPlan.billing_period)
+    : null;
+
   return (
     <div
       className="rounded-xl bg-(image:--plan-bg) p-6 text-white shadow-card"
@@ -16,10 +32,14 @@ export function PlanSection() {
 
       <h2 className="m-0 text-h2 font-bold text-white">Go unlimited with Pro</h2>
 
-      <div className="mt-1.5 font-sans">
-        <span className="text-money-sm font-black text-white">₹99</span>
-        <span className="text-body-sm font-semibold opacity-70"> / month</span>
-      </div>
+      {amount !== undefined && periodLabel !== null ? (
+        <div className="mt-1.5 font-sans">
+          <span className="text-money-sm font-black text-white">₹{amount}</span>
+          <span className="text-body-sm font-semibold text-white/70"> / {periodLabel}</span>
+        </div>
+      ) : (
+        <p className="sr-only">Pricing is currently unavailable.</p>
+      )}
 
       <ul
         className="mt-4.5 flex list-none flex-col gap-2.5 p-0 text-body-sm"
@@ -33,9 +53,9 @@ export function PlanSection() {
         ))}
       </ul>
 
-      <PillButton tone="primary" size="lg" className="mt-5">
+      <UpgradeButton tone="primary" size="lg" className="mt-5">
         Upgrade now
-      </PillButton>
+      </UpgradeButton>
     </div>
   );
 }

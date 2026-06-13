@@ -22,8 +22,8 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/primitives/sidebar";
-import { PillButton } from "@/components/ui/custom/pill-button";
 import { NAV_MAIN, NAV_ACCOUNT } from "@/components/ui/custom/sidebar-nav";
+import { UpgradeButton } from "@/components/billing/upgrade-button";
 import { cn } from "@/lib/utils";
 
 const navButtonClass = cn(
@@ -161,9 +161,9 @@ export function AppSidebar() {
           <p className="text-label leading-relaxed">
             Unlimited invoices, reminders &amp; reports for ₹99/mo
           </p>
-          <PillButton tone="primary" size="sm" className="mt-2.5 w-full">
+          <UpgradeButton tone="primary" size="md" className="mt-2.5 w-full">
             See plans
-          </PillButton>
+          </UpgradeButton>
         </div>
 
         {/* User row — centered when icon-only, full when expanded */}

@@ -38,6 +38,18 @@ const serverSchema = z.object({
   // AP-28: Resend webhook signing secret (whsec_… format from Resend dashboard).
   // isEmailWebhookConfigured() gates svix signature verification at call-time.
   RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),
+  // AP-46: Razorpay billing credentials — all optional so the server starts without
+  // them. isRazorpayConfigured() gates any live Razorpay API call at runtime.
+  // RAZORPAY_KEY_ID is the publishable key (returned from the createSubscription
+  // action to initialise Razorpay.js on the client) — still server-env only to
+  // avoid drift; it is returned via the Server Action, NOT via NEXT_PUBLIC_.
+  // RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are secrets and must never
+  // reach the browser or appear in NEXT_PUBLIC_* vars.
+  // RAZORPAY_PRO_PLAN_ID has been removed (AP-46 revision): the active plan id
+  // is now sourced from the `plans` DB catalog table for full price-change audit.
+  RAZORPAY_KEY_ID: z.string().min(1).optional(),
+  RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
+  RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
 });
 
 function parseEnv<T extends z.ZodTypeAny>(
@@ -69,6 +81,9 @@ export const serverEnv = parseEnv(serverSchema, {
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   EMAIL_FROM: process.env.EMAIL_FROM,
   RESEND_WEBHOOK_SECRET: process.env.RESEND_WEBHOOK_SECRET,
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+  RAZORPAY_WEBHOOK_SECRET: process.env.RAZORPAY_WEBHOOK_SECRET,
 });
 
 export type ServerEnv = typeof serverEnv;
@@ -113,4 +128,24 @@ export function isEmailConfigured(): boolean {
  */
 export function isEmailWebhookConfigured(): boolean {
   return Boolean(serverEnv.RESEND_WEBHOOK_SECRET);
+}
+
+/**
+ * Returns true when the three required Razorpay env credentials are present:
+ * RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET.
+ *
+ * "Configured" means keys/secret are present. The active plan_id is NOT
+ * checked here because it lives in the `plans` DB catalog table, not in env.
+ * createSubscription() layers that DB check on top: if no active pro plan row
+ * exists or its razorpay_plan_id is null, it returns {ok:false} fail-closed
+ * regardless of this flag.
+ *
+ * When false, createSubscription returns a fail-closed error and the webhook
+ * route skips processing — expected in dev/CI before credentials are
+ * provisioned (AP-46 revision).
+ */
+export function isRazorpayConfigured(): boolean {
+  return Boolean(
+    serverEnv.RAZORPAY_KEY_ID && serverEnv.RAZORPAY_KEY_SECRET && serverEnv.RAZORPAY_WEBHOOK_SECRET,
+  );
 }
