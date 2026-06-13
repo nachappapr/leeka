@@ -320,6 +320,13 @@ export async function issueInvoice(invoiceId: unknown): Promise<IssueInvoiceResu
     if (msg.includes("not found")) {
       return { ok: false, error: "Invoice not found" };
     }
+    if (msg.includes("free plan invoice cap reached")) {
+      return {
+        ok: false,
+        error:
+          "You've reached your free plan limit of 5 invoices this month. Upgrade to Pro for unlimited invoices.",
+      };
+    }
     return { ok: false, error: "Failed to issue invoice. Please try again." };
   }
 

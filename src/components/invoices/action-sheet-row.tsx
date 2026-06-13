@@ -9,17 +9,27 @@ interface ActionSheetRowProps {
   label: string;
   subtitle?: string;
   badge?: number;
-  onClick: () => void;
+  onClick?: () => void;
+  disabled?: boolean;
+  "aria-label"?: string;
 }
 
 export const ActionSheetRow = forwardRef<HTMLButtonElement, ActionSheetRowProps>(
-  function ActionSheetRow({ icon, label, subtitle, badge, onClick }, ref) {
+  function ActionSheetRow(
+    { icon, label, subtitle, badge, onClick, disabled, "aria-label": ariaLabel },
+    ref,
+  ) {
     return (
       <button
         ref={ref}
         type="button"
-        onClick={onClick}
-        className="flex w-full items-center gap-3.5 px-5 py-3.5 text-left transition-colors hover:bg-surface-2 active:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+        onClick={disabled ? undefined : onClick}
+        aria-disabled={disabled || undefined}
+        aria-label={ariaLabel}
+        className={cn(
+          "flex w-full items-center gap-3.5 px-5 py-3.5 text-left transition-colors hover:bg-surface-2 active:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
+          disabled && "cursor-not-allowed opacity-50",
+        )}
       >
         {/* Icon tile */}
         <span className="flex size-9 shrink-0 items-center justify-center rounded-nav-item bg-background text-ink-2">

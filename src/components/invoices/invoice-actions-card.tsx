@@ -31,7 +31,11 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           {isPaid ? (
             <InvoiceActionsPaid onSend={() => setSendOpen(true)} />
           ) : isDraft ? (
-            <InvoiceActionsDraft invoiceId={invoiceId} onSend={() => setSendOpen(true)} />
+            <InvoiceActionsDraft
+              invoiceId={invoiceId}
+              invoiceUuid={invoice.invoiceUuid ?? ""}
+              onSend={() => setSendOpen(true)}
+            />
           ) : (
             <InvoiceActionsOpen
               invoiceId={invoiceId}

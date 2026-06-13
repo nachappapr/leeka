@@ -16,6 +16,7 @@ interface InvoicesListClientProps {
   initialNextCursor: InvoicePageCursor | null;
   initialFilter: InvoiceStatusFilter;
   statusCounts: InvoiceStatusCounts;
+  isProUser: boolean;
 }
 
 export function InvoicesListClient({
@@ -23,6 +24,7 @@ export function InvoicesListClient({
   initialNextCursor,
   initialFilter,
   statusCounts: initialStatusCounts,
+  isProUser,
 }: InvoicesListClientProps) {
   const [invoices, setInvoices] = useState<ReadonlyArray<Invoice>>(initialRows);
   const [cursor, setCursor] = useState<InvoicePageCursor | null>(initialNextCursor);
@@ -96,6 +98,7 @@ export function InvoicesListClient({
       invoices={invoices}
       desktopFilter={activeFilter}
       onDesktopFilterChange={handleFilterChange}
+      isProUser={isProUser}
     >
       <InvoicesFilterShell
         invoices={invoices}

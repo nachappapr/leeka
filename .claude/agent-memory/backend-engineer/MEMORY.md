@@ -22,3 +22,4 @@
 - [AP-41 search_all RPC](project_ap41_search_all.md) — GIN on invoices.number + btree(business_id,total), search_all SECURITY INVOKER setof jsonb, amount paise-band logic, idle=recent rows, customer outstanding omitted, searchAction SA
 - [AP-42 list pagination](project_ap42_list_pagination.md) — keyset indexes (unfiltered+status on invoices, name+id on customers), 3 RPCs (list_invoices_page, invoice_status_counts, list_customers_page), row-value cursor pushdown proven <1ms at 10k rows
 - [AP-44 connection pooling](project_ap44_connection_pooling.md) — HTTP-only arch confirmed (zero direct PG), max_conn=60 headroom=48, Supavisor host=aws-ap-southeast-1.pooler.supabase.com, doc+.env.example only
+- [AP-45 plan gating](project_ap45_plan_gating.md) — plan helper (plan.server.ts), GST export 403 gate, atomic 5-invoice/month cap in issue_invoice RPC; sent_at not issue_date; partial index; home.ts copy mismatch FOLLOW-UP

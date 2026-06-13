@@ -6,3 +6,4 @@
 - [AP-36 business profile settings](project-ap36-business-profile.md) — slot pattern for SC in client container, Server/Client split, logo upload flow, standardSchemaResolver convention
 - [AP-43 bundle budget](project-ap43-bundle-budget.md) — Turbopack vs webpack analyzer distinction, measured chunk sizes, pre-existing invoice.ts type error outside scope
 - [AP-42 keyset pagination](project-ap42-keyset-pagination.md) — SC+client island pattern, resolveBusinessId location, RPC→Invoice mapping, controlled desktopFilter, deviations
+- [AP-45 Free vs Pro gating](project-ap45-plan-gating.md) — isPro() threaded as boolean prop from SC to context, export lock, cap error via brandToast, issueInvoice wired

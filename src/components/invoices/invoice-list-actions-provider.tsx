@@ -38,6 +38,8 @@ interface InvoiceListActionsContextValue {
   /** Desktop single-select chip filter value; default "all". */
   desktopFilter: InvoiceStatusFilter;
   setDesktopFilter: (filter: InvoiceStatusFilter) => void;
+  /** Whether the current business is on the Pro plan — gates GST export. */
+  isProUser: boolean;
 }
 
 const InvoiceListActionsContext = createContext<InvoiceListActionsContextValue | null>(null);
@@ -57,6 +59,8 @@ interface InvoiceListActionsProviderProps {
   desktopFilter: InvoiceStatusFilter;
   /** Called when the user clicks a chip; caller updates state + triggers re-fetch. */
   onDesktopFilterChange: (filter: InvoiceStatusFilter) => void;
+  /** Whether the current business is on the Pro plan. Passed from a Server Component. */
+  isProUser?: boolean;
 }
 
 export function InvoiceListActionsProvider({
@@ -64,6 +68,7 @@ export function InvoiceListActionsProvider({
   invoices,
   desktopFilter,
   onDesktopFilterChange,
+  isProUser = false,
 }: InvoiceListActionsProviderProps) {
   const [sort, setSort] = useState<InvoiceSortId>("newest");
   const [statuses, setStatuses] = useState<StatusPillStatus[]>([]);
@@ -135,6 +140,7 @@ export function InvoiceListActionsProvider({
       invoices,
       desktopFilter,
       setDesktopFilter: onDesktopFilterChange,
+      isProUser,
     }),
     [
       sort,
@@ -146,6 +152,7 @@ export function InvoiceListActionsProvider({
       invoices,
       desktopFilter,
       onDesktopFilterChange,
+      isProUser,
     ],
   );
 

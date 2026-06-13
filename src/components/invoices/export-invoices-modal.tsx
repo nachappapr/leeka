@@ -8,6 +8,7 @@ import { cn, parseRupeeString } from "@/lib/utils";
 import { INVOICES } from "@/lib/constants/invoices";
 import { EXPORT_DATE_PRESETS, EXPORT_STATUS_CHIPS } from "@/lib/constants/invoice-export";
 import { buildExportUrl } from "@/lib/invoice/export-url";
+import { brandToast } from "@/components/ui/custom/brand-toast";
 import { ExportFormatTabs } from "@/components/invoices/export-format-tabs";
 import { ExportSummaryBox } from "@/components/invoices/export-summary-box";
 import { ExportChip } from "@/components/invoices/export-chip";
@@ -97,17 +98,36 @@ export function ExportInvoicesModal({
   const filename = `arthapatra-invoices-${datePart}.${format}`;
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       if (format === "csv") {
         const url = buildExportUrl({ statuses, range, from, to, customer });
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = filename;
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        onAnnounce?.(`Downloading ${filename} — ${matches.length} invoices`);
+        try {
+          const res = await fetch(url);
+          if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            const msg =
+              typeof body?.error === "string" ? body.error : "Export failed. Please try again.";
+            brandToast.error({ title: "Export unavailable", sub: msg });
+            return;
+          }
+          const blob = await res.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          const anchor = document.createElement("a");
+          anchor.href = objectUrl;
+          anchor.download = filename;
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+          URL.revokeObjectURL(objectUrl);
+          onAnnounce?.(`Downloading ${filename} — ${matches.length} invoices`);
+        } catch {
+          brandToast.error({
+            title: "Export failed",
+            sub: "Could not reach the export service. Please try again.",
+          });
+          return;
+        }
       }
       // PDF path: close only — Epic 8 is deferred.
       onClose();

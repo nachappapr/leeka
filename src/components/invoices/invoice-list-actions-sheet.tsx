@@ -3,7 +3,7 @@
 import type React from "react";
 import { useEffect, useRef } from "react";
 
-import { ArrowUpDown, Download, ListFilter } from "@/components/icons";
+import { ArrowUpDown, Download, ListFilter, Lock } from "@/components/icons";
 import { Sheet, SheetClose, SheetContent, SheetTitle } from "@/components/ui/primitives/sheet";
 import { ActionSheetRow } from "@/components/invoices/action-sheet-row";
 import { InvoiceSortView } from "@/components/invoices/invoice-sort-view";
@@ -34,7 +34,7 @@ export function InvoiceListActionsSheet({
   onViewChange,
   triggerRef,
 }: InvoiceListActionsSheetProps) {
-  const { sortLabel, filterLabel, statuses, openExport } = useInvoiceListActions();
+  const { sortLabel, filterLabel, statuses, openExport, isProUser } = useInvoiceListActions();
 
   // Focus the first menu row when swapping BACK to the menu view from
   // a nested view. When the dialog opens fresh, Base UI handles initial
@@ -99,12 +99,29 @@ export function InvoiceListActionsSheet({
             />
 
             <ActionSheetRow
-              icon={<Download className="size-4.5" aria-hidden />}
-              label="Export as PDF"
-              onClick={() => {
-                onViewChange(null);
-                openExport(undefined, triggerRef);
-              }}
+              icon={
+                isProUser ? (
+                  <Download className="size-4.5" aria-hidden />
+                ) : (
+                  <Lock className="size-4.5" aria-hidden />
+                )
+              }
+              label={isProUser ? "Export as PDF" : "Export as PDF — Pro"}
+              subtitle={isProUser ? undefined : "Upgrade to Pro to unlock GST export"}
+              disabled={!isProUser}
+              aria-label={
+                isProUser
+                  ? "Export as PDF"
+                  : "Export as PDF — Pro feature. Upgrade to Pro to unlock GST export."
+              }
+              onClick={
+                isProUser
+                  ? () => {
+                      onViewChange(null);
+                      openExport(undefined, triggerRef);
+                    }
+                  : undefined
+              }
             />
 
             {/* Cancel */}

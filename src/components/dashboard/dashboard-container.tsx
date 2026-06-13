@@ -12,6 +12,7 @@ import { InvoicesCard } from "@/components/dashboard/invoices-card";
 import { EmptyDashboard } from "@/components/dashboard/empty-dashboard";
 import { ACTIVITY_ITEMS, AGING_BUCKETS } from "@/lib/constants";
 import { getDashboardSummary, getRecentInvoices } from "@/lib/data/dashboard";
+import { isPro } from "@/lib/plan/plan.server";
 import type { Invoice } from "@/lib/types";
 import type { DashboardSummary } from "@/lib/types/dashboard";
 
@@ -37,7 +38,11 @@ function PopulatedDashboard({ summary, invoices }: PopulatedDashboardProps) {
 }
 
 export async function DashboardContainer() {
-  const [summary, invoices] = await Promise.all([getDashboardSummary(), getRecentInvoices()]);
+  const [summary, invoices, isProPlan] = await Promise.all([
+    getDashboardSummary(),
+    getRecentInvoices(),
+    isPro(),
+  ]);
 
   const hasInvoices = invoices.length > 0;
 
@@ -46,6 +51,7 @@ export async function DashboardContainer() {
       invoices={invoices}
       desktopFilter="all"
       onDesktopFilterChange={() => {}}
+      isProUser={isProPlan}
     >
       <div className="flex flex-1 flex-col">
         <Topbar

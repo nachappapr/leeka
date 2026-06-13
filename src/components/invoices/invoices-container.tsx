@@ -5,6 +5,7 @@ import { InvoiceListActionsTrigger } from "@/components/invoices/invoice-list-ac
 import { InvoicesListClient } from "@/components/invoices/invoices-list-client";
 import { listInvoicesPage, getInvoiceStatusCounts, resolveBusinessId } from "@/lib/data/invoice";
 import { createClient } from "@/lib/supabase/server";
+import { isPro } from "@/lib/plan/plan.server";
 import { INVOICES_FILTER_CHIPS } from "@/lib/constants/invoices";
 import type { InvoiceStatusFilter } from "@/lib/types/invoice";
 
@@ -22,12 +23,13 @@ export async function InvoicesContainer({ initialFilter }: InvoicesContainerProp
   const supabase = await createClient();
   const businessId = await resolveBusinessId(supabase);
 
-  const [initialPage, statusCounts] = businessId
+  const [initialPage, statusCounts, isProPlan] = businessId
     ? await Promise.all([
         listInvoicesPage({ businessId, status: validatedFilter, cursor: null, limit: 25 }),
         getInvoiceStatusCounts(),
+        isPro(businessId),
       ])
-    : [{ rows: [], nextCursor: null }, {}];
+    : [{ rows: [], nextCursor: null }, {}, false];
 
   return (
     <div className="flex flex-1 flex-col">
@@ -43,6 +45,7 @@ export async function InvoicesContainer({ initialFilter }: InvoicesContainerProp
           initialNextCursor={initialPage.nextCursor}
           initialFilter={validatedFilter}
           statusCounts={statusCounts}
+          isProUser={isProPlan}
         />
       </div>
       <MobileTabBar />

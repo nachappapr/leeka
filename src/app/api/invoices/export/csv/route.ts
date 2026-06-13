@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { isPro } from "@/lib/plan/plan.server";
 import logger from "@/lib/logger";
 import { ExportCsvQuerySchema } from "@/lib/schema/invoice-export";
 import { buildCsvBody } from "@/lib/invoice/export-csv";
@@ -64,6 +65,13 @@ export async function GET(request: Request): Promise<Response> {
       { ok: false, error: "No business found for this account" },
       { status: 404 },
     );
+  }
+
+  // Pro gate: GST export is a Pro-only feature.
+  // Returns 403 { ok: false, error } — the frontend branches on this status.
+  const proUser = await isPro(businessId);
+  if (!proUser) {
+    return Response.json({ ok: false, error: "GST export is a Pro feature" }, { status: 403 });
   }
 
   // Parse and validate query params

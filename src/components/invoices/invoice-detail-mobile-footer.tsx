@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 
-import { Bell, Check, Edit, WhatsApp } from "@/components/icons";
+import { Bell, Check, Edit, Loader2, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
+import { brandToast } from "@/components/ui/custom/brand-toast";
+import { issueInvoice } from "@/app/(app)/invoices/actions";
 import { cn } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
 import { InvoiceDetailMobileSheet } from "./invoice-detail-mobile-sheet";
@@ -20,10 +22,25 @@ interface InvoiceDetailMobileFooterProps {
 export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooterProps) {
   const [sendOpen, setSendOpen] = useState(false);
   const [reminderOpen, setReminderOpen] = useState(false);
+  const [issuePending, startIssueTransition] = useTransition();
   const invoiceId = invoice.id;
   const status = invoice.status;
   const isPaid = status === "paid";
   const isDraft = status === "draft";
+
+  function handleIssue() {
+    startIssueTransition(async () => {
+      const result = await issueInvoice(invoice.invoiceUuid ?? "");
+      if (!result.ok) {
+        brandToast.error({ title: "Couldn't issue invoice", sub: result.error });
+        return;
+      }
+      brandToast.success({
+        title: "Invoice issued",
+        sub: `Invoice ${result.data.number} is now live.`,
+      });
+    });
+  }
 
   if (isPaid) {
     return (
@@ -66,11 +83,31 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           <Edit aria-hidden />
           Edit
         </Link>
-        <PillButton tone="primary" size="md" className="flex-1 rounded-lg!">
-          <Check strokeWidth={2.4} aria-hidden />
-          Send invoice
+        <PillButton
+          type="button"
+          tone="primary"
+          size="md"
+          className="flex-1 rounded-lg!"
+          disabled={issuePending}
+          aria-busy={issuePending}
+          onClick={handleIssue}
+        >
+          {issuePending ? (
+            <>
+              <Loader2 className="animate-spin motion-reduce:animate-none" aria-hidden />
+              Issuing&hellip;
+            </>
+          ) : (
+            <>
+              <Check strokeWidth={2.4} aria-hidden />
+              Issue invoice
+            </>
+          )}
         </PillButton>
         <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+        <p role="status" aria-atomic="true" className="sr-only">
+          {issuePending ? "Issuing invoice…" : " "}
+        </p>
       </footer>
     );
   }

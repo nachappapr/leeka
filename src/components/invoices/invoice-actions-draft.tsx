@@ -1,20 +1,59 @@
+"use client";
+
+import { useTransition } from "react";
 import Link from "next/link";
 
-import { Check, Download, Edit, WhatsApp } from "@/components/icons";
+import { Check, Download, Edit, Loader2, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
+import { brandToast } from "@/components/ui/custom/brand-toast";
+import { issueInvoice } from "@/app/(app)/invoices/actions";
 import { cn } from "@/lib/utils";
 
 interface InvoiceActionsDraftProps {
   invoiceId: string;
+  invoiceUuid: string;
   onSend: () => void;
 }
 
-export function InvoiceActionsDraft({ invoiceId, onSend }: InvoiceActionsDraftProps) {
+export function InvoiceActionsDraft({ invoiceId, invoiceUuid, onSend }: InvoiceActionsDraftProps) {
+  const [isPending, startTransition] = useTransition();
+
+  function handleIssue() {
+    startTransition(async () => {
+      const result = await issueInvoice(invoiceUuid);
+      if (!result.ok) {
+        brandToast.error({ title: "Couldn't issue invoice", sub: result.error });
+        return;
+      }
+      brandToast.success({
+        title: "Invoice issued",
+        sub: `Invoice ${result.data.number} is now live.`,
+      });
+    });
+  }
+
   return (
     <>
-      <PillButton tone="primary" size="md" className="w-full">
-        <Check strokeWidth={2.4} aria-hidden />
-        Send invoice
+      <PillButton
+        type="button"
+        tone="primary"
+        size="md"
+        className="w-full"
+        disabled={isPending}
+        aria-busy={isPending}
+        onClick={handleIssue}
+      >
+        {isPending ? (
+          <>
+            <Loader2 className="animate-spin motion-reduce:animate-none" aria-hidden />
+            Issuing&hellip;
+          </>
+        ) : (
+          <>
+            <Check strokeWidth={2.4} aria-hidden />
+            Issue invoice
+          </>
+        )}
       </PillButton>
       <PillButton type="button" tone="whatsapp" size="md" className="w-full" onClick={onSend}>
         <WhatsApp aria-hidden />
@@ -34,6 +73,9 @@ export function InvoiceActionsDraft({ invoiceId, onSend }: InvoiceActionsDraftPr
           PDF
         </PillButton>
       </div>
+      <p role="status" aria-atomic="true" className="sr-only">
+        {isPending ? "Issuing invoice…" : " "}
+      </p>
     </>
   );
 }

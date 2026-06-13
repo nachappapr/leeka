@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { ItemSchema } from "@/lib/schema/item";
+import { isPro } from "@/lib/plan/plan.server";
 import logger from "@/lib/logger";
 import type { SavedItem } from "@/lib/types/item";
 import type { UpdateReminderSettingsResult, ReminderSettingsData } from "@/lib/types/reminders";
@@ -167,21 +168,8 @@ export async function updateReminderSettings(
   }
 
   if (enabled) {
-    const { data: bizRow, error: bizErr } = await supabase
-      .from("businesses")
-      .select("plan")
-      .eq("id", businessId)
-      .single();
-
-    if (bizErr || !bizRow) {
-      logger.error(
-        { err: { code: bizErr?.code } },
-        "updateReminderSettings: failed to fetch business plan",
-      );
-      return { ok: false, error: "Failed to load business settings. Please try again." };
-    }
-
-    if (bizRow.plan !== "pro") {
+    const pro = await isPro(businessId);
+    if (!pro) {
       return { ok: false, error: "Auto reminders are a Pro feature" };
     }
   }
