@@ -18,3 +18,4 @@
 - [AP-34 Reports — CLOSED](project-ap34-reports.md) — Epic 14; RPC 20260612112000 + /reports UI shipped 2026-06-12; UNCOMMITTED; preset ranges (no free picker); recharts lazy-only
 - [Epic 15 Settings](project-epic15-settings.md) — AP-36/37 committed; AP-39 built 2026-06-13 awaiting review (notification_settings table + toggle wiring); AP-38 concurrent lane; AP-40 pending
 - [AP-41 Search](project-ap41-search.md) — Epic 16; started 2026-06-13; mixed unit split backend-first; pg_trgm ready; mock-detail nav boundary is a follow-up not a fix
+- [AP-44 Connection pooling — CLOSED](project-ap44-connection-pooling.md) — Epic 17; doc-only unit 2026-06-13, UNCOMMITTED; app intentionally HTTP-only; load test deferred to live invoices UI

@@ -4,3 +4,5 @@
 - [RHF standardSchemaResolver schema split pattern](feedback-rhf-standard-schema-resolver.md) — RESOLVED AP-13: split into DraftFormLineItemSchema (z.number, form layer) + DraftLineItemSchema (z.coerce, server layer); never cast the resolver
 - [Epic 12 reminders UI patterns](project-epic12-reminders.md) — AP-29 reminder modal, AP-30 settings panel; skipped vs failed distinction; max-lines/cognitive-complexity ESLint limits; render-phase reset pattern
 - [AP-36 business profile settings](project-ap36-business-profile.md) — slot pattern for SC in client container, Server/Client split, logo upload flow, standardSchemaResolver convention
+- [AP-43 bundle budget](project-ap43-bundle-budget.md) — Turbopack vs webpack analyzer distinction, measured chunk sizes, pre-existing invoice.ts type error outside scope
+- [AP-42 keyset pagination](project-ap42-keyset-pagination.md) — SC+client island pattern, resolveBusinessId location, RPC→Invoice mapping, controlled desktopFilter, deviations
