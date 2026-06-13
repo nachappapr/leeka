@@ -4,10 +4,16 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/primitives/sideba
 import { AppSidebar } from "@/components/ui/custom/sidebar";
 import { EmptyStateProvider } from "@/components/ui/custom/empty-state-provider";
 import { EmptyStateToggle } from "@/components/ui/custom/empty-state-toggle";
+import { getBusinessForUser } from "@/lib/data/business";
+import { initials } from "@/lib/utils";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
+  const [cookieStore, business] = await Promise.all([cookies(), getBusinessForUser()]);
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
+
+  const businessName = business?.name ?? "Your business";
+  const planLabel = business?.plan === "pro" ? "Pro plan" : "Free plan";
+  const avatarInitials = initials(businessName);
 
   return (
     <EmptyStateProvider>
@@ -25,7 +31,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         >
           Skip to main content
         </a>
-        <AppSidebar />
+        <AppSidebar businessName={businessName} planLabel={planLabel} initials={avatarInitials} />
         <SidebarInset id="main-content">{children}</SidebarInset>
         <EmptyStateToggle />
       </SidebarProvider>

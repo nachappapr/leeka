@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { useIsTablet } from "@/hooks/use-tablet";
 import { LekkaLogo, Sparkles, LogOut } from "@/components/icons";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/primitives/sidebar";
 import { NAV_MAIN, NAV_ACCOUNT } from "@/components/ui/custom/sidebar-nav";
 import { UpgradeButton } from "@/components/billing/upgrade-button";
+import { signOut } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
 const navButtonClass = cn(
@@ -49,10 +50,16 @@ function isNavItemActive(href: string, pathname: string, allHrefs: ReadonlyArray
   );
 }
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  businessName: string;
+  planLabel: string;
+  initials: string;
+}
+
+export function AppSidebar({ businessName, planLabel, initials }: AppSidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const { setOpen } = useSidebar();
+  const [isPending, startTransition] = React.useTransition();
   const isTablet = useIsTablet();
   const allHrefs = React.useMemo(() => [...NAV_MAIN, ...NAV_ACCOUNT].map((item) => item.href), []);
 
@@ -170,18 +177,23 @@ export function AppSidebar() {
         <div className="flex items-center gap-2.5 border-t border-sidebar-border px-2 pt-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:pt-0">
           <Avatar className="size-9 shrink-0">
             <AvatarFallback className="bg-coral! text-white! text-body-sm font-black tracking-wide">
-              RK
+              {initials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-            <div className="truncate text-caption font-bold text-ink">Raj Kumar Trading</div>
-            <div className="text-kicker text-ink-3">Free plan</div>
+            <div className="truncate text-caption font-bold text-ink">{businessName}</div>
+            <div className="text-kicker text-ink-3">{planLabel}</div>
           </div>
           <button
             type="button"
             aria-label="Log out"
-            onClick={() => router.push("/auth")}
-            className="flex shrink-0 items-center justify-center size-8.5 rounded-nav-item border border-line bg-surface text-ink-3 transition-[background-color,color,border-color] hover:bg-overdue-soft hover:text-overdue hover:border-overdue-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 group-data-[collapsible=icon]:hidden"
+            disabled={isPending}
+            onClick={() =>
+              startTransition(() => {
+                void signOut();
+              })
+            }
+            className="flex shrink-0 items-center justify-center size-8.5 rounded-nav-item border border-line bg-surface text-ink-3 transition-[background-color,color,border-color] hover:bg-overdue-soft hover:text-overdue hover:border-overdue-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1 group-data-[collapsible=icon]:hidden disabled:opacity-50 disabled:pointer-events-none"
           >
             <LogOut size={18} aria-hidden />
           </button>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 import { LogOut } from "@/components/icons";
+import { signOut } from "@/lib/actions/auth";
 import { Card } from "@/components/ui/custom/card";
 import { cn } from "@/lib/utils";
 import { SETTINGS_SECTIONS } from "@/lib/constants/settings";
@@ -17,7 +18,7 @@ export function SettingsSectionAside({
   activeSection,
   onSectionChange,
 }: SettingsSectionAsideProps) {
-  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   return (
     <Card className="max-mobile:hidden">
@@ -50,11 +51,17 @@ export function SettingsSectionAside({
           <li className="mt-2 border-t border-line pt-2">
             <button
               type="button"
-              onClick={() => router.push("/auth")}
+              disabled={isPending}
+              onClick={() =>
+                startTransition(() => {
+                  void signOut();
+                })
+              }
               className={cn(
                 "flex w-full cursor-pointer items-center gap-3 rounded-nav-item border-0 px-3 py-2.5 text-left text-body-sm font-semibold transition-[background,color] duration-100 motion-reduce:transition-none",
                 "text-overdue hover:bg-overdue-soft hover:text-overdue-ink",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1",
+                "disabled:opacity-50 disabled:pointer-events-none",
               )}
             >
               <LogOut size={20} aria-hidden />
