@@ -2,6 +2,15 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { formatPaise } from "@/lib/utils";
+import type { Database } from "@/lib/types/database";
+import type { Invoice } from "@/lib/types/invoice";
+import type {
+  InvoicePage,
+  InvoicePageCursor,
+  InvoiceStatusCounts,
+  InvoiceStatusFilter,
+} from "@/lib/types/invoice";
 
 export interface DraftInvoiceData {
   invoiceId: string;
@@ -119,4 +128,129 @@ export async function getDraftInvoice(invoiceId: string): Promise<DraftInvoiceDa
     igst: data.igst ?? 0,
     roundOff: data.round_off ?? 0,
   };
+}
+
+type DbStatus = Database["public"]["Enums"]["invoice_status"];
+
+export async function resolveBusinessId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<string | null> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: member } = await supabase
+    .from("business_members")
+    .select("business_id")
+    .eq("user_id", user.id)
+    .single();
+
+  return member?.business_id ?? null;
+}
+
+interface ListInvoicesPageArgs {
+  businessId: string;
+  status: InvoiceStatusFilter | null;
+  cursor: InvoicePageCursor | null;
+  limit?: number;
+}
+
+function mapRpcRowToInvoice(row: {
+  id: string;
+  number: string;
+  customer_name: string | null;
+  customer_city: string | null;
+  issue_date: string;
+  total: number;
+  status: DbStatus;
+}): Invoice {
+  const validStatuses = new Set<string>([
+    "draft",
+    "sent",
+    "viewed",
+    "partial",
+    "pending",
+    "paid",
+    "overdue",
+  ]);
+  return {
+    id: `#${row.number}`,
+    invoiceUuid: row.id,
+    customer: row.customer_name ?? "",
+    city: row.customer_city ?? "",
+    isoDate: row.issue_date,
+    amount: formatPaise(row.total),
+    status: validStatuses.has(row.status) ? (row.status as Invoice["status"]) : "draft",
+  };
+}
+
+export async function listInvoicesPage({
+  businessId,
+  status,
+  cursor,
+  limit = 25,
+}: ListInvoicesPageArgs): Promise<InvoicePage> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("list_invoices_page", {
+    p_business_id: businessId,
+    p_limit: limit,
+    ...(status && status !== "all" ? { p_status: status as DbStatus } : {}),
+    ...(cursor ? { p_cursor_issue_date: cursor.issueDate, p_cursor_id: cursor.id } : {}),
+  });
+
+  if (error) {
+    logger.error(
+      { err: { code: error.code, message: error.message } },
+      "listInvoicesPage: rpc failed",
+    );
+    return { rows: [], nextCursor: null };
+  }
+
+  const rows = (data ?? []).map(mapRpcRowToInvoice);
+  const lastRow = data && data.length > 0 ? data[data.length - 1] : null;
+  const nextCursor: InvoicePageCursor | null =
+    data && data.length >= limit && lastRow
+      ? { issueDate: lastRow.issue_date, id: lastRow.id }
+      : null;
+
+  return { rows, nextCursor };
+}
+
+const STATUS_FILTER_KEYS: ReadonlyArray<InvoiceStatusFilter> = [
+  "all",
+  "paid",
+  "sent",
+  "viewed",
+  "overdue",
+  "draft",
+];
+
+export async function getInvoiceStatusCounts(): Promise<InvoiceStatusCounts> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("invoice_status_counts");
+
+  if (error) {
+    logger.error(
+      { err: { code: error.code, message: error.message } },
+      "getInvoiceStatusCounts: rpc failed",
+    );
+    return {};
+  }
+
+  const counts: InvoiceStatusCounts = {};
+  let total = 0;
+
+  for (const row of data ?? []) {
+    const key = row.status as InvoiceStatusFilter;
+    if (STATUS_FILTER_KEYS.includes(key)) {
+      counts[key] = Number(row.count);
+      total += Number(row.count);
+    }
+  }
+  counts["all"] = total;
+
+  return counts;
 }

@@ -77,3 +77,15 @@ export interface InvoiceSortOption {
   hint: string;
   iconKey: "arrowDown" | "arrowUp" | "rupee" | "user";
 }
+
+export interface InvoicePageCursor {
+  issueDate: string;
+  id: string;
+}
+
+export interface InvoicePage {
+  rows: ReadonlyArray<Invoice>;
+  nextCursor: InvoicePageCursor | null;
+}
+
+export type InvoiceStatusCounts = Partial<Record<InvoiceStatusFilter, number>>;

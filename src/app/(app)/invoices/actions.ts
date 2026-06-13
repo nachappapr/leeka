@@ -15,6 +15,11 @@ import logger from "@/lib/logger";
 import { serverEnv, isWhatsAppConfigured, isEmailConfigured } from "@/lib/env.server";
 import { sendWhatsAppInvoice } from "@/lib/whatsapp/send";
 import { sendEmailInvoice } from "@/lib/email/send";
+import {
+  listInvoicesPage,
+  getInvoiceStatusCounts,
+  resolveBusinessId as resolveId,
+} from "@/lib/data/invoice";
 import type { SaveDraftResult } from "@/lib/types/invoice";
 import type { RecordPaymentResult, RecordPaymentRow } from "@/lib/types/payment";
 import type {
@@ -32,6 +37,12 @@ import type {
   SendInvoiceEmailResult,
   SendReminderResult,
 } from "@/lib/types/send";
+import type {
+  InvoicePage,
+  InvoicePageCursor,
+  InvoiceStatusCounts,
+  InvoiceStatusFilter,
+} from "@/lib/types/invoice";
 
 export type SaveInvoiceDraftResult =
   | { ok: true; data: SaveDraftResult }
@@ -1261,4 +1272,35 @@ export async function sendReminder(payload: unknown): Promise<SendReminderResult
   }
   const customerName = customer?.name ?? "Customer";
   return dispatchReminderEmail({ ...dispatchBase, recipientEmail, customerName });
+}
+
+// ── Pagination read-path actions ──────────────────────────────────────────────
+
+export interface FetchInvoicesPageResult {
+  ok: true;
+  page: InvoicePage;
+  counts: InvoiceStatusCounts;
+}
+
+export interface FetchInvoicesPageError {
+  ok: false;
+  error: string;
+}
+
+export type FetchInvoicesPageAction = FetchInvoicesPageResult | FetchInvoicesPageError;
+
+export async function fetchInvoicesPage(
+  status: InvoiceStatusFilter,
+  cursor: InvoicePageCursor | null,
+): Promise<FetchInvoicesPageAction> {
+  const supabase = await createClient();
+  const businessId = await resolveId(supabase);
+  if (!businessId) return { ok: false, error: "Not authenticated" };
+
+  const [page, counts] = await Promise.all([
+    listInvoicesPage({ businessId, status, cursor, limit: 25 }),
+    getInvoiceStatusCounts(),
+  ]);
+
+  return { ok: true, page, counts };
 }

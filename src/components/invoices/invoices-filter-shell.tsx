@@ -5,19 +5,32 @@ import { useMemo, type ReactNode } from "react";
 import { FilterChips, type FilterChipsItem } from "@/components/ui/custom/filter-chips";
 import { InvoicesMobileList } from "@/components/invoices/invoices-mobile-list";
 import { InvoicesTable } from "@/components/invoices/invoices-table";
+import { InvoicesLoadMore } from "@/components/invoices/invoices-load-more";
 import { Card } from "@/components/ui/custom/card";
 import { InvoiceListFilterSummary } from "@/components/invoices/invoice-list-filter-summary";
 import { useInvoiceListActions } from "@/components/invoices/invoice-list-actions-provider";
 import { applyInvoiceSortFilter } from "@/lib/utils";
 import { INVOICES_FILTER_CHIPS } from "@/lib/constants";
 import type { Invoice, InvoiceStatusFilter } from "@/lib/types";
+import type { InvoiceStatusCounts } from "@/lib/types/invoice";
 
 interface InvoicesFilterShellProps {
   invoices: ReadonlyArray<Invoice>;
   header: ReactNode;
+  statusCounts: InvoiceStatusCounts;
+  hasMore: boolean;
+  isLoading: boolean;
+  onLoadMore: () => void;
 }
 
-export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellProps) {
+export function InvoicesFilterShell({
+  invoices,
+  header,
+  statusCounts,
+  hasMore,
+  isLoading,
+  onLoadMore,
+}: InvoicesFilterShellProps) {
   const { sort, statuses, desktopFilter, setDesktopFilter } = useInvoiceListActions();
 
   const chipItems = useMemo<ReadonlyArray<FilterChipsItem>>(
@@ -25,18 +38,9 @@ export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellPro
       INVOICES_FILTER_CHIPS.map((chip) => ({
         id: chip.id,
         label: chip.label,
-        count:
-          chip.id === "all"
-            ? invoices.length
-            : invoices.filter((inv) => inv.status === chip.id).length,
+        count: statusCounts[chip.id as InvoiceStatusFilter] ?? 0,
       })),
-    [invoices],
-  );
-
-  const filteredInvoices = useMemo(
-    () =>
-      desktopFilter === "all" ? invoices : invoices.filter((inv) => inv.status === desktopFilter),
-    [invoices, desktopFilter],
+    [statusCounts],
   );
 
   const mobileInvoices = useMemo(
@@ -57,20 +61,21 @@ export function InvoicesFilterShell({ invoices, header }: InvoicesFilterShellPro
           />
         </div>
         <p role="status" className="sr-only max-mobile:hidden">
-          Showing {filteredInvoices.length} invoice
-          {filteredInvoices.length === 1 ? "" : "s"}
+          Showing {invoices.length} invoice
+          {invoices.length === 1 ? "" : "s"}
         </p>
         <p role="status" className="sr-only min-mobile:hidden">
           Showing {mobileInvoices.length} invoice
           {mobileInvoices.length === 1 ? "" : "s"}
         </p>
-        <InvoicesTable invoices={filteredInvoices} />
+        <InvoicesTable invoices={invoices} />
         <div className="min-mobile:hidden">
           <InvoiceListFilterSummary />
           <div className="p-4">
             <InvoicesMobileList invoices={mobileInvoices} />
           </div>
         </div>
+        <InvoicesLoadMore hasMore={hasMore} isLoading={isLoading} onLoadMore={onLoadMore} />
       </Card>
     </>
   );

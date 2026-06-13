@@ -4,7 +4,10 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { CustomerSchema } from "@/lib/schema/customer";
 import logger from "@/lib/logger";
+import { listCustomersPage } from "@/lib/data/customer";
+import { resolveBusinessId } from "@/lib/data/invoice";
 import type { CustomerSavePayload, SelectedCustomer } from "@/lib/types";
+import type { CustomerPage, CustomerPageCursor } from "@/lib/types/customer";
 
 export type UpsertCustomerResult =
   | {
@@ -161,4 +164,21 @@ export async function searchCustomersAction(query: string): Promise<SearchCustom
       state_code: row.state_code,
     })),
   };
+}
+
+// ── Pagination read-path action ───────────────────────────────────────────────
+
+export type FetchCustomersPageResult =
+  | { ok: true; page: CustomerPage }
+  | { ok: false; error: string };
+
+export async function fetchCustomersPage(
+  cursor: CustomerPageCursor | null,
+): Promise<FetchCustomersPageResult> {
+  const supabase = await createClient();
+  const businessId = await resolveBusinessId(supabase);
+  if (!businessId) return { ok: false, error: "Not authenticated" };
+
+  const page = await listCustomersPage({ businessId, cursor, limit: 25 });
+  return { ok: true, page };
 }

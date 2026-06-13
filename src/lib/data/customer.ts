@@ -1,0 +1,82 @@
+import "server-only";
+
+import { createClient } from "@/lib/supabase/server";
+import logger from "@/lib/logger";
+import { resolveBusinessId } from "@/lib/data/invoice";
+import type { Customer } from "@/lib/types/customer";
+import type { CustomerPage, CustomerPageCursor } from "@/lib/types/customer";
+
+interface ListCustomersPageArgs {
+  businessId: string;
+  cursor: CustomerPageCursor | null;
+  limit?: number;
+}
+
+function mapRpcRowToCustomer(row: {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  gstin: string | null;
+  billing_address: string | null;
+  city: string | null;
+  created_at: string;
+}): Customer {
+  return {
+    id: row.id,
+    name: row.name,
+    phone: row.phone ?? "",
+    email: row.email ?? undefined,
+    gstin: row.gstin ?? undefined,
+    address: row.billing_address ?? undefined,
+    city: row.city ?? undefined,
+    invoiceCount: 0,
+    totalBilled: "₹0",
+    outstanding: null,
+    paid: "₹0",
+    customerSince: row.created_at
+      ? new Date(row.created_at).toLocaleDateString("en-IN", {
+          month: "short",
+          year: "numeric",
+        })
+      : undefined,
+  };
+}
+
+export async function listCustomersPage({
+  businessId,
+  cursor,
+  limit = 25,
+}: ListCustomersPageArgs): Promise<CustomerPage> {
+  const supabase = await createClient();
+
+  const args = {
+    p_business_id: businessId,
+    p_limit: limit,
+    ...(cursor ? { p_cursor_name: cursor.name, p_cursor_id: cursor.id } : {}),
+  };
+
+  const { data, error } = await supabase.rpc("list_customers_page", args);
+
+  if (error) {
+    logger.error(
+      { err: { code: error.code, message: error.message } },
+      "listCustomersPage: rpc failed",
+    );
+    return { rows: [], nextCursor: null };
+  }
+
+  const rows = (data ?? []).map(mapRpcRowToCustomer);
+  const lastRow = data && data.length > 0 ? data[data.length - 1] : null;
+  const nextCursor: CustomerPageCursor | null =
+    data && data.length >= limit && lastRow ? { name: lastRow.name, id: lastRow.id } : null;
+
+  return { rows, nextCursor };
+}
+
+export async function fetchCustomersFirstPage(limit = 25): Promise<CustomerPage> {
+  const supabase = await createClient();
+  const businessId = await resolveBusinessId(supabase);
+  if (!businessId) return { rows: [], nextCursor: null };
+  return listCustomersPage({ businessId, cursor: null, limit });
+}

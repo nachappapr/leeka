@@ -53,22 +53,22 @@ export function useInvoiceListActions(): InvoiceListActionsContextValue {
 interface InvoiceListActionsProviderProps {
   children: React.ReactNode;
   invoices: ReadonlyArray<Invoice>;
-  /** Seed the desktop chip filter from a URL search param on first render. Optional — defaults to "all". */
-  initialDesktopFilter?: InvoiceStatusFilter;
+  /** Controlled desktop chip filter value — caller owns state and drives re-fetches. */
+  desktopFilter: InvoiceStatusFilter;
+  /** Called when the user clicks a chip; caller updates state + triggers re-fetch. */
+  onDesktopFilterChange: (filter: InvoiceStatusFilter) => void;
 }
 
 export function InvoiceListActionsProvider({
   children,
   invoices,
-  initialDesktopFilter,
+  desktopFilter,
+  onDesktopFilterChange,
 }: InvoiceListActionsProviderProps) {
   const [sort, setSort] = useState<InvoiceSortId>("newest");
   const [statuses, setStatuses] = useState<StatusPillStatus[]>([]);
   const [exportOpen, setExportOpen] = useState(false);
   const [exportFormat, setExportFormat] = useState<ExportFormat>("pdf");
-  const [desktopFilter, setDesktopFilter] = useState<InvoiceStatusFilter>(
-    initialDesktopFilter ?? "all",
-  );
   const [announce, setAnnounce] = useState("");
   const [exportFinalFocus, setExportFinalFocus] =
     useState<React.RefObject<HTMLElement | null> | null>(null);
@@ -134,9 +134,19 @@ export function InvoiceListActionsProvider({
       closeExport: () => setExportOpen(false),
       invoices,
       desktopFilter,
-      setDesktopFilter,
+      setDesktopFilter: onDesktopFilterChange,
     }),
-    [sort, statuses, sortLabel, filterLabel, exportOpen, openExport, invoices, desktopFilter],
+    [
+      sort,
+      statuses,
+      sortLabel,
+      filterLabel,
+      exportOpen,
+      openExport,
+      invoices,
+      desktopFilter,
+      onDesktopFilterChange,
+    ],
   );
 
   return (

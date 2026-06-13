@@ -37,3 +37,13 @@ export interface SelectedCustomer {
   last?: string;
   state_code?: string | null;
 }
+
+export interface CustomerPageCursor {
+  name: string;
+  id: string;
+}
+
+export interface CustomerPage {
+  rows: ReadonlyArray<Customer>;
+  nextCursor: CustomerPageCursor | null;
+}

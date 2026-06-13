@@ -6,21 +6,12 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  type PaginationState,
   type SortingState,
 } from "@tanstack/react-table";
 
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsUpDown,
-  Search,
-} from "@/components/icons";
+import { ArrowDown, ArrowUp, ChevronsUpDown, Search } from "@/components/icons";
 import {
   DataBody,
   DataCell,
@@ -35,8 +26,6 @@ import type { Customer } from "@/lib/types";
 import { customerColumns } from "./customers-columns";
 import { customerFilter } from "./customers-filter";
 
-const PAGE_SIZE = 5;
-
 interface CustomersTableProps {
   customers: ReadonlyArray<Customer>;
 }
@@ -44,33 +33,23 @@ interface CustomersTableProps {
 export function CustomersTable({ customers }: CustomersTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: PAGE_SIZE,
-  });
 
   // eslint-disable-next-line react-hooks/incompatible-library -- useReactTable mutates during render; "use no memo" opts out but the ESLint rule fires regardless
   const table = useReactTable({
     data: customers as Customer[],
     columns: customerColumns,
-    state: { sorting, pagination, globalFilter },
+    state: { sorting, globalFilter },
     onSortingChange: setSorting,
-    onPaginationChange: setPagination,
     onGlobalFilterChange: (value: string) => {
       setGlobalFilter(value);
-      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     },
     globalFilterFn: customerFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  const { pageIndex, pageSize } = table.getState().pagination;
   const totalRows = table.getFilteredRowModel().rows.length;
-  const from = pageIndex * pageSize + 1;
-  const to = Math.min((pageIndex + 1) * pageSize, totalRows);
 
   return (
     <div className="max-mobile:hidden">
@@ -80,14 +59,21 @@ export function CustomersTable({ customers }: CustomersTableProps) {
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-ink-3"
             aria-hidden
           />
+          <span id="customers-search-scope-hint" className="sr-only">
+            Search filters the loaded customers. Load more to search all.
+          </span>
           <InputField
             placeholder="Search customers…"
             value={globalFilter}
             onChange={(e) => table.setGlobalFilter(e.target.value)}
             className="pl-9"
             aria-label="Search customers"
+            aria-describedby="customers-search-scope-hint"
           />
         </div>
+        <p role="status" className="sr-only">
+          {totalRows} customer{totalRows === 1 ? "" : "s"} found
+        </p>
       </div>
 
       <DataTable aria-label="Customers" className="table-fixed">
@@ -188,36 +174,10 @@ export function CustomersTable({ customers }: CustomersTableProps) {
         </DataBody>
       </DataTable>
 
-      {totalRows === 0 && (
-        <p className="py-12 text-center text-body-sm text-ink-3">
+      {totalRows === 0 && globalFilter && (
+        <p role="status" className="py-12 text-center text-body-sm text-ink-3">
           No customers match &ldquo;{globalFilter}&rdquo;
         </p>
-      )}
-
-      {totalRows > pageSize && (
-        <div className="flex items-center justify-between border-t border-border px-6 py-3">
-          <p className="text-body-sm text-ink-3">
-            {from}–{to} of {totalRows}
-          </p>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              aria-label="Previous page"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-            >
-              <ChevronLeft className="size-4" aria-hidden />
-            </button>
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              aria-label="Next page"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
-            >
-              <ChevronRight className="size-4" aria-hidden />
-            </button>
-          </div>
-        </div>
       )}
     </div>
   );
