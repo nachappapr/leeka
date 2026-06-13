@@ -47,6 +47,15 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   const { pathname } = request.nextUrl;
 
+  // Already-authenticated users have no business on the auth screen — bounce
+  // them to the dashboard instead of letting them re-run the OTP flow.
+  if (user && (pathname === "/auth" || pathname.startsWith("/auth/"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   if (isPublic(pathname)) {
     return supabaseResponse;
   }

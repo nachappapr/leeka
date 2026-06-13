@@ -1,31 +1,28 @@
 import { redirect } from "next/navigation";
 
-import { getProfile } from "@/lib/data/profile";
 import { getBusinessForUser } from "@/lib/data/business";
-import { BusinessWizard } from "@/components/onboarding/business-wizard";
+import { getProfile } from "@/lib/data/profile";
+import { OnboardingClient } from "@/components/onboarding/onboarding-client";
 
 interface OnboardingContainerProps {
   prefillName?: string;
 }
 
 async function OnboardingContainer({ prefillName }: OnboardingContainerProps) {
-  const profile = await getProfile();
-
-  if (!profile) {
-    redirect("/auth");
-  }
-
-  const business = await getBusinessForUser();
+  // Auth is already guaranteed by the proxy for /onboarding, so we never bounce
+  // to /auth here — doing so would loop against the proxy's authed→/dashboard
+  // guard for accounts that have a session but no business yet.
+  const [business, profile] = await Promise.all([getBusinessForUser(), getProfile()]);
 
   if (business) {
     redirect("/dashboard");
   }
 
+  const displayName = profile?.display_name ?? null;
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-5 py-10">
-      <div className="w-full max-w-110">
-        <BusinessWizard prefillName={prefillName} />
-      </div>
+    <main>
+      <OnboardingClient prefillName={prefillName} displayName={displayName} />
     </main>
   );
 }

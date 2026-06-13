@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { INDIA_STATES } from "@/lib/constants/business";
+import { BIZ_TYPES, type BizTypeId } from "@/lib/constants/auth";
 
 const VALID_STATE_CODES = INDIA_STATES.map((s) => s.code);
 
@@ -71,6 +72,20 @@ export const BusinessSchema = z.object({
     .or(z.literal("")),
 
   logoUrl: z.string().optional().or(z.literal("")),
+
+  businessType: z.enum(BIZ_TYPES.map((t) => t.id) as [BizTypeId, ...BizTypeId[]], {
+    error: "Business type is required",
+  }),
 });
 
 export type BusinessFormData = z.infer<typeof BusinessSchema>;
+
+export const OnboardingBusinessSchema = BusinessSchema.extend({
+  ownerName: z
+    .string()
+    .min(1, "Your name is required")
+    .max(100, "Your name must be 100 characters or fewer")
+    .trim(),
+});
+
+export type OnboardingBusinessFormData = z.infer<typeof OnboardingBusinessSchema>;

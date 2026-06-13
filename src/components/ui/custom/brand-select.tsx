@@ -18,6 +18,7 @@ export interface BrandSelectProps {
   leadingIcon?: React.ReactNode;
   id?: string;
   ariaLabel?: string;
+  ariaDescribedBy?: string;
   placeholder?: string;
   className?: string;
 }
@@ -29,6 +30,7 @@ export function BrandSelect({
   leadingIcon,
   id,
   ariaLabel,
+  ariaDescribedBy,
   placeholder,
   className,
 }: BrandSelectProps) {
@@ -37,6 +39,7 @@ export function BrandSelect({
       <Select.Trigger
         id={id}
         aria-label={ariaLabel}
+        aria-describedby={ariaDescribedBy}
         className={cn(
           "w-full flex items-center gap-2.5 px-3.5 h-11 bg-card border border-line-strong rounded-md",
           "text-body-sm font-semibold text-ink text-left",

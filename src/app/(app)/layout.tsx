@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/primitives/sidebar";
 import { AppSidebar } from "@/components/ui/custom/sidebar";
@@ -9,6 +10,14 @@ import { initials } from "@/lib/utils";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const [cookieStore, business] = await Promise.all([cookies(), getBusinessForUser()]);
+
+  // Authenticated but onboarding unfinished (no business yet) — finish the
+  // wizard before any app surface renders. This is the single completeness gate
+  // for every protected page in the (app) group.
+  if (!business) {
+    redirect("/onboarding");
+  }
+
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
   const businessName = business?.name ?? "Your business";

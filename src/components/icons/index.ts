@@ -70,6 +70,8 @@ export {
   Loader2,
   Building2,
   ChevronDown,
+  MapPin,
+  RotateCcw,
 } from "lucide-react";
 
 // Custom SVG icons — paths copied verbatim from design source
@@ -90,6 +92,10 @@ export { UtensilsCrossedIcon } from "./utensils-crossed-icon";
 
 // App chrome icons
 export { LogOut } from "./log-out";
+
+// Onboarding icons
+export { GstCard } from "./gst-card";
+export { UpiCard } from "./upi-card";
 
 // Settings page icons
 export { ImageIcon } from "./image-icon";

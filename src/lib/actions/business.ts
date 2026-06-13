@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { BusinessSchema } from "@/lib/schema/business";
+import { BusinessSchema, OnboardingBusinessSchema } from "@/lib/schema/business";
 import { TaxSchema } from "@/lib/schema/tax";
 import logger from "@/lib/logger";
 import { LOGO_ALLOWED_MIME_TYPES, LOGO_MAX_BYTES } from "@/lib/constants/business";
@@ -12,10 +12,10 @@ export type CreateBusinessResult = { ok: true; businessId: string } | { ok: fals
 /**
  * Creates a new business for the authenticated user via the `create_business` RPC.
  *
- * - Validates all inputs with BusinessSchema before touching Supabase.
+ * - Validates all inputs with OnboardingBusinessSchema (BusinessSchema + ownerName) before touching Supabase.
  * - Rejects unauthenticated callers cleanly (no session → getUser returns null).
  * - Calls the security-definer RPC which atomically inserts businesses +
- *   business_members rows, bypassing the chicken-and-egg RLS issue.
+ *   business_members rows and sets profiles.display_name, bypassing the chicken-and-egg RLS issue.
  * - Returns { ok: true, businessId } on success or { ok: false, error } on failure.
  * - Never logs PII (GSTIN, address) — only safe identifiers / generic messages.
  */
@@ -25,9 +25,12 @@ export async function createBusiness(input: {
   stateCode?: string;
   gstin?: string;
   upiId?: string;
+  businessType: string;
+  ownerName: string;
 }): Promise<CreateBusinessResult> {
-  // 1. Input validation — runs before any Supabase call
-  const parsed = BusinessSchema.safeParse(input);
+  // 1. Input validation — runs before any Supabase call.
+  //    OnboardingBusinessSchema extends BusinessSchema with the required ownerName field.
+  const parsed = OnboardingBusinessSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
@@ -43,16 +46,19 @@ export async function createBusiness(input: {
     return { ok: false, error: "Not authenticated" };
   }
 
-  const { name, address, stateCode, gstin, upiId } = parsed.data;
+  const { name, address, stateCode, gstin, upiId, businessType, ownerName } = parsed.data;
 
-  // 3. Call security-definer RPC — passes empty string for unset optional fields;
-  //    the RPC coerces empty strings to NULL via nullif(trim(...), '').
+  // 3. Call security-definer RPC — atomically inserts businesses + business_members
+  //    and updates profiles.display_name in one transaction.
+  //    Empty strings for unset optional fields; the RPC coerces via nullif(trim(...), '').
   const { data, error } = await supabase.rpc("create_business", {
     p_name: name,
     p_address: address ?? "",
     p_state_code: stateCode ?? "",
     p_gstin: gstin ?? "",
     p_upi_id: upiId ?? "",
+    p_business_type: businessType,
+    p_display_name: ownerName,
   });
 
   if (error) {
@@ -62,6 +68,12 @@ export async function createBusiness(input: {
     }
     if (error.message.includes("NAME_REQUIRED")) {
       return { ok: false, error: "Business name is required." };
+    }
+    if (error.message.includes("BUSINESS_TYPE_REQUIRED")) {
+      return { ok: false, error: "Please select a business type." };
+    }
+    if (error.message.includes("INVALID_BUSINESS_TYPE")) {
+      return { ok: false, error: "Invalid business type selected." };
     }
     logger.error({ err: { code: error.code }, userId: user.id }, "createBusiness: RPC failed");
     return { ok: false, error: "Failed to create business. Please try again." };
