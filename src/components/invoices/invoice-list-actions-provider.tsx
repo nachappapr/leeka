@@ -44,6 +44,11 @@ interface InvoiceListActionsContextValue {
 
 const InvoiceListActionsContext = createContext<InvoiceListActionsContextValue | null>(null);
 
+// Stable no-op default so surfaces without a desktop chip filter (e.g. the
+// dashboard) can mount the provider without passing a function across the
+// Server/Client boundary — RSC forbids serialising function props.
+const noopFilterChange = () => {};
+
 export function useInvoiceListActions(): InvoiceListActionsContextValue {
   const ctx = useContext(InvoiceListActionsContext);
   if (!ctx) {
@@ -55,10 +60,17 @@ export function useInvoiceListActions(): InvoiceListActionsContextValue {
 interface InvoiceListActionsProviderProps {
   children: React.ReactNode;
   invoices: ReadonlyArray<Invoice>;
-  /** Controlled desktop chip filter value — caller owns state and drives re-fetches. */
-  desktopFilter: InvoiceStatusFilter;
-  /** Called when the user clicks a chip; caller updates state + triggers re-fetch. */
-  onDesktopFilterChange: (filter: InvoiceStatusFilter) => void;
+  /**
+   * Controlled desktop chip filter value — caller owns state and drives re-fetches.
+   * Optional: surfaces without a chip filter (dashboard) omit it and default to "all".
+   */
+  desktopFilter?: InvoiceStatusFilter;
+  /**
+   * Called when the user clicks a chip; caller updates state + triggers re-fetch.
+   * Optional so a Server Component can mount the provider without passing a function
+   * across the Server/Client boundary; defaults to an internal no-op.
+   */
+  onDesktopFilterChange?: (filter: InvoiceStatusFilter) => void;
   /** Whether the current business is on the Pro plan. Passed from a Server Component. */
   isProUser?: boolean;
 }
@@ -66,8 +78,8 @@ interface InvoiceListActionsProviderProps {
 export function InvoiceListActionsProvider({
   children,
   invoices,
-  desktopFilter,
-  onDesktopFilterChange,
+  desktopFilter = "all",
+  onDesktopFilterChange = noopFilterChange,
   isProUser = false,
 }: InvoiceListActionsProviderProps) {
   const [sort, setSort] = useState<InvoiceSortId>("newest");

@@ -47,12 +47,7 @@ export async function DashboardContainer() {
   const hasInvoices = invoices.length > 0;
 
   return (
-    <InvoiceListActionsProvider
-      invoices={invoices}
-      desktopFilter="all"
-      onDesktopFilterChange={() => {}}
-      isProUser={isProPlan}
-    >
+    <InvoiceListActionsProvider invoices={invoices} isProUser={isProPlan}>
       <div className="flex flex-1 flex-col">
         <Topbar
           title="Dashboard"

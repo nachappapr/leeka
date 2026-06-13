@@ -1,7 +1,4 @@
-import { MobileTabBar } from "@/components/ui/custom/mobile-tab-bar";
-import { Topbar } from "@/components/ui/custom/topbar";
 import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
-import { InvoiceListActionsTrigger } from "@/components/invoices/invoice-list-actions-trigger";
 import { InvoicesListClient } from "@/components/invoices/invoices-list-client";
 import { listInvoicesPage, getInvoiceStatusCounts, resolveBusinessId } from "@/lib/data/invoice";
 import { createClient } from "@/lib/supabase/server";
@@ -32,23 +29,13 @@ export async function InvoicesContainer({ initialFilter }: InvoicesContainerProp
     : [{ rows: [], nextCursor: null }, {}, false];
 
   return (
-    <div className="flex flex-1 flex-col">
-      <Topbar
-        title="Invoices"
-        subtitle="All your invoices"
-        actions={<InvoiceListActionsTrigger />}
-        notificationsSlot={<TopbarNotifications />}
-      />
-      <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
-        <InvoicesListClient
-          initialRows={initialPage.rows}
-          initialNextCursor={initialPage.nextCursor}
-          initialFilter={validatedFilter}
-          statusCounts={statusCounts}
-          isProUser={isProPlan}
-        />
-      </div>
-      <MobileTabBar />
-    </div>
+    <InvoicesListClient
+      initialRows={initialPage.rows}
+      initialNextCursor={initialPage.nextCursor}
+      initialFilter={validatedFilter}
+      statusCounts={statusCounts}
+      isProUser={isProPlan}
+      notificationsSlot={<TopbarNotifications />}
+    />
   );
 }
