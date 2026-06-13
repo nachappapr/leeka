@@ -2,7 +2,7 @@ import "server-only";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/pay/public-client";
 import { PublicInvoiceRpcSchema } from "@/lib/schema/pay";
 import { buildUpiIntent, buildUpiQrSvg } from "@/lib/pay/upi";
 import logger from "@/lib/logger";
@@ -35,7 +35,7 @@ interface PayContainerProps {
 }
 
 export async function PayContainer({ token }: PayContainerProps) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data: rpcData, error: rpcError } = await supabase.rpc("get_public_invoice", {
     p_token: token,

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import NextBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
   // Move the dev indicator off the bottom-left, where it overlaps the mobile
@@ -8,4 +9,8 @@ const nextConfig: NextConfig = {
   devIndicators: { position: "top-right" },
 };
 
-export default nextConfig;
+const withBundleAnalyzer = NextBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
+export default withBundleAnalyzer(nextConfig);
