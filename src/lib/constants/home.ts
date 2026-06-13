@@ -122,7 +122,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     price: "₹0",
     period: "/ month",
     features: [
-      "Up to 10 invoices per month",
+      "Up to 5 invoices per month",
       "Send on WhatsApp & email",
       "Customer & item library",
       "Mark as paid · 4 payment methods",
@@ -156,7 +156,7 @@ export const FAQS: Faq[] = [
     id: "is-it-free",
     question: "Is it really free?",
     answer:
-      "Yes — the Starter plan is free forever. You can send up to 10 invoices a month, save unlimited customers, and use every core feature. If you outgrow that, Pro is ₹99/month. We won’t show you upgrade pop-ups every 2 minutes.",
+      "Yes — the Starter plan is free forever. You can send up to 5 invoices a month, save unlimited customers, and use every core feature. If you outgrow that, Pro is ₹99/month. We won’t show you upgrade pop-ups every 2 minutes.",
   },
   {
     id: "customers-need-app",
