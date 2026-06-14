@@ -25,8 +25,8 @@ export type DraftLineItem = z.infer<typeof DraftLineItemSchema>;
  * Shared by the create-form and the Server Action (server re-parses this schema).
  */
 export const SaveInvoiceDraftSchema = z.object({
-  customerId: z.string().uuid("Customer is required"),
-  invoiceId: z.string().uuid().optional(),
+  customerId: z.uuid("Customer is required"),
+  invoiceId: z.uuid().optional(),
   items: z.array(DraftLineItemSchema).min(1, "Add at least one item"),
   notes: z.string().optional(),
 });

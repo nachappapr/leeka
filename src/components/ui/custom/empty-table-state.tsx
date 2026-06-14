@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { Plus, Users, Receipt, Bell, IndianRupee, Check, Clock } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ interface EmptyTableStateProps {
   body: string;
   primary?: ActionConfig;
   secondary?: ActionConfig;
+  primarySlot?: ReactNode;
   headingLevel?: 2 | 3;
 }
 
@@ -36,6 +38,7 @@ export function EmptyTableState({
   body,
   primary,
   secondary,
+  primarySlot,
   headingLevel = 2,
 }: EmptyTableStateProps) {
   const IconComponent = ICON_MAP[icon];
@@ -69,9 +72,10 @@ export function EmptyTableState({
       <Heading className="text-title font-extrabold tracking-snug text-ink">{title}</Heading>
       <p className="mt-2 max-w-105 text-body-sm font-medium leading-relaxed text-ink-3">{body}</p>
 
-      {(primary || secondary) && (
+      {(primarySlot || primary || secondary) && (
         <div className="mt-5 flex flex-wrap justify-center gap-2.5 max-mobile:w-full">
-          {primary && (
+          {primarySlot}
+          {!primarySlot && primary && (
             <Link
               href={primary.href}
               className={cn(

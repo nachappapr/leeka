@@ -11,6 +11,7 @@ import { InvoicesCard } from "@/components/dashboard/invoices-card";
 import { EmptyDashboard } from "@/components/dashboard/empty-dashboard";
 import { ACTIVITY_ITEMS, AGING_BUCKETS } from "@/lib/constants";
 import { getDashboardSummary, getRecentInvoices } from "@/lib/data/dashboard";
+import { businessHasCustomers } from "@/lib/data/customer";
 import { isPro } from "@/lib/plan/plan.server";
 import type { Invoice } from "@/lib/types";
 import type { DashboardSummary } from "@/lib/types/dashboard";
@@ -37,10 +38,11 @@ function PopulatedDashboard({ summary, invoices }: PopulatedDashboardProps) {
 }
 
 export async function DashboardContainer() {
-  const [summary, invoices, isProPlan] = await Promise.all([
+  const [summary, invoices, isProPlan, hasCustomers] = await Promise.all([
     getDashboardSummary(),
     getRecentInvoices(),
     isPro(),
+    businessHasCustomers(),
   ]);
 
   const hasInvoices = invoices.length > 0;
@@ -58,7 +60,7 @@ export async function DashboardContainer() {
           {hasInvoices ? (
             <PopulatedDashboard summary={summary} invoices={invoices} />
           ) : (
-            <EmptyDashboard />
+            <EmptyDashboard hasCustomers={hasCustomers} />
           )}
         </div>
         <MobileTabBar />

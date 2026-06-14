@@ -3,10 +3,22 @@ import { Check, ChevronRight } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { SETUP_STEPS } from "@/lib/constants/empty-dashboard";
+import type { SetupStep } from "@/lib/types/empty-dashboard";
 
-export function EmptySetupChecklist() {
-  const completedCount = SETUP_STEPS.filter((s) => s.done).length;
-  const pct = Math.round((completedCount / SETUP_STEPS.length) * 100);
+interface EmptySetupChecklistProps {
+  hasCustomers: boolean;
+}
+
+export function EmptySetupChecklist({ hasCustomers }: EmptySetupChecklistProps) {
+  const steps: ReadonlyArray<SetupStep> = SETUP_STEPS.map((step) => {
+    if (step.key === "customer" && hasCustomers) {
+      return { ...step, done: true, action: null };
+    }
+    return step;
+  });
+
+  const completedCount = steps.filter((s) => s.done).length;
+  const pct = Math.round((completedCount / steps.length) * 100);
 
   return (
     <div className="rounded-xl bg-card p-6 shadow-card">
@@ -23,7 +35,7 @@ export function EmptySetupChecklist() {
         <div
           className="min-w-40 max-mobile:w-full"
           role="img"
-          aria-label={`${completedCount} of ${SETUP_STEPS.length} complete`}
+          aria-label={`${completedCount} of ${steps.length} complete`}
         >
           <div className="h-1.5 overflow-hidden rounded-full bg-line">
             <div
@@ -33,14 +45,13 @@ export function EmptySetupChecklist() {
             />
           </div>
           <p className="mt-1.5 text-right text-label text-ink-3 max-mobile:text-left">
-            <strong className="font-extrabold text-ink">{completedCount}</strong> of{" "}
-            {SETUP_STEPS.length}
+            <strong className="font-extrabold text-ink">{completedCount}</strong> of {steps.length}
           </p>
         </div>
       </div>
 
       <ol className="flex flex-col gap-2.5">
-        {SETUP_STEPS.map((step, i) => (
+        {steps.map((step, i) => (
           <li
             key={step.key}
             aria-label={step.done ? `${step.label}, completed` : undefined}

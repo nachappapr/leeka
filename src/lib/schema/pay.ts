@@ -5,7 +5,7 @@ import { z } from "zod";
  * Keys match the SQL jsonb_build_object in 20260611230000_public_invoice_token_rpc.sql exactly.
  */
 export const PublicInvoiceRpcSchema = z.object({
-  invoice_id: z.string().uuid(),
+  invoice_id: z.uuid(),
   invoice_number: z.string(),
   status: z.string(),
   issue_date: z.string(),

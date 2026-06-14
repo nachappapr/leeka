@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { CustomerSchema } from "@/lib/schema/customer";
@@ -89,10 +90,16 @@ export async function upsertCustomerAction(
 
   if (error) {
     logger.error(
-      { err: { code: error.code }, userId: user.id },
+      { err: { code: error.message }, userId: user.id },
       "upsertCustomerAction: RPC failed",
     );
     return { ok: false, error: "Failed to save customer. Please try again." };
+  }
+
+  revalidatePath("/customers");
+  revalidatePath("/dashboard");
+  if (payload.id) {
+    revalidatePath(`/customers/${payload.id}`);
   }
 
   return {

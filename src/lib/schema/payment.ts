@@ -24,7 +24,7 @@ export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
  * The schema intentionally omits businessId from the client payload.
  */
 export const RecordPaymentSchema = z.object({
-  invoiceId: z.string().uuid("Invalid invoice ID"),
+  invoiceId: z.uuid("Invalid invoice ID"),
   amount: z
     .number()
     .int("Amount must be an integer (paise)")

@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { upsertCustomerAction } from "@/app/(app)/customers/actions";
 import { Check, ChevronLeft } from "@/components/icons";
+import { brandToast } from "@/components/ui/custom/brand-toast";
 import { FieldLabel } from "@/components/ui/custom/field-label";
 import { IconButton } from "@/components/ui/custom/icon-button";
 import { InputField } from "@/components/ui/custom/input-field";
@@ -43,6 +44,8 @@ export function InvoiceFormCustomerAddNewPanel({
         phone: newPhone.trim(),
         state_code: result.data.state_code,
       });
+    } else {
+      brandToast.error({ title: result.error ?? "Couldn't add customer" });
     }
   }
 

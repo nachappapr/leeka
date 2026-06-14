@@ -14,7 +14,7 @@ import { z } from "zod";
  * Reference: https://razorpay.com/docs/api/subscriptions/
  */
 export const RazorpaySubscriptionNotesSchema = z.object({
-  business_id: z.string().uuid(),
+  business_id: z.uuid(),
 });
 
 export const RazorpaySubscriptionEntitySchema = z.object({

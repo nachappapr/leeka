@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Edit } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { CustomerFormModal } from "@/components/ui/custom/customer-form-modal";
+import { brandToast } from "@/components/ui/custom/brand-toast";
 import { upsertCustomerAction } from "@/app/(app)/customers/actions";
 import type { Customer, CustomerSavePayload } from "@/lib/types";
 
@@ -28,9 +29,10 @@ export function CustomerEditTrigger({
   async function handleSave(payload: CustomerSavePayload) {
     const result = await upsertCustomerAction({ ...payload, id: customer.id });
     if (result.ok) {
-      router.refresh();
+      brandToast.success({ title: "Changes saved" });
       onSave?.(payload);
     }
+    return result;
   }
 
   function handleDelete(c: Customer) {

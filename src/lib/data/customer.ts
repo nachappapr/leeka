@@ -80,3 +80,24 @@ export async function fetchCustomersFirstPage(limit = 25): Promise<CustomerPage>
   if (!businessId) return { rows: [], nextCursor: null };
   return listCustomersPage({ businessId, cursor: null, limit });
 }
+
+export async function businessHasCustomers(): Promise<boolean> {
+  const supabase = await createClient();
+  const businessId = await resolveBusinessId(supabase);
+  if (!businessId) return false;
+
+  const { count, error } = await supabase
+    .from("customers")
+    .select("id", { count: "exact", head: true })
+    .eq("business_id", businessId);
+
+  if (error) {
+    logger.error(
+      { err: { code: error.code, message: error.message } },
+      "businessHasCustomers: query failed",
+    );
+    return false;
+  }
+
+  return (count ?? 0) > 0;
+}

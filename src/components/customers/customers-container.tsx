@@ -4,6 +4,7 @@ import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications
 import { Card } from "@/components/ui/custom/card";
 import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
 import { CustomersPageHeader } from "@/components/customers/customers-page-header";
+import { CustomerAddTrigger } from "@/components/customers/customer-add-trigger";
 import { CustomersListClient } from "@/components/customers/customers-list-client";
 import { fetchCustomersFirstPage } from "@/lib/data/customer";
 
@@ -37,7 +38,7 @@ export async function CustomersContainer() {
                 icon="Users"
                 title="No customers yet"
                 body="Add your first customer — name and phone is enough. You can fill in GSTIN & address later."
-                primary={{ label: "Add customer", href: "/customers", icon: "Plus" }}
+                primarySlot={<CustomerAddTrigger layout="block" />}
               />
             </Card>
           </>
