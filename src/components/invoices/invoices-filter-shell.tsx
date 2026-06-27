@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode, type RefObject } from "react";
+import { type PaginationState } from "@tanstack/react-table";
 
 import { FilterChips, type FilterChipsItem } from "@/components/ui/custom/filter-chips";
 import { InvoicesMobileList } from "@/components/invoices/invoices-mobile-list";
@@ -15,21 +16,37 @@ import type { Invoice, InvoiceStatusFilter } from "@/lib/types";
 import type { InvoiceStatusCounts } from "@/lib/types/invoice";
 
 interface InvoicesFilterShellProps {
-  invoices: ReadonlyArray<Invoice>;
+  rows: ReadonlyArray<Invoice>;
+  desktopPage: ReadonlyArray<Invoice>;
   header: ReactNode;
   statusCounts: InvoiceStatusCounts;
   hasMore: boolean;
   isLoading: boolean;
   onLoadMore: () => void;
+  pageIndex: number;
+  pageSize: number;
+  pageCount: number;
+  total?: number;
+  onPaginationChange: (
+    updater: PaginationState | ((prev: PaginationState) => PaginationState),
+  ) => void;
+  tableTopRef: RefObject<HTMLDivElement | null>;
 }
 
 export function InvoicesFilterShell({
-  invoices,
+  rows,
+  desktopPage,
   header,
   statusCounts,
   hasMore,
   isLoading,
   onLoadMore,
+  pageIndex,
+  pageSize,
+  pageCount,
+  total,
+  onPaginationChange,
+  tableTopRef,
 }: InvoicesFilterShellProps) {
   const { sort, statuses, desktopFilter, setDesktopFilter } = useInvoiceListActions();
 
@@ -44,14 +61,23 @@ export function InvoicesFilterShell({
   );
 
   const mobileInvoices = useMemo(
-    () => applyInvoiceSortFilter(invoices, sort, statuses),
-    [invoices, sort, statuses],
+    () => applyInvoiceSortFilter(rows, sort, statuses),
+    [rows, sort, statuses],
   );
+
+  const from = pageIndex * pageSize + 1;
+  const to = pageIndex * pageSize + desktopPage.length;
 
   return (
     <>
       {header}
       <Card>
+        <div
+          ref={tableTopRef}
+          tabIndex={-1}
+          className="sr-only"
+          aria-label={`Invoices, page ${pageIndex + 1}`}
+        />
         <div className="max-mobile:hidden">
           <FilterChips
             items={chipItems}
@@ -61,21 +87,28 @@ export function InvoicesFilterShell({
           />
         </div>
         <p role="status" className="sr-only max-mobile:hidden">
-          Showing {invoices.length} invoice
-          {invoices.length === 1 ? "" : "s"}
+          {`Showing invoices ${from}–${to}${typeof total === "number" ? ` of ${total}` : ""}`}
         </p>
         <p role="status" className="sr-only min-mobile:hidden">
           Showing {mobileInvoices.length} invoice
           {mobileInvoices.length === 1 ? "" : "s"}
         </p>
-        <InvoicesTable invoices={invoices} />
+        <InvoicesTable
+          invoices={desktopPage}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          pageCount={pageCount}
+          total={total}
+          isLoading={isLoading}
+          onPaginationChange={onPaginationChange}
+        />
         <div className="min-mobile:hidden">
           <InvoiceListFilterSummary />
           <div className="p-4">
             <InvoicesMobileList invoices={mobileInvoices} />
           </div>
+          <InvoicesLoadMore hasMore={hasMore} isLoading={isLoading} onLoadMore={onLoadMore} />
         </div>
-        <InvoicesLoadMore hasMore={hasMore} isLoading={isLoading} onLoadMore={onLoadMore} />
       </Card>
     </>
   );

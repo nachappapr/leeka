@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import type {
   NotificationGroupData,
   NotificationItemData,
@@ -74,10 +75,12 @@ export async function getNotificationGroups(): Promise<NotificationGroupData[]> 
     .limit(PANEL_LIMIT);
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getNotificationGroups: query failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getNotificationGroups: query failed",
+      );
+    }
     return [];
   }
 
@@ -133,10 +136,12 @@ export async function getUnreadNotificationCount(): Promise<number> {
     .eq("read", false);
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getUnreadNotificationCount: count query failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getUnreadNotificationCount: count query failed",
+      );
+    }
     return 0;
   }
 

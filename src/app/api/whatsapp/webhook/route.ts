@@ -4,11 +4,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { serverEnv, isWhatsAppWebhookConfigured } from "@/lib/env.server";
 import { MetaWebhookBodySchema, type MetaStatus } from "@/lib/schema/whatsapp";
 import type { MarkMessageStatusResult } from "@/lib/types/whatsapp-webhook";
+import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/types/database";
 import logger from "@/lib/logger";
-
-export const dynamic = "force-dynamic";
 
 // ── Signature verification ────────────────────────────────────────────────────
 // Computes HMAC-SHA256(rawBody, appSecret) and compares to the header value
@@ -45,8 +44,9 @@ async function processStatus(admin: SupabaseClient<Database>, status: MetaStatus
       { msgStatus: status.status },
       "whatsapp/webhook: unknown provider_msg_id — skipped",
     );
-  } else if (result.invoice_transitioned) {
+  } else if (result.invoice_transitioned && result.business_id) {
     logger.info({ msgStatus: status.status }, "whatsapp/webhook: invoice transitioned to viewed");
+    revalidateBusiness(result.business_id);
   }
 }
 

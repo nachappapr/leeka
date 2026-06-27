@@ -69,6 +69,8 @@ export interface SaveDraftResult {
   lines: SavedDraftLine[];
 }
 
+export type SaveDraftOutcome = { ok: true } | { ok: false; error: string };
+
 export type InvoiceSortId = "newest" | "oldest" | "amtHigh" | "amtLow" | "nameAZ";
 
 export interface InvoiceSortOption {
@@ -80,6 +82,8 @@ export interface InvoiceSortOption {
 
 export interface InvoicePageCursor {
   issueDate: string;
+  /** ISO-8601 timestamptz string from invoices.created_at — second cursor field after issue_date. */
+  createdAt: string;
   id: string;
 }
 

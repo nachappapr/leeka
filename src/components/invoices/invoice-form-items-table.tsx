@@ -37,7 +37,7 @@ export function InvoiceFormItemsTable({
   remove,
 }: InvoiceFormItemsTableProps) {
   return (
-    <div className="max-mobile:hidden">
+    <div>
       {/* Header row — 8-col grid: Name | HSN | Qty | Price | Disc | GST | Total | Del */}
       <div className="grid grid-cols-[1fr_90px_60px_100px_90px_80px_100px_40px] gap-2 pb-2 border-b border-border">
         <div className="text-kicker font-extrabold uppercase text-ink-3">Description</div>

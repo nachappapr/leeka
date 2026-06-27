@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import type { Invoice } from "@/lib/types";
+import type { Invoice, SaveDraftOutcome } from "@/lib/types";
 
 import type { InvoiceFormLivePreviewItem } from "./invoice-form-live-preview";
 import { InvoiceFormPreviewMobileBar } from "./invoice-form-preview-mobile-bar";
@@ -31,6 +31,7 @@ export interface InvoiceFormReviewViewProps {
   invoice: Invoice;
   onBack: () => void;
   onDiscard: () => void;
+  onSaveDraft: () => Promise<SaveDraftOutcome>;
   headingRef: React.RefObject<HTMLHeadingElement | null>;
 }
 
@@ -52,6 +53,7 @@ export function InvoiceFormReviewView({
   invoice,
   onBack,
   onDiscard,
+  onSaveDraft,
   headingRef,
 }: InvoiceFormReviewViewProps) {
   return (
@@ -78,8 +80,14 @@ export function InvoiceFormReviewView({
         footerMessage={footerMessage}
         invoice={invoice}
         onBack={onBack}
+        onSaveDraft={onSaveDraft}
       />
-      <InvoiceFormPreviewMobileBar invoice={invoice} onEdit={onBack} onDiscard={onDiscard} />
+      <InvoiceFormPreviewMobileBar
+        invoice={invoice}
+        onEdit={onBack}
+        onDiscard={onDiscard}
+        onSaveDraft={onSaveDraft}
+      />
     </>
   );
 }

@@ -2,7 +2,7 @@
 // InvoiceFormReviewDesktopBar (client) and InvoiceFormLivePreview (client) are
 // composed here; their own boundaries are sufficient.
 
-import type { Invoice } from "@/lib/types";
+import type { Invoice, SaveDraftOutcome } from "@/lib/types";
 
 import type { InvoiceFormLivePreviewItem } from "./invoice-form-live-preview";
 import { InvoiceFormLivePreview } from "./invoice-form-live-preview";
@@ -33,6 +33,7 @@ interface InvoiceFormReviewStageProps {
   // Review-stage-specific props
   invoice: Invoice;
   onBack: () => void;
+  onSaveDraft: () => Promise<SaveDraftOutcome>;
 }
 
 // Centered column that hosts the live preview + desktop action bar in the
@@ -56,6 +57,7 @@ export function InvoiceFormReviewStage({
   footerMessage,
   invoice,
   onBack,
+  onSaveDraft,
 }: InvoiceFormReviewStageProps) {
   return (
     <div className="mx-auto flex w-full max-w-190 flex-col gap-4.5 max-mobile:gap-3.5">
@@ -76,7 +78,7 @@ export function InvoiceFormReviewStage({
         footerMessage={footerMessage}
       />
 
-      <InvoiceFormReviewDesktopBar invoice={invoice} onBack={onBack} />
+      <InvoiceFormReviewDesktopBar invoice={invoice} onBack={onBack} onSaveDraft={onSaveDraft} />
     </div>
   );
 }

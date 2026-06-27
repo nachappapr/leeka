@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type OnChangeFn,
   type PaginationState,
   type SortingState,
 } from "@tanstack/react-table";
@@ -25,45 +25,59 @@ import { cn } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
 import { invoiceColumns } from "./invoices-columns";
 
-const PAGE_SIZE = 5;
-
 interface InvoicesTableProps {
   invoices: ReadonlyArray<Invoice>;
+  pageIndex: number;
+  pageSize: number;
+  pageCount: number;
+  total?: number;
+  isLoading: boolean;
+  onPaginationChange: OnChangeFn<PaginationState>;
 }
 
-export function InvoicesTable({ invoices }: InvoicesTableProps) {
+export function InvoicesTable({
+  invoices,
+  pageIndex,
+  pageSize,
+  pageCount,
+  total,
+  isLoading,
+  onPaginationChange,
+}: InvoicesTableProps) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: PAGE_SIZE,
-  });
-
-  // Reset to page 0 when the status filter upstream changes the invoices prop
-  useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  }, [invoices]);
 
   // eslint-disable-next-line react-hooks/incompatible-library -- useReactTable mutates during render; component skips React Compiler memoization
   const table = useReactTable({
     data: invoices as Invoice[],
     columns: invoiceColumns,
-    state: { sorting, pagination },
+    state: { sorting, pagination: { pageIndex, pageSize } },
+    manualPagination: true,
+    pageCount,
     onSortingChange: setSorting,
-    onPaginationChange: setPagination,
+    onPaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const { pageIndex, pageSize } = table.getState().pagination;
-  const totalRows = invoices.length;
   const from = pageIndex * pageSize + 1;
-  const to = Math.min((pageIndex + 1) * pageSize, totalRows);
+  const to = pageIndex * pageSize + table.getRowModel().rows.length;
 
   return (
-    <div className="max-mobile:hidden">
-      <DataTable aria-label="Invoices" className="table-fixed">
+    <div
+      className={cn(
+        "relative max-mobile:hidden transition-opacity duration-150 motion-reduce:transition-none",
+        isLoading && "pointer-events-none opacity-60",
+      )}
+    >
+      <div
+        aria-hidden
+        className={cn(
+          "absolute inset-x-0 top-0 h-0.5 animate-pulse bg-coral motion-reduce:animate-none",
+          !isLoading && "hidden",
+        )}
+      />
+      <DataTable aria-label="Invoices" className="table-fixed" aria-busy={isLoading || undefined}>
         <DataHeader>
           {table.getHeaderGroups().map((hg) => (
             <DataRow key={hg.id} className="cursor-default hover:bg-background">
@@ -134,14 +148,12 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
               <DataRow
                 key={row.id}
                 onClick={(e) => {
-                  // Guard: let interactive elements handle their own clicks
                   if (
                     (e.target as HTMLElement).closest(
                       'a, button, input, textarea, select, [role="menu"], [role="menuitem"], [data-slot="dropdown-menu-trigger"]',
                     )
                   )
                     return;
-                  // Guard: don't navigate when user is selecting text
                   if (window.getSelection()?.toString()) return;
                   router.push(detailHref);
                 }}
@@ -167,25 +179,33 @@ export function InvoicesTable({ invoices }: InvoicesTableProps) {
         </DataBody>
       </DataTable>
 
-      {totalRows > pageSize && (
+      {pageCount > 1 && (
         <div className="flex items-center justify-between border-t border-border px-6 py-3">
-          <p role="status" className="text-body-sm text-ink-3">
-            {from}–{to} of {totalRows}
+          <p className="text-body-sm text-ink-3">
+            {typeof total === "number" ? `${from}–${to} of ${total}` : `${from}–${to}`}
           </p>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => table.previousPage()}
+              onClick={() => {
+                if (isLoading) return;
+                table.previousPage();
+              }}
               disabled={!table.getCanPreviousPage()}
+              aria-disabled={isLoading || undefined}
               aria-label="Previous page"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
             >
               <ChevronLeft className="size-4" aria-hidden />
             </button>
             <button
-              onClick={() => table.nextPage()}
+              onClick={() => {
+                if (isLoading) return;
+                table.nextPage();
+              }}
               disabled={!table.getCanNextPage()}
+              aria-disabled={isLoading || undefined}
               aria-label="Next page"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
+              className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-card text-ink-2 hover:border-line-strong hover:bg-coral/5 hover:text-coral-press disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
             >
               <ChevronRight className="size-4" aria-hidden />
             </button>

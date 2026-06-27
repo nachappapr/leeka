@@ -4,8 +4,6 @@ import { PublicInvoiceRpcSchema } from "@/lib/schema/pay";
 import { buildUpiIntent, buildUpiQrSvg } from "@/lib/pay/upi";
 import logger from "@/lib/logger";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ token: string }> },

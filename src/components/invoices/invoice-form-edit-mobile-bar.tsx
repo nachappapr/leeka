@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 
 import { ChevronLeft, ChevronRight, Edit, MoreHorizontal, Trash2 } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
-import type { Invoice } from "@/lib/types";
+import { brandToast } from "@/components/ui/custom/brand-toast";
+import type { Invoice, SaveDraftOutcome } from "@/lib/types";
 
 import { fireDraftSavedToast } from "./invoice-form-save-draft-button";
 import type { InvoiceFormSheetItem } from "./invoice-form-mobile-sheet";
@@ -20,6 +21,7 @@ interface InvoiceFormEditMobileBarProps {
   previewDisabledMsg?: string;
   onPreview: () => void;
   onDiscard: () => void;
+  onSaveDraft: () => Promise<SaveDraftOutcome>;
   /** Fires the delete confirm toast (edit mode only — omit in create mode). */
   onDelete?: () => void;
   invoice: Invoice;
@@ -38,21 +40,33 @@ export function InvoiceFormEditMobileBar({
   previewDisabledMsg,
   onPreview,
   onDiscard,
+  onSaveDraft,
   onDelete,
   invoice,
   buttonRef,
 }: InvoiceFormEditMobileBarProps) {
   const router = useRouter();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
   const moreRef = useRef<HTMLButtonElement>(null);
 
   const sheetItems: InvoiceFormSheetItem[] = [
     {
       label: "Save as draft",
       icon: <Edit className="size-4.5" aria-hidden />,
-      onClick: () => {
+      onClick: async () => {
         setMoreOpen(false);
-        fireDraftSavedToast(invoice, () => router.push("/invoices"));
+        setIsSavingDraft(true);
+        try {
+          const outcome = await onSaveDraft();
+          if (outcome.ok) {
+            fireDraftSavedToast(invoice, () => router.push("/invoices"));
+          } else {
+            brandToast.error({ title: outcome.error });
+          }
+        } finally {
+          setIsSavingDraft(false);
+        }
       },
     },
     {
@@ -123,7 +137,10 @@ export function InvoiceFormEditMobileBar({
             ref={moreRef}
             type="button"
             aria-label="More actions"
-            onClick={() => setMoreOpen(true)}
+            aria-busy={isSavingDraft}
+            onClick={() => {
+              if (!isSavingDraft) setMoreOpen(true);
+            }}
             className="flex size-11 shrink-0 items-center justify-center rounded-lg border-[1.5px] border-ink-3 bg-card text-ink-2 transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-2"
           >
             <MoreHorizontal className="size-5" aria-hidden />

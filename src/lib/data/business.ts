@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import type { Tables } from "@/lib/types/database";
 
 /** Signed-URL TTL for business logos (1 hour). */
@@ -25,7 +26,7 @@ export async function getBusinessForUser(): Promise<Business | null> {
 
   if (error) {
     // PGRST116 = "no rows returned" — expected for users without a business
-    if (error.code !== "PGRST116") {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
       logger.error({ err: error }, "getBusinessForUser: query failed");
     }
     return null;
@@ -51,7 +52,12 @@ export async function getBusinessLogoSignedUrl(path: string): Promise<string | n
     .createSignedUrl(path, LOGO_SIGNED_URL_EXPIRY_SECONDS);
 
   if (error || !data?.signedUrl) {
-    logger.error({ err: { message: error?.message } }, "getBusinessLogoSignedUrl: signing failed");
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { message: error?.message } },
+        "getBusinessLogoSignedUrl: signing failed",
+      );
+    }
     return null;
   }
 
@@ -73,7 +79,7 @@ export async function getBusinessGstContext(): Promise<BusinessGstContext | null
     .single();
 
   if (error) {
-    if (error.code !== "PGRST116") {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
       logger.error({ err: { code: error.code } }, "getBusinessGstContext: query failed");
     }
     return null;
@@ -100,7 +106,7 @@ export async function getBusinessTemplate(): Promise<BusinessTemplate | null> {
     .single();
 
   if (error) {
-    if (error.code !== "PGRST116") {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
       logger.error({ err: { code: error.code } }, "getBusinessTemplate: query failed");
     }
     return null;
@@ -126,7 +132,7 @@ export async function getBusinessTaxDefaults(): Promise<BusinessTaxDefaults | nu
     .single();
 
   if (error) {
-    if (error.code !== "PGRST116") {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
       logger.error({ err: { code: error.code } }, "getBusinessTaxDefaults: query failed");
     }
     return null;

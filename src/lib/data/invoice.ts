@@ -1,8 +1,12 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { cacheLife, cacheTag } from "next/cache";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import { formatPaise } from "@/lib/utils";
+import { invoicesTag } from "@/lib/constants/cache-tags";
 import type { Database } from "@/lib/types/database";
 import type { Invoice } from "@/lib/types/invoice";
 import type {
@@ -88,7 +92,7 @@ export async function getDraftInvoice(invoiceId: string): Promise<DraftInvoiceDa
     .single();
 
   if (error) {
-    if (error.code !== "PGRST116") {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
       logger.error({ err: { code: error.code } }, "getDraftInvoice: query failed");
     }
     return null;
@@ -158,10 +162,11 @@ interface ListInvoicesPageArgs {
 
 function mapRpcRowToInvoice(row: {
   id: string;
-  number: string;
+  number: string | null;
   customer_name: string | null;
   customer_city: string | null;
   issue_date: string;
+  created_at: string;
   total: number;
   status: DbStatus;
 }): Invoice {
@@ -174,8 +179,9 @@ function mapRpcRowToInvoice(row: {
     "paid",
     "overdue",
   ]);
+  const displayId = row.number ? `#${row.number}` : `#${row.id.slice(0, 8).toUpperCase()}`;
   return {
-    id: `#${row.number}`,
+    id: displayId,
     invoiceUuid: row.id,
     customer: row.customer_name ?? "",
     city: row.customer_city ?? "",
@@ -191,28 +197,47 @@ export async function listInvoicesPage({
   cursor,
   limit = 25,
 }: ListInvoicesPageArgs): Promise<InvoicePage> {
-  const supabase = await createClient();
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(invoicesTag(businessId));
+
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase.rpc("list_invoices_page", {
     p_business_id: businessId,
-    p_limit: limit,
+    p_limit: limit + 1,
     ...(status && status !== "all" ? { p_status: status as DbStatus } : {}),
-    ...(cursor ? { p_cursor_issue_date: cursor.issueDate, p_cursor_id: cursor.id } : {}),
+    ...(cursor
+      ? {
+          p_cursor_issue_date: cursor.issueDate,
+          p_cursor_created_at: cursor.createdAt,
+          p_cursor_id: cursor.id,
+        }
+      : {}),
   });
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "listInvoicesPage: rpc failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "listInvoicesPage: rpc failed",
+      );
+    }
     return { rows: [], nextCursor: null };
   }
 
-  const rows = (data ?? []).map(mapRpcRowToInvoice);
-  const lastRow = data && data.length > 0 ? data[data.length - 1] : null;
+  const allRows = data ?? [];
+  const hasMore = allRows.length > limit;
+  const displayRows = hasMore ? allRows.slice(0, limit) : allRows;
+  const rows = displayRows.map(mapRpcRowToInvoice);
+  const lastDisplayed = displayRows.length > 0 ? displayRows[displayRows.length - 1] : null;
   const nextCursor: InvoicePageCursor | null =
-    data && data.length >= limit && lastRow
-      ? { issueDate: lastRow.issue_date, id: lastRow.id }
+    hasMore && lastDisplayed
+      ? {
+          issueDate: lastDisplayed.issue_date,
+          createdAt: lastDisplayed.created_at,
+          id: lastDisplayed.id,
+        }
       : null;
 
   return { rows, nextCursor };
@@ -227,16 +252,28 @@ const STATUS_FILTER_KEYS: ReadonlyArray<InvoiceStatusFilter> = [
   "draft",
 ];
 
-export async function getInvoiceStatusCounts(): Promise<InvoiceStatusCounts> {
-  const supabase = await createClient();
+export async function getInvoiceStatusCounts({
+  businessId,
+}: {
+  businessId: string;
+}): Promise<InvoiceStatusCounts> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(invoicesTag(businessId));
 
-  const { data, error } = await supabase.rpc("invoice_status_counts");
+  const supabase = createAdminClient();
+
+  const { data, error } = await supabase.rpc("invoice_status_counts", {
+    p_business_id: businessId,
+  });
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getInvoiceStatusCounts: rpc failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getInvoiceStatusCounts: rpc failed",
+      );
+    }
     return {};
   }
 

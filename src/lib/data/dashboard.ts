@@ -1,12 +1,15 @@
 import "server-only";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import { formatPaise } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 import type { DashboardSummary } from "@/lib/types/dashboard";
 import { ZERO_DASHBOARD_SUMMARY } from "@/lib/types/dashboard";
+import { cacheLife, cacheTag } from "next/cache";
+import { dashboardTag } from "@/lib/constants/cache-tags";
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return v !== null && typeof v === "object" && !Array.isArray(v);
@@ -57,39 +60,28 @@ function toUiStatus(dbStatus: string): StatusPillStatus | null {
   return null;
 }
 
-async function resolveBusinessId(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-): Promise<string | null> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export async function getDashboardSummary({
+  businessId,
+}: {
+  businessId: string;
+}): Promise<DashboardSummary> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(dashboardTag(businessId));
 
-  if (!user) return null;
-
-  const { data: member } = await supabase
-    .from("business_members")
-    .select("business_id")
-    .eq("user_id", user.id)
-    .single();
-
-  return member?.business_id ?? null;
-}
-
-export async function getDashboardSummary(): Promise<DashboardSummary> {
-  const supabase = await createClient();
-
-  const businessId = await resolveBusinessId(supabase);
-  if (!businessId) return { ...ZERO_DASHBOARD_SUMMARY };
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase.rpc("dashboard_summary", {
     p_business_id: businessId,
   });
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getDashboardSummary: RPC failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getDashboardSummary: RPC failed",
+      );
+    }
     return { ...ZERO_DASHBOARD_SUMMARY };
   }
 
@@ -98,11 +90,16 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
 
 const RECENT_LIMIT = 20;
 
-export async function getRecentInvoices(): Promise<ReadonlyArray<Invoice>> {
-  const supabase = await createClient();
+export async function getRecentInvoices({
+  businessId,
+}: {
+  businessId: string;
+}): Promise<ReadonlyArray<Invoice>> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(dashboardTag(businessId));
 
-  const businessId = await resolveBusinessId(supabase);
-  if (!businessId) return [];
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("invoices")
@@ -114,10 +111,12 @@ export async function getRecentInvoices(): Promise<ReadonlyArray<Invoice>> {
     .limit(RECENT_LIMIT);
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getRecentInvoices: query failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getRecentInvoices: query failed",
+      );
+    }
     return [];
   }
 

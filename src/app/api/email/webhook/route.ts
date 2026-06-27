@@ -4,11 +4,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { serverEnv, isEmailWebhookConfigured } from "@/lib/env.server";
 import { ResendWebhookBodySchema } from "@/lib/schema/email";
 import type { MarkEmailStatusResult } from "@/lib/types/email-webhook";
+import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/types/database";
 import logger from "@/lib/logger";
-
-export const dynamic = "force-dynamic";
 
 // ── Svix signature verification ───────────────────────────────────────────────
 // Resend uses Svix to sign webhooks. The signed content is:
@@ -90,8 +89,9 @@ async function processEvent(
 
   if (!result.message_found) {
     logger.info({ eventType: type }, "email/webhook: unknown provider_msg_id — skipped");
-  } else if (result.invoice_transitioned) {
+  } else if (result.invoice_transitioned && result.business_id) {
     logger.info({ eventType: type }, "email/webhook: invoice transitioned to viewed");
+    revalidateBusiness(result.business_id);
   }
 }
 

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { SaveInvoiceDraftSchema } from "@/lib/schema/invoice";
+import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import { RecordPaymentSchema } from "@/lib/schema/payment";
 import {
   MarkInvoicePaidSchema,
@@ -10,6 +11,7 @@ import {
   DuplicateInvoiceSchema,
   DeleteInvoiceSchema,
 } from "@/lib/schema/lifecycle";
+import { FetchInvoicesPageStatusSchema, FetchInvoicesPageCursorSchema } from "@/lib/schema/invoice";
 import { computeTotals } from "@/lib/invoice/compute-totals";
 import logger from "@/lib/logger";
 import { serverEnv, isWhatsAppConfigured, isEmailConfigured } from "@/lib/env.server";
@@ -224,6 +226,8 @@ export async function saveInvoiceDraft(payload: unknown): Promise<SaveInvoiceDra
     return { ok: false, error: "Failed to save invoice draft. Please try again." };
   }
 
+  revalidateBusiness(businessId);
+
   const row = data as unknown as SaveInvoiceDraftRow;
 
   return {
@@ -330,6 +334,8 @@ export async function issueInvoice(invoiceId: unknown): Promise<IssueInvoiceResu
     return { ok: false, error: "Failed to issue invoice. Please try again." };
   }
 
+  revalidateBusiness(businessId);
+
   const row = data as unknown as IssueInvoiceRow;
 
   return {
@@ -407,6 +413,8 @@ export async function recordPayment(payload: unknown): Promise<RecordPaymentResu
     return { ok: false, error: mapRecordPaymentError(error.message) };
   }
 
+  revalidateBusiness(businessId);
+
   const row = data as unknown as RecordPaymentRow;
 
   return {
@@ -476,6 +484,8 @@ export async function markInvoicePaid(payload: unknown): Promise<MarkInvoicePaid
     logger.error({ err: { code: error.code } }, "markInvoicePaid: RPC failed");
     return { ok: false, error: mapMarkInvoicePaidError(error.message) };
   }
+
+  revalidateBusiness(businessId);
 
   const row = data as unknown as MarkInvoicePaidRow;
 
@@ -548,6 +558,8 @@ export async function cancelInvoice(payload: unknown): Promise<CancelInvoiceResu
     return { ok: false, error: mapCancelInvoiceError(error.message) };
   }
 
+  revalidateBusiness(businessId);
+
   const row = data as unknown as CancelInvoiceRow;
 
   return {
@@ -612,6 +624,8 @@ export async function duplicateInvoice(payload: unknown): Promise<DuplicateInvoi
     logger.error({ err: { code: error.code } }, "duplicateInvoice: RPC failed");
     return { ok: false, error: mapDuplicateInvoiceError(error.message) };
   }
+
+  revalidateBusiness(businessId);
 
   const row = data as unknown as DuplicateInvoiceRow;
 
@@ -678,6 +692,8 @@ export async function deleteInvoice(payload: unknown): Promise<DeleteInvoiceResu
     logger.error({ err: { code: error.code } }, "deleteInvoice: RPC failed");
     return { ok: false, error: mapDeleteInvoiceError(error.message) };
   }
+
+  revalidateBusiness(businessId);
 
   const row = data as unknown as DeleteInvoiceRow;
 
@@ -1300,13 +1316,31 @@ export async function fetchInvoicesPage(
   status: InvoiceStatusFilter,
   cursor: InvoicePageCursor | null,
 ): Promise<FetchInvoicesPageAction> {
+  const statusParsed = FetchInvoicesPageStatusSchema.safeParse(status);
+  if (!statusParsed.success) {
+    logger.error(
+      { err: { message: statusParsed.error.message } },
+      "fetchInvoicesPage: invalid status",
+    );
+    return { ok: false, error: "Invalid status filter" };
+  }
+
+  const cursorParsed = FetchInvoicesPageCursorSchema.safeParse(cursor);
+  if (!cursorParsed.success) {
+    logger.error(
+      { err: { message: cursorParsed.error.message } },
+      "fetchInvoicesPage: invalid cursor",
+    );
+    return { ok: false, error: "Invalid cursor" };
+  }
+
   const supabase = await createClient();
   const businessId = await resolveId(supabase);
   if (!businessId) return { ok: false, error: "Not authenticated" };
 
   const [page, counts] = await Promise.all([
     listInvoicesPage({ businessId, status, cursor, limit: 25 }),
-    getInvoiceStatusCounts(),
+    getInvoiceStatusCounts({ businessId }),
   ]);
 
   return { ok: true, page, counts };

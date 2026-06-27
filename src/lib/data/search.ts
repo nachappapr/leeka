@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import { formatPaise } from "@/lib/utils";
 import type { Json } from "@/lib/types/database";
 import type { SearchResults, SearchInvoiceHit, SearchCustomerHit } from "@/lib/types/search";
@@ -78,7 +79,9 @@ export async function searchAll(query: string): Promise<SearchResults> {
   });
 
   if (error) {
-    logger.error({ err: { code: error.code, message: error.message } }, "searchAll: RPC failed");
+    if (!isAbortError(error)) {
+      logger.error({ err: { code: error.code, message: error.message } }, "searchAll: RPC failed");
+    }
     return { ...EMPTY_SEARCH_RESULTS };
   }
 

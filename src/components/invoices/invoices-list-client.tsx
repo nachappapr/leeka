@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { type PaginationState } from "@tanstack/react-table";
 
 import { Card } from "@/components/ui/custom/card";
 import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
@@ -14,13 +15,14 @@ import { fetchInvoicesPage } from "@/app/(app)/invoices/actions";
 import type { Invoice, InvoiceStatusFilter } from "@/lib/types";
 import type { InvoicePageCursor, InvoiceStatusCounts } from "@/lib/types/invoice";
 
+const PAGE_SIZE = 25;
+
 interface InvoicesListClientProps {
   initialRows: ReadonlyArray<Invoice>;
   initialNextCursor: InvoicePageCursor | null;
   initialFilter: InvoiceStatusFilter;
   statusCounts: InvoiceStatusCounts;
   isProUser: boolean;
-  /** Server-rendered notifications bell — passed through because it's an async Server Component. */
   notificationsSlot: ReactNode;
 }
 
@@ -32,27 +34,49 @@ export function InvoicesListClient({
   isProUser,
   notificationsSlot,
 }: InvoicesListClientProps) {
-  const [invoices, setInvoices] = useState<ReadonlyArray<Invoice>>(initialRows);
+  const [rows, setRows] = useState<ReadonlyArray<Invoice>>(initialRows);
   const [cursor, setCursor] = useState<InvoicePageCursor | null>(initialNextCursor);
-  const [hasMore, setHasMore] = useState(initialNextCursor !== null);
+  const [hasMoreServer, setHasMoreServer] = useState(initialNextCursor !== null);
   const [activeFilter, setActiveFilter] = useState<InvoiceStatusFilter>(initialFilter);
   const [statusCounts, setStatusCounts] = useState<InvoiceStatusCounts>(initialStatusCounts);
+  const [pageIndex, setPageIndex] = useState(0);
   const [isPending, startTransition] = useTransition();
 
+  const tableTopRef = useRef<HTMLDivElement>(null);
   const listEndRef = useRef<HTMLDivElement>(null);
   const prevHasMoreRef = useRef(initialNextCursor !== null);
   const loadMoreInFlightRef = useRef(false);
+
+  // Resync from server props when the route re-renders with fresh data (e.g.
+  // after creating an invoice + cache-tag invalidation). useState only reads
+  // its initializer on mount, so without this the first page stays pinned to
+  // the snapshot taken on first mount. initialRows only changes identity on a
+  // server render — client-side filter/load-more mutate state without touching
+  // it, so this never clobbers an in-progress filter or pagination. This is the
+  // React "adjust state during render when a prop changes" pattern (no effect).
+  const [serverRows, setServerRows] = useState(initialRows);
+
+  if (initialRows !== serverRows) {
+    setServerRows(initialRows);
+    setRows(initialRows);
+    setCursor(initialNextCursor);
+    setHasMoreServer(initialNextCursor !== null);
+    setActiveFilter(initialFilter);
+    setStatusCounts(initialStatusCounts);
+    setPageIndex(0);
+  }
 
   const handleFilterChange = useCallback(
     (filter: InvoiceStatusFilter) => {
       if (filter === activeFilter) return;
       setActiveFilter(filter);
+      setPageIndex(0);
       startTransition(async () => {
         const result = await fetchInvoicesPage(filter, null);
         if (!result.ok) return;
-        setInvoices(result.page.rows);
+        setRows(result.page.rows);
         setCursor(result.page.nextCursor);
-        setHasMore(result.page.nextCursor !== null);
+        setHasMoreServer(result.page.nextCursor !== null);
         setStatusCounts(result.counts);
       });
     },
@@ -60,32 +84,66 @@ export function InvoicesListClient({
   );
 
   const handleLoadMore = useCallback(() => {
-    if (!hasMore || !cursor) return;
+    if (!hasMoreServer || !cursor) return;
     loadMoreInFlightRef.current = true;
     startTransition(async () => {
       const result = await fetchInvoicesPage(activeFilter, cursor);
       if (!result.ok) return;
-      setInvoices((prev) => [...prev, ...result.page.rows]);
+      setRows((prev) => [...prev, ...result.page.rows]);
       setCursor(result.page.nextCursor);
-      setHasMore(result.page.nextCursor !== null);
+      setHasMoreServer(result.page.nextCursor !== null);
     });
-  }, [hasMore, cursor, activeFilter]);
+  }, [hasMoreServer, cursor, activeFilter]);
+
+  const onPaginationChange = useCallback(
+    (updater: PaginationState | ((prev: PaginationState) => PaginationState)) => {
+      const next =
+        typeof updater === "function" ? updater({ pageIndex, pageSize: PAGE_SIZE }) : updater;
+      const target = next.pageIndex;
+
+      if (target <= pageIndex) {
+        setPageIndex(target);
+        tableTopRef.current?.focus();
+      } else if (target * PAGE_SIZE < rows.length) {
+        setPageIndex(target);
+        tableTopRef.current?.focus();
+      } else if (hasMoreServer) {
+        tableTopRef.current?.focus();
+        startTransition(async () => {
+          const result = await fetchInvoicesPage(activeFilter, cursor);
+          if (!result.ok) return;
+          setRows((prev) => [...prev, ...result.page.rows]);
+          setCursor(result.page.nextCursor);
+          setHasMoreServer(result.page.nextCursor !== null);
+          setPageIndex(target);
+        });
+      }
+    },
+    [pageIndex, rows.length, hasMoreServer, activeFilter, cursor],
+  );
 
   useEffect(() => {
     const wasLoadInFlight = loadMoreInFlightRef.current;
     const prevHasMore = prevHasMoreRef.current;
-    prevHasMoreRef.current = hasMore;
+    prevHasMoreRef.current = hasMoreServer;
     loadMoreInFlightRef.current = false;
-    if (wasLoadInFlight && prevHasMore && !hasMore) {
+    if (wasLoadInFlight && prevHasMore && !hasMoreServer) {
       listEndRef.current?.focus();
     }
-  }, [hasMore]);
+  }, [hasMoreServer]);
 
-  const hasInvoices = invoices.length > 0 || hasMore;
+  const desktopRows = rows.slice(pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE);
+  const totalCount = statusCounts[activeFilter];
+  const pageCount =
+    typeof totalCount === "number"
+      ? Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
+      : Math.ceil(rows.length / PAGE_SIZE) + (hasMoreServer ? 1 : 0);
+
+  const hasInvoices = rows.length > 0 || hasMoreServer;
 
   return (
     <InvoiceListActionsProvider
-      invoices={invoices}
+      invoices={rows}
       desktopFilter={activeFilter}
       onDesktopFilterChange={handleFilterChange}
       isProUser={isProUser}
@@ -101,14 +159,26 @@ export function InvoicesListClient({
           {hasInvoices ? (
             <>
               <InvoicesFilterShell
-                invoices={invoices}
+                rows={rows}
+                desktopPage={desktopRows}
                 header={<InvoicesPageHeader />}
                 statusCounts={statusCounts}
-                hasMore={hasMore}
+                hasMore={hasMoreServer}
                 isLoading={isPending}
                 onLoadMore={handleLoadMore}
+                pageIndex={pageIndex}
+                pageSize={PAGE_SIZE}
+                pageCount={pageCount}
+                total={totalCount}
+                onPaginationChange={onPaginationChange}
+                tableTopRef={tableTopRef}
               />
-              <div ref={listEndRef} tabIndex={-1} className="sr-only" aria-hidden />
+              <div
+                ref={listEndRef}
+                tabIndex={-1}
+                className="sr-only"
+                aria-label="End of loaded invoices"
+              />
             </>
           ) : (
             <>

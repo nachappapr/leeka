@@ -23,7 +23,7 @@ export async function InvoicesContainer({ initialFilter }: InvoicesContainerProp
   const [initialPage, statusCounts, isProPlan] = businessId
     ? await Promise.all([
         listInvoicesPage({ businessId, status: validatedFilter, cursor: null, limit: 25 }),
-        getInvoiceStatusCounts(),
+        getInvoiceStatusCounts({ businessId }),
         isPro(businessId),
       ])
     : [{ rows: [], nextCursor: null }, {}, false];

@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   // the indicator and trips a known Next 16 devtools releasePointerCapture
   // bug). Dev-only; not present in production builds.
   devIndicators: { position: "top-right" },
+  cacheComponents: true,
 };
 
 const withBundleAnalyzer = NextBundleAnalyzer({

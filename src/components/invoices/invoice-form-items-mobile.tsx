@@ -38,7 +38,7 @@ export function InvoiceFormItemsMobile({
   remove,
 }: InvoiceFormItemsMobileProps) {
   return (
-    <div className="min-mobile:hidden flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       {fields.map((field, index) => (
         <div key={field.id} className="rounded-2xl bg-background border border-border p-3.5 pb-4">
           {/* Card head */}

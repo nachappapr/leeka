@@ -1,10 +1,14 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import { resolveBusinessId } from "@/lib/data/invoice";
 import type { Customer } from "@/lib/types/customer";
 import type { CustomerPage, CustomerPageCursor } from "@/lib/types/customer";
+import { cacheLife, cacheTag } from "next/cache";
+import { dashboardTag } from "@/lib/constants/cache-tags";
 
 interface ListCustomersPageArgs {
   businessId: string;
@@ -59,10 +63,12 @@ export async function listCustomersPage({
   const { data, error } = await supabase.rpc("list_customers_page", args);
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "listCustomersPage: rpc failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "listCustomersPage: rpc failed",
+      );
+    }
     return { rows: [], nextCursor: null };
   }
 
@@ -81,10 +87,16 @@ export async function fetchCustomersFirstPage(limit = 25): Promise<CustomerPage>
   return listCustomersPage({ businessId, cursor: null, limit });
 }
 
-export async function businessHasCustomers(): Promise<boolean> {
-  const supabase = await createClient();
-  const businessId = await resolveBusinessId(supabase);
-  if (!businessId) return false;
+export async function businessHasCustomers({
+  businessId,
+}: {
+  businessId: string;
+}): Promise<boolean> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(dashboardTag(businessId));
+
+  const supabase = createAdminClient();
 
   const { count, error } = await supabase
     .from("customers")
@@ -92,10 +104,12 @@ export async function businessHasCustomers(): Promise<boolean> {
     .eq("business_id", businessId);
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "businessHasCustomers: query failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "businessHasCustomers: query failed",
+      );
+    }
     return false;
   }
 

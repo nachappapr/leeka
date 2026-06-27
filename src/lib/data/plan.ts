@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import type { Tables } from "@/lib/types/database";
 
 export type PlanRow = Pick<Tables<"plans">, "amount_inr" | "billing_period">;
@@ -27,7 +28,7 @@ export async function getActiveProPlan(): Promise<PlanRow | null> {
     .single();
 
   if (error) {
-    if (error.code !== "PGRST116") {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
       logger.error({ err: { code: error.code } }, "getActiveProPlan: query failed");
     }
     return null;

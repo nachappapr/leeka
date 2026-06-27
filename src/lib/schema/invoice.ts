@@ -71,3 +71,18 @@ export const DraftFormSchema = z.object({
 });
 
 export type DraftFormData = z.infer<typeof DraftFormSchema>;
+
+export const FetchInvoicesPageStatusSchema = z.enum([
+  "all",
+  "paid",
+  "sent",
+  "viewed",
+  "overdue",
+  "draft",
+  "partial",
+  "pending",
+]);
+
+export const FetchInvoicesPageCursorSchema = z
+  .object({ issueDate: z.string(), createdAt: z.string(), id: z.string() })
+  .nullable();

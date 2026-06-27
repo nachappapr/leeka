@@ -881,7 +881,7 @@ export type Database = {
         Returns: Json;
       };
       invoice_status_counts: {
-        Args: never;
+        Args: { p_business_id: string };
         Returns: {
           count: number;
           status: Database["public"]["Enums"]["invoice_status"];
@@ -912,12 +912,14 @@ export type Database = {
       list_invoices_page: {
         Args: {
           p_business_id: string;
+          p_cursor_created_at?: string;
           p_cursor_id?: string;
           p_cursor_issue_date?: string;
           p_limit?: number;
           p_status?: Database["public"]["Enums"]["invoice_status"];
         };
         Returns: {
+          created_at: string;
           customer_city: string;
           customer_name: string;
           id: string;

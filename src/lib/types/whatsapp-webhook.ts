@@ -2,4 +2,6 @@
 export interface MarkMessageStatusResult {
   message_found: boolean;
   invoice_transitioned: boolean;
+  /** uuid of the invoice's owning business; null when message_found=false. */
+  business_id: string | null;
 }

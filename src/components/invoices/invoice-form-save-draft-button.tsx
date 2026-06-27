@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { Check, Edit, FileText, Loader2 } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { brandToast } from "@/components/ui/custom/brand-toast";
-import type { Invoice } from "@/lib/types";
+import type { Invoice, SaveDraftOutcome } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 // ── Shared toast helper ───────────────────────────────────────────────────────
@@ -32,6 +32,7 @@ export function fireDraftSavedToast(invoice: Invoice, onOpenDrafts: () => void) 
 // ── Component ─────────────────────────────────────────────────────────────────
 interface InvoiceFormSaveDraftButtonProps {
   invoice: Invoice;
+  onSaveDraft: () => Promise<SaveDraftOutcome>;
   fullWidth?: boolean;
   className?: string;
 }
@@ -40,6 +41,7 @@ type SaveState = null | "saving" | "saved";
 
 export function InvoiceFormSaveDraftButton({
   invoice,
+  onSaveDraft,
   fullWidth,
   className,
 }: InvoiceFormSaveDraftButtonProps) {
@@ -47,16 +49,19 @@ export function InvoiceFormSaveDraftButton({
   const [saveState, setSaveState] = useState<SaveState>(null);
 
   async function handleSave() {
-    // Guard against double-fire while in-flight
     if (saveState !== null) return;
 
     setSaveState("saving");
-    await new Promise<void>((r) => setTimeout(r, 600));
-    setSaveState("saved");
+    const outcome = await onSaveDraft();
 
-    fireDraftSavedToast(invoice, () => router.push("/invoices"));
-
-    setTimeout(() => setSaveState(null), 2400);
+    if (outcome.ok) {
+      setSaveState("saved");
+      fireDraftSavedToast(invoice, () => router.push("/invoices"));
+      setTimeout(() => setSaveState(null), 2400);
+    } else {
+      setSaveState(null);
+      brandToast.error({ title: outcome.error });
+    }
   }
 
   const isSaving = saveState === "saving";

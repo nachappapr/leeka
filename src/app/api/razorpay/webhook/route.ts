@@ -6,8 +6,6 @@ import { RazorpayWebhookBodySchema } from "@/lib/schema/razorpay";
 import type { ApplySubscriptionEventResult } from "@/lib/types/billing";
 import logger from "@/lib/logger";
 
-export const dynamic = "force-dynamic";
-
 // ── Lifecycle map ─────────────────────────────────────────────────────────────
 // Maps Razorpay subscription event types to the target plan value.
 // Events not present in this map are logged and ignored (valid-sig but

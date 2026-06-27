@@ -1,6 +1,8 @@
-// No "use client": this body owns no hooks/state. It is always composed inside
-// the (client) invoice forms, so it rides their client boundary; the
-// interactive children (CustomerPicker, items editors) carry their own.
+// No "use client" directive: this body owns no hooks/state. It is only ever
+// composed inside the (client) invoice forms, so it rides their client boundary
+// — it is NOT a Server Component. The viewport switch between table/mobile
+// editors is isolated in InvoiceFormItemsSwitch (a thin "use client" child) so
+// no breakpoint hook leaks into this file.
 
 import type { Control, UseFormRegister } from "react-hook-form";
 import type React from "react";
@@ -14,8 +16,7 @@ import type { DraftFormData } from "@/lib/schema/invoice";
 import type { SelectedCustomer } from "@/lib/types/customer";
 
 import { InvoiceFormCustomerPicker } from "./invoice-form-customer-picker";
-import { InvoiceFormItemsMobile } from "./invoice-form-items-mobile";
-import { InvoiceFormItemsTable } from "./invoice-form-items-table";
+import { InvoiceFormItemsSwitch } from "./invoice-form-items-switch";
 import { InvoiceFormStepHeader } from "./invoice-form-step-header";
 import { InvoiceFormTotalsStrip } from "./invoice-form-totals-strip";
 
@@ -123,13 +124,7 @@ export function InvoiceFormBody({
                 Add item
               </PillButton>
             </div>
-            <InvoiceFormItemsTable
-              fields={fields}
-              register={register}
-              control={control}
-              remove={onRemoveItem}
-            />
-            <InvoiceFormItemsMobile
+            <InvoiceFormItemsSwitch
               fields={fields}
               register={register}
               control={control}

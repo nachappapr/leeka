@@ -6,7 +6,7 @@
 
 import { WhatsApp } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
-import type { Invoice } from "@/lib/types";
+import type { Invoice, SaveDraftOutcome } from "@/lib/types";
 
 import { InvoiceFormDiscardButton } from "./invoice-form-discard-button";
 import { InvoiceFormDeleteButton } from "./invoice-form-delete-button";
@@ -17,6 +17,7 @@ interface InvoiceFormDesktopActionBarProps {
   isPending: boolean;
   invoice: Invoice;
   onDiscard: () => void;
+  onSaveDraft: () => Promise<SaveDraftOutcome>;
   /** Ghost-button label — "Discard" (create) vs "Discard changes" (edit). */
   discardLabel?: string;
   /** "edit" mode replaces the Discard button with a Delete Invoice button. */
@@ -30,6 +31,7 @@ export function InvoiceFormDesktopActionBar({
   isPending,
   invoice,
   onDiscard,
+  onSaveDraft,
   discardLabel = "Discard",
   mode = "create",
   onDelete,
@@ -42,7 +44,7 @@ export function InvoiceFormDesktopActionBar({
         <InvoiceFormDiscardButton onConfirm={onDiscard} label={discardLabel} />
       )}
       <div className="flex-1" />
-      <InvoiceFormSaveDraftButton invoice={invoice} />
+      <InvoiceFormSaveDraftButton invoice={invoice} onSaveDraft={onSaveDraft} />
       <PillButton
         tone="whatsapp"
         type="submit"

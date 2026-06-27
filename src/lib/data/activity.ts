@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import { GLANCE_DEFS } from "@/lib/constants/activity";
 import type { ActivityFilterId, ActivityGlanceRow } from "@/lib/types/activity";
 import type {
@@ -115,10 +116,12 @@ export async function getActivityEvents({
   const { data, error } = await query;
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getActivityEvents: query failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getActivityEvents: query failed",
+      );
+    }
     return { items: [], hasNextPage: false };
   }
 
@@ -178,10 +181,12 @@ export async function getActivityGlanceCounts(): Promise<ActivityGlanceRow[]> {
         .gte("created_at", monthStart);
 
       if (error) {
-        logger.error(
-          { err: { code: error.code, message: error.message } },
-          "getActivityGlanceCounts: count query failed",
-        );
+        if (!isAbortError(error)) {
+          logger.error(
+            { err: { code: error.code, message: error.message } },
+            "getActivityGlanceCounts: count query failed",
+          );
+        }
         return { label: def.label, tone: def.tone, count: 0 };
       }
 

@@ -2,6 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import logger from "@/lib/logger";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import type { ReportsMetrics, ReportsMonthPoint, ReportsSummary } from "@/lib/types/reports";
 import type { Json } from "@/lib/types/database";
 
@@ -87,10 +88,12 @@ export async function getReportsMetrics(from: string, to: string): Promise<Repor
   });
 
   if (error) {
-    logger.error(
-      { err: { code: error.code, message: error.message } },
-      "getReportsMetrics: RPC failed",
-    );
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "getReportsMetrics: RPC failed",
+      );
+    }
     return null;
   }
 

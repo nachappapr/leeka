@@ -7,20 +7,25 @@ import { useState } from "react";
 import { ChevronLeft, WhatsApp } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
-import type { Invoice } from "@/lib/types";
+import type { Invoice, SaveDraftOutcome } from "@/lib/types";
 
 import { InvoiceFormSaveDraftButton } from "./invoice-form-save-draft-button";
 
 interface InvoiceFormReviewDesktopBarProps {
   invoice: Invoice;
   onBack: () => void;
+  onSaveDraft: () => Promise<SaveDraftOutcome>;
 }
 
 // Desktop-only action row that sits beneath the live preview in the review
 // (preview) view. Mirrors the .create-preview-actions design pattern.
 // Hidden on mobile — the mobile sticky bar (InvoiceFormPreviewMobileBar)
 // provides equivalent actions on small screens.
-export function InvoiceFormReviewDesktopBar({ invoice, onBack }: InvoiceFormReviewDesktopBarProps) {
+export function InvoiceFormReviewDesktopBar({
+  invoice,
+  onBack,
+  onSaveDraft,
+}: InvoiceFormReviewDesktopBarProps) {
   const [sendOpen, setSendOpen] = useState(false);
 
   return (
@@ -33,7 +38,7 @@ export function InvoiceFormReviewDesktopBar({ invoice, onBack }: InvoiceFormRevi
 
         <div className="flex-1" />
 
-        <InvoiceFormSaveDraftButton invoice={invoice} />
+        <InvoiceFormSaveDraftButton invoice={invoice} onSaveDraft={onSaveDraft} />
 
         <PillButton tone="whatsapp" type="button" onClick={() => setSendOpen(true)}>
           <WhatsApp aria-hidden />
