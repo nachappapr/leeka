@@ -22,6 +22,7 @@ import {
 import type { Invoice } from "@/lib/types";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
+import { MarkPaidModal } from "@/components/ui/custom/mark-paid-modal";
 import { duplicateInvoice, deleteInvoice, cancelInvoice } from "@/app/(app)/invoices/actions";
 import { fireDeleteInvoiceToast } from "@/components/invoices/invoice-form-delete-button";
 import { fireCancelInvoiceToast } from "@/components/invoices/invoice-cancel-toast";
@@ -83,6 +84,9 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
   const [, startTransition] = useTransition();
   const [sendOpen, setSendOpen] = useState(false);
   const pendingSendRef = useRef(false);
+  const [markPaidOpen, setMarkPaidOpen] = useState(false);
+  const pendingMarkPaidRef = useRef(false);
+  const markPaidTriggerRef = useRef<HTMLButtonElement>(null);
   const hintId = `row-actions-hint-${invoice.id.replace(/[^a-z0-9]/gi, "")}`;
   const descriptors = invoiceRowActions(invoice);
 
@@ -90,6 +94,10 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
     if (!open && pendingSendRef.current) {
       pendingSendRef.current = false;
       setSendOpen(true);
+    }
+    if (!open && pendingMarkPaidRef.current) {
+      pendingMarkPaidRef.current = false;
+      setMarkPaidOpen(true);
     }
   }
 
@@ -164,7 +172,9 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
   }
 
   function dispatchAction(d: ActionDescriptor) {
-    if (d.id === "whatsapp") {
+    if (d.id === "markPaid") {
+      pendingMarkPaidRef.current = true;
+    } else if (d.id === "whatsapp") {
       pendingSendRef.current = true;
     } else if (d.id === "copyLink") {
       void handleCopyLink();
@@ -214,6 +224,7 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
       <div className="flex items-center justify-end gap-1">
         <DropdownMenu onOpenChangeComplete={handleMenuOpenChangeComplete}>
           <DropdownMenuTrigger
+            ref={markPaidTriggerRef}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
             aria-label="Invoice actions"
@@ -241,6 +252,14 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
         invoiceUuid={invoice.invoiceUuid ?? ""}
         open={sendOpen}
         onOpenChange={setSendOpen}
+      />
+
+      <MarkPaidModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={markPaidOpen}
+        onOpenChange={setMarkPaidOpen}
+        finalFocus={markPaidTriggerRef}
       />
     </>
   );
