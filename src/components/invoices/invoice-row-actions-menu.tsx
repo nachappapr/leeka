@@ -22,8 +22,9 @@ import {
 import type { Invoice } from "@/lib/types";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
-import { duplicateInvoice, deleteInvoice } from "@/app/(app)/invoices/actions";
+import { duplicateInvoice, deleteInvoice, cancelInvoice } from "@/app/(app)/invoices/actions";
 import { fireDeleteInvoiceToast } from "@/components/invoices/invoice-form-delete-button";
+import { fireCancelInvoiceToast } from "@/components/invoices/invoice-cancel-toast";
 import { invoiceRowActions, type ActionDescriptor } from "@/lib/invoice/invoice-row-actions";
 import { clientEnv } from "@/lib/env.client";
 import { cn } from "@/lib/utils";
@@ -146,6 +147,22 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
     });
   }
 
+  function handleCancel() {
+    const uuid = invoice.invoiceUuid;
+    if (!uuid) {
+      brandToast.error({ title: "Couldn't cancel invoice" });
+      return;
+    }
+    fireCancelInvoiceToast(invoice.id, () => {
+      startTransition(async () => {
+        const result = await cancelInvoice({ invoiceId: uuid });
+        if (!result.ok) {
+          brandToast.error({ title: "Couldn't cancel invoice", sub: result.error });
+        }
+      });
+    });
+  }
+
   function dispatchAction(d: ActionDescriptor) {
     if (d.id === "whatsapp") {
       pendingSendRef.current = true;
@@ -155,6 +172,8 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
       handleDuplicate();
     } else if (d.id === "deleteOrCancel" && d.intent === "delete") {
       handleDelete();
+    } else if (d.id === "deleteOrCancel" && d.intent === "cancel") {
+      handleCancel();
     }
   }
 

@@ -25,6 +25,8 @@ export interface BrandToastOptions {
   sub?: string;
   actions?: BrandToastAction[];
   duration?: number;
+  // Pass a stable id to update an existing toast in place (e.g. a live countdown).
+  id?: string | number;
 }
 
 type ToastKind = "success" | "warn" | "error";
@@ -119,7 +121,7 @@ function BrandToastBody({ kind, title, sub, actions, toastId }: BrandToastBodyPr
 
 // ── brandToast public API ─────────────────────────────────────────────────────
 function fireToast(kind: ToastKind, opts: BrandToastOptions) {
-  toast.custom(
+  return toast.custom(
     (id) => (
       <BrandToastBody
         kind={kind}
@@ -129,7 +131,7 @@ function fireToast(kind: ToastKind, opts: BrandToastOptions) {
         toastId={id}
       />
     ),
-    { duration: opts.duration },
+    { duration: opts.duration, id: opts.id },
   );
 }
 

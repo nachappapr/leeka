@@ -69,6 +69,7 @@ export const INVOICES: ReadonlyArray<Invoice> = [
 ];
 
 // "partial" and "pending" are intentionally omitted — the design exposes only these 5 status filters.
+// "cancelled" is also excluded by app-wide convention (the RPCs filter it out).
 export const INVOICES_FILTER_CHIPS: ReadonlyArray<InvoiceFilterChip> = [
   { id: "all", label: "All" },
   { id: "paid", label: "Paid" },
