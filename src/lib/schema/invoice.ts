@@ -72,6 +72,27 @@ export const DraftFormSchema = z.object({
 
 export type DraftFormData = z.infer<typeof DraftFormSchema>;
 
+/**
+ * Validates a single line item as returned by the save_invoice_draft RPC.
+ * Used to parse the line_items jsonb column from the RETURNS TABLE response
+ * without casting through unknown.
+ */
+export const SavedDraftLineReturnSchema = z.object({
+  position: z.number(),
+  name: z.string(),
+  hsn_sac: z.string().nullable(),
+  qty: z.number(),
+  unit_price: z.number(),
+  discount: z.number(),
+  gst_rate: z.number(),
+  line_subtotal: z.number(),
+  line_tax: z.number(),
+  line_total: z.number(),
+  cgst: z.number(),
+  sgst: z.number(),
+  igst: z.number(),
+});
+
 export const FetchInvoicesPageStatusSchema = z.enum([
   "all",
   "paid",

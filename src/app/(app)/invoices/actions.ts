@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { SaveInvoiceDraftSchema } from "@/lib/schema/invoice";
+import { SaveInvoiceDraftSchema, SavedDraftLineReturnSchema } from "@/lib/schema/invoice";
 import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import { RecordPaymentSchema } from "@/lib/schema/payment";
 import {
@@ -23,16 +23,12 @@ import {
   resolveBusinessId as resolveId,
 } from "@/lib/data/invoice";
 import type { SaveDraftResult } from "@/lib/types/invoice";
-import type { RecordPaymentResult, RecordPaymentRow } from "@/lib/types/payment";
+import type { RecordPaymentResult } from "@/lib/types/payment";
 import type {
   MarkInvoicePaidResult,
-  MarkInvoicePaidRow,
   CancelInvoiceResult,
-  CancelInvoiceRow,
   DuplicateInvoiceResult,
-  DuplicateInvoiceRow,
   DeleteInvoiceResult,
-  DeleteInvoiceRow,
 } from "@/lib/types/lifecycle";
 import type {
   SendInvoiceResult,
@@ -62,33 +58,12 @@ async function getBusinessId(
   return member?.business_id ?? null;
 }
 
-interface SaveInvoiceDraftRow {
-  invoice_id: string;
-  status: "draft";
-  subtotal: number;
-  tax_total: number;
-  total: number;
-  cgst: number;
-  sgst: number;
-  igst: number;
-  round_off: number;
-  is_interstate: boolean;
-  gst_enabled: boolean;
-  line_items: Array<{
-    position: number;
-    name: string;
-    hsn_sac: string | null;
-    qty: number;
-    unit_price: number;
-    discount: number;
-    gst_rate: number;
-    line_subtotal: number;
-    line_tax: number;
-    line_total: number;
-    cgst: number;
-    sgst: number;
-    igst: number;
-  }>;
+function mapSaveDraftError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("not a draft")) return "This invoice cannot be edited (not a draft)";
+  if (msg.includes("not found")) return "Invoice not found";
+  return "Failed to save invoice draft. Please try again.";
 }
 
 /**
@@ -194,57 +169,62 @@ export async function saveInvoiceDraft(payload: unknown): Promise<SaveInvoiceDra
     };
   });
 
-  const { data, error } = await supabase.rpc("save_invoice_draft", {
-    p_business_id: businessId,
-    p_invoice_id: invoiceId ?? undefined,
-    p_customer_id: customerId,
-    p_notes: notes ?? undefined,
-    p_subtotal: totals.subtotal,
-    p_tax_total: totals.tax_total,
-    p_total: totals.total,
-    p_line_items: lineItemsPayload,
-    p_cgst: totals.cgst,
-    p_sgst: totals.sgst,
-    p_igst: totals.igst,
-    p_round_off: totals.round_off,
-    p_is_interstate: isInterstate,
-    p_gst_enabled: gstEnabled,
-  });
+  const { data, error } = await supabase
+    .rpc("save_invoice_draft", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId ?? undefined,
+      p_customer_id: customerId,
+      p_notes: notes ?? undefined,
+      p_subtotal: totals.subtotal,
+      p_tax_total: totals.tax_total,
+      p_total: totals.total,
+      p_line_items: lineItemsPayload,
+      p_cgst: totals.cgst,
+      p_sgst: totals.sgst,
+      p_igst: totals.igst,
+      p_round_off: totals.round_off,
+      p_is_interstate: isInterstate,
+      p_gst_enabled: gstEnabled,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "saveInvoiceDraft: RPC failed");
-    const msg: string = typeof error.message === "string" ? error.message : "";
-    if (msg.includes("not a member")) {
-      return { ok: false, error: "You are not a member of this business" };
-    }
-    if (msg.includes("not a draft")) {
-      return { ok: false, error: "This invoice cannot be edited (not a draft)" };
-    }
-    if (msg.includes("not found")) {
-      return { ok: false, error: "Invoice not found" };
-    }
-    return { ok: false, error: "Failed to save invoice draft. Please try again." };
+    return { ok: false, error: mapSaveDraftError(error.message) };
   }
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as SaveInvoiceDraftRow;
+  if (data.status !== "draft") {
+    logger.error({ status: data.status }, "saveInvoiceDraft: RPC returned non-draft status");
+    return { ok: false, error: "Failed to save draft. Please try again." };
+  }
+
+  // line_items is a jsonb column; validate its shape with Zod to avoid any cast.
+  const linesResult = SavedDraftLineReturnSchema.array().safeParse(data.line_items);
+  if (!linesResult.success) {
+    logger.error(
+      { err: { message: linesResult.error.message } },
+      "saveInvoiceDraft: line_items parse failed",
+    );
+    return { ok: false, error: "Failed to parse invoice lines. Please try again." };
+  }
 
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      status: row.status,
-      subtotal: row.subtotal,
-      taxTotal: row.tax_total,
-      total: row.total,
-      cgst: row.cgst,
-      sgst: row.sgst,
-      igst: row.igst,
-      roundOff: row.round_off,
-      isInterstate: row.is_interstate,
-      gstEnabled: row.gst_enabled,
-      lines: row.line_items.map((l) => ({
+      invoiceId: data.invoice_id,
+      status: data.status,
+      subtotal: data.subtotal,
+      taxTotal: data.tax_total,
+      total: data.total,
+      cgst: data.cgst,
+      sgst: data.sgst,
+      igst: data.igst,
+      roundOff: data.round_off,
+      isInterstate: data.is_interstate,
+      gstEnabled: data.gst_enabled,
+      lines: linesResult.data.map((l) => ({
         position: l.position,
         name: l.name,
         hsn_sac: l.hsn_sac,
@@ -272,12 +252,6 @@ export type IssueInvoiceResult =
 const IssueInvoiceInputSchema = z.object({
   invoiceId: z.string().uuid("Invalid invoice ID"),
 });
-
-interface IssueInvoiceRow {
-  invoice_id: string;
-  number: string;
-  status: string;
-}
 
 /**
  * issueInvoice — AP-16 Unit 2 Server Action.
@@ -307,10 +281,12 @@ export async function issueInvoice(invoiceId: unknown): Promise<IssueInvoiceResu
     return { ok: false, error: "No business found for this account" };
   }
 
-  const { data, error } = await supabase.rpc("issue_invoice", {
-    p_business_id: businessId,
-    p_invoice_id: parsed.data.invoiceId,
-  });
+  const { data, error } = await supabase
+    .rpc("issue_invoice", {
+      p_business_id: businessId,
+      p_invoice_id: parsed.data.invoiceId,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "issueInvoice: RPC failed");
@@ -336,14 +312,12 @@ export async function issueInvoice(invoiceId: unknown): Promise<IssueInvoiceResu
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as IssueInvoiceRow;
-
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      number: row.number,
-      status: row.status,
+      invoiceId: data.invoice_id,
+      number: data.number,
+      status: data.status,
     },
   };
 }
@@ -399,14 +373,16 @@ export async function recordPayment(payload: unknown): Promise<RecordPaymentResu
     return { ok: false, error: "No business found for this account" };
   }
 
-  const { data, error } = await supabase.rpc("record_payment", {
-    p_business_id: businessId,
-    p_invoice_id: invoiceId,
-    p_amount: amount,
-    p_method: method,
-    p_reference: reference,
-    p_note: note,
-  });
+  const { data, error } = await supabase
+    .rpc("record_payment", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId,
+      p_amount: amount,
+      p_method: method,
+      p_reference: reference,
+      p_note: note,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "recordPayment: RPC failed");
@@ -415,15 +391,15 @@ export async function recordPayment(payload: unknown): Promise<RecordPaymentResu
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as RecordPaymentRow;
-
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      amountPaid: row.amount_paid,
-      status: row.status,
-      paidAt: row.paid_at,
+      invoiceId: data.invoice_id,
+      amountPaid: data.amount_paid,
+      status: data.status,
+      // The type generator emits string for paid_at but the function can return
+      // null (partial payment). Widening to string | null matches RecordPaymentData.
+      paidAt: data.paid_at,
     },
   };
 }
@@ -474,11 +450,13 @@ export async function markInvoicePaid(payload: unknown): Promise<MarkInvoicePaid
     return { ok: false, error: "No business found for this account" };
   }
 
-  const { data, error } = await supabase.rpc("mark_invoice_paid", {
-    p_business_id: businessId,
-    p_invoice_id: invoiceId,
-    p_method: method,
-  });
+  const { data, error } = await supabase
+    .rpc("mark_invoice_paid", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId,
+      p_method: method,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "markInvoicePaid: RPC failed");
@@ -487,15 +465,13 @@ export async function markInvoicePaid(payload: unknown): Promise<MarkInvoicePaid
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as MarkInvoicePaidRow;
-
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      amountPaid: row.amount_paid,
-      status: row.status,
-      paidAt: row.paid_at,
+      invoiceId: data.invoice_id,
+      amountPaid: data.amount_paid,
+      status: data.status,
+      paidAt: data.paid_at,
     },
   };
 }
@@ -548,10 +524,12 @@ export async function cancelInvoice(payload: unknown): Promise<CancelInvoiceResu
     return { ok: false, error: "No business found for this account" };
   }
 
-  const { data, error } = await supabase.rpc("cancel_invoice", {
-    p_business_id: businessId,
-    p_invoice_id: invoiceId,
-  });
+  const { data, error } = await supabase
+    .rpc("cancel_invoice", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "cancelInvoice: RPC failed");
@@ -560,13 +538,11 @@ export async function cancelInvoice(payload: unknown): Promise<CancelInvoiceResu
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as CancelInvoiceRow;
-
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      status: row.status,
+      invoiceId: data.invoice_id,
+      status: data.status,
     },
   };
 }
@@ -615,10 +591,12 @@ export async function duplicateInvoice(payload: unknown): Promise<DuplicateInvoi
     return { ok: false, error: "No business found for this account" };
   }
 
-  const { data, error } = await supabase.rpc("duplicate_invoice", {
-    p_business_id: businessId,
-    p_invoice_id: invoiceId,
-  });
+  const { data, error } = await supabase
+    .rpc("duplicate_invoice", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "duplicateInvoice: RPC failed");
@@ -627,13 +605,11 @@ export async function duplicateInvoice(payload: unknown): Promise<DuplicateInvoi
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as DuplicateInvoiceRow;
-
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      status: row.status,
+      invoiceId: data.invoice_id,
+      status: data.status,
     },
   };
 }
@@ -683,10 +659,12 @@ export async function deleteInvoice(payload: unknown): Promise<DeleteInvoiceResu
     return { ok: false, error: "No business found for this account" };
   }
 
-  const { data, error } = await supabase.rpc("delete_invoice", {
-    p_business_id: businessId,
-    p_invoice_id: invoiceId,
-  });
+  const { data, error } = await supabase
+    .rpc("delete_invoice", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId,
+    })
+    .single();
 
   if (error) {
     logger.error({ err: { code: error.code } }, "deleteInvoice: RPC failed");
@@ -695,13 +673,11 @@ export async function deleteInvoice(payload: unknown): Promise<DeleteInvoiceResu
 
   revalidateBusiness(businessId);
 
-  const row = data as unknown as DeleteInvoiceRow;
-
   return {
     ok: true,
     data: {
-      invoiceId: row.invoice_id,
-      deleted: row.deleted,
+      invoiceId: data.invoice_id,
+      deleted: data.deleted,
     },
   };
 }

@@ -847,7 +847,10 @@ export type Database = {
       };
       cancel_invoice: {
         Args: { p_business_id: string; p_invoice_id: string };
-        Returns: Json;
+        Returns: {
+          invoice_id: string;
+          status: Database["public"]["Enums"]["invoice_status"];
+        }[];
       };
       claim_due_reminders: { Args: never; Returns: Json };
       create_business: {
@@ -865,7 +868,10 @@ export type Database = {
       dashboard_summary: { Args: { p_business_id: string }; Returns: Json };
       delete_invoice: {
         Args: { p_business_id: string; p_invoice_id: string };
-        Returns: Json;
+        Returns: {
+          deleted: boolean;
+          invoice_id: string;
+        }[];
       };
       delete_item: {
         Args: { p_business_id: string; p_item_id: string };
@@ -873,7 +879,10 @@ export type Database = {
       };
       duplicate_invoice: {
         Args: { p_business_id: string; p_invoice_id: string };
-        Returns: Json;
+        Returns: {
+          invoice_id: string;
+          status: Database["public"]["Enums"]["invoice_status"];
+        }[];
       };
       get_public_invoice: { Args: { p_token: string }; Returns: Json };
       get_reports_metrics: {
@@ -889,7 +898,11 @@ export type Database = {
       };
       issue_invoice: {
         Args: { p_business_id: string; p_invoice_id: string };
-        Returns: Json;
+        Returns: {
+          invoice_id: string;
+          number: string;
+          status: Database["public"]["Enums"]["invoice_status"];
+        }[];
       };
       list_customers_page: {
         Args: {
@@ -940,7 +953,12 @@ export type Database = {
       };
       mark_invoice_paid: {
         Args: { p_business_id: string; p_invoice_id: string; p_method?: string };
-        Returns: Json;
+        Returns: {
+          amount_paid: number;
+          invoice_id: string;
+          paid_at: string;
+          status: Database["public"]["Enums"]["invoice_status"];
+        }[];
       };
       mark_message_status: {
         Args: { p_provider_msg_id: string; p_status: string };
@@ -959,7 +977,12 @@ export type Database = {
           p_note?: string;
           p_reference?: string;
         };
-        Returns: Json;
+        Returns: {
+          amount_paid: number;
+          invoice_id: string;
+          paid_at: string;
+          status: Database["public"]["Enums"]["invoice_status"];
+        }[];
       };
       save_invoice_draft: {
         Args: {
@@ -978,7 +1001,20 @@ export type Database = {
           p_tax_total?: number;
           p_total?: number;
         };
-        Returns: Json;
+        Returns: {
+          cgst: number;
+          gst_enabled: boolean;
+          igst: number;
+          invoice_id: string;
+          is_interstate: boolean;
+          line_items: Json;
+          round_off: number;
+          sgst: number;
+          status: Database["public"]["Enums"]["invoice_status"];
+          subtotal: number;
+          tax_total: number;
+          total: number;
+        }[];
       };
       search_all: {
         Args: { p_business_id: string; p_limit?: number; p_query: string };
