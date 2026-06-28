@@ -28,7 +28,14 @@ export interface InvoiceLineItem {
 
 export interface InvoiceDetail extends Invoice {
   items: ReadonlyArray<InvoiceLineItem>;
-  taxPct: number;
+  /** Optional GST percentage label — present in legacy/mock data; real rows use stored taxTotal. */
+  taxPct?: number;
+  /** Authoritative stored subtotal in paise. */
+  subtotal: number;
+  /** Authoritative stored tax total in paise. */
+  taxTotal: number;
+  /** Authoritative stored total in paise. */
+  total: number;
   dueIsoDate: string;
   issuerName: string;
   notes?: string;

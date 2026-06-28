@@ -73,6 +73,7 @@ export {
   MapPin,
   RotateCcw,
   RotateCw,
+  Ban,
 } from "lucide-react";
 
 // Custom SVG icons — paths copied verbatim from design source

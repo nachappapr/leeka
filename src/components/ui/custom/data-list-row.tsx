@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import { StatusPill } from "@/components/ui/custom/status-pill";
 import type { Invoice } from "@/lib/types";
 import { formatInvoiceDate } from "@/lib/utils";
+import { invoiceDetailHref } from "@/lib/invoice/invoice-detail-href";
 
 export interface DataListRowProps {
   invoice: Invoice;
@@ -15,7 +16,7 @@ export function DataListRow({ invoice }: DataListRowProps) {
     .map((w) => w[0])
     .join("")
     .slice(0, 2);
-  const href = `/invoices/${invoice.id.replace("#", "")}`;
+  const href = invoiceDetailHref(invoice);
 
   return (
     <li className="rounded-2xl bg-card shadow-card transition-colors hover:bg-coral/5 active:bg-coral/5">

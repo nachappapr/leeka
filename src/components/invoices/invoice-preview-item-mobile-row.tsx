@@ -1,5 +1,5 @@
 import type { InvoiceLineItem } from "@/lib/types";
-import { formatRupees } from "@/lib/utils";
+import { formatPaise } from "@/lib/utils";
 
 interface InvoicePreviewItemMobileRowProps {
   item: InvoiceLineItem;
@@ -12,11 +12,11 @@ export function InvoicePreviewItemMobileRow({ item }: InvoicePreviewItemMobileRo
       <div className="min-w-0 flex-1">
         <div className="text-body font-bold text-ink">{item.name}</div>
         <div className="tabular mt-0.5 text-caption text-ink-3">
-          {item.qty} × {formatRupees(item.unitPrice)}
+          {item.qty} × {formatPaise(item.unitPrice)}
         </div>
       </div>
       <div className="tabular text-body font-black text-ink whitespace-nowrap">
-        {formatRupees(lineTotal)}
+        {formatPaise(lineTotal)}
       </div>
     </li>
   );

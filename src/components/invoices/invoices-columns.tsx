@@ -6,6 +6,7 @@ import { StatusPill } from "@/components/ui/custom/status-pill";
 import type { Invoice } from "@/lib/types";
 import { formatInvoiceDate } from "@/lib/utils";
 import { InvoiceRowActionsMenu } from "./invoice-row-actions-menu";
+import { invoiceDetailHref } from "@/lib/invoice/invoice-detail-href";
 
 export function parseAmount(value: string): number {
   return parseInt(value.replace(/[₹,]/g, ""), 10);
@@ -17,7 +18,7 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
     header: "Customer",
     cell: ({ row }) => (
       <Link
-        href={`/invoices/${row.original.id.replace("#", "")}`}
+        href={invoiceDetailHref(row.original)}
         aria-label={`View invoice ${row.original.id} for ${row.original.customer}`}
         className="inline-flex rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-offset-1"
       >

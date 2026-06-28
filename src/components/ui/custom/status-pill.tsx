@@ -17,6 +17,7 @@ const statusPillVariants = cva(
         pending: "bg-pending-soft text-pending-ink",
         overdue: "bg-overdue-soft text-overdue-ink",
         paid: "bg-paid-soft text-paid-ink",
+        cancelled: "bg-muted text-muted-foreground",
       },
       size: {
         default: "gap-1.5 px-2.5 py-1 text-label",

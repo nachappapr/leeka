@@ -1,7 +1,7 @@
 interface InvoicePreviewMetaCellProps {
   label: string;
   primary: string;
-  secondary: string;
+  secondary?: string;
   secondaryClassName?: string;
   primaryDateTime?: string;
   className?: string;
@@ -25,7 +25,7 @@ export function InvoicePreviewMetaCell({
       ) : (
         <div className="mt-1.5 text-body font-bold text-ink">{primary}</div>
       )}
-      <div className={`text-caption ${secondaryClassName}`}>{secondary}</div>
+      {secondary && <div className={`text-caption ${secondaryClassName}`}>{secondary}</div>}
     </div>
   );
 }

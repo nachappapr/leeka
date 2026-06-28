@@ -47,6 +47,16 @@ function toneFor(status: StatusPillStatus): Tone {
       body: "Send this invoice to your customer to start the payment clock.",
     };
   }
+  if (status === "cancelled") {
+    return {
+      cardBg: "bg-muted",
+      iconBg: "bg-muted-foreground",
+      text: "text-muted-foreground",
+      icon: <Info className="size-5" aria-hidden />,
+      title: "Cancelled",
+      body: "This invoice was cancelled — its link is dead and it can't be paid.",
+    };
+  }
   return {
     cardBg: "bg-pending-soft",
     iconBg: "bg-pending",

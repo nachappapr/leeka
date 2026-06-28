@@ -134,6 +134,58 @@ export async function getDraftInvoice(invoiceId: string): Promise<DraftInvoiceDa
   };
 }
 
+/**
+ * Loads a single invoice by UUID for the detail page — dynamic, uncached.
+ *
+ * Uses the RLS session client so ownership is enforced structurally: a row
+ * that doesn't belong to the caller's business simply won't be returned.
+ * Returns null for missing rows, RLS-hidden rows, and abort errors.
+ *
+ * Server-only: never import this in a Client Component.
+ */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export async function getInvoiceDetail(uuid: string) {
+  // A non-UUID param (e.g. a stale mock display-id) would make Postgres throw
+  // 22P02 on the uuid column; treat it as not-found instead of a logged error.
+  if (!UUID_RE.test(uuid)) return null;
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("invoices")
+    .select(
+      `
+      id,
+      number,
+      status,
+      issue_date,
+      due_date,
+      notes,
+      subtotal,
+      tax_total,
+      total,
+      public_token,
+      businesses ( name ),
+      customers ( name, city ),
+      invoice_line_items ( position, name, qty, unit_price )
+    `,
+    )
+    .eq("id", uuid)
+    .single();
+
+  if (error) {
+    if (error.code !== "PGRST116" && !isAbortError(error)) {
+      logger.error({ err: { code: error.code } }, "getInvoiceDetail: query failed");
+    }
+    return null;
+  }
+
+  return data;
+}
+
+export type InvoiceDetailRow = NonNullable<Awaited<ReturnType<typeof getInvoiceDetail>>>;
+
 type DbStatus = Database["public"]["Enums"]["invoice_status"];
 
 export async function resolveBusinessId(

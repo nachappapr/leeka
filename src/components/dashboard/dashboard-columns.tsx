@@ -6,6 +6,7 @@ import { CustomerCell } from "@/components/ui/custom/customer-cell";
 import { StatusPill } from "@/components/ui/custom/status-pill";
 import type { Invoice } from "@/lib/types";
 import { formatInvoiceDate, parseRupeeString } from "@/lib/utils";
+import { invoiceDetailHref } from "@/lib/invoice/invoice-detail-href";
 
 export const dashboardColumns: ColumnDef<Invoice>[] = [
   {
@@ -48,9 +49,7 @@ export const dashboardColumns: ColumnDef<Invoice>[] = [
     id: "action",
     enableSorting: false,
     cell: ({ row }) => {
-      const href = row.original.invoiceUuid
-        ? `/invoices/${row.original.invoiceUuid}`
-        : `/invoices/${row.original.id.replace("#", "")}`;
+      const href = invoiceDetailHref(row.original);
       return (
         <Link
           href={href}

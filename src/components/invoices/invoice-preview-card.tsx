@@ -1,6 +1,6 @@
 import { StatusPill } from "@/components/ui/custom/status-pill";
 import type { InvoiceDetail } from "@/lib/types";
-import { formatInvoiceDate, formatRupees } from "@/lib/utils";
+import { formatInvoiceDate, formatPaise } from "@/lib/utils";
 import { InvoicePreviewItemMobileRow } from "./invoice-preview-item-mobile-row";
 import { InvoicePreviewItemRow } from "./invoice-preview-item-row";
 import { InvoicePreviewMetaCell } from "./invoice-preview-meta-cell";
@@ -31,9 +31,7 @@ export function InvoicePreviewCard({
   accentColor = "#F46A39",
   footerMessage = "Thank you for your business!",
 }: InvoicePreviewCardProps) {
-  const subtotal = invoice.items.reduce((sum, it) => sum + it.qty * it.unitPrice, 0);
-  const tax = Math.round((subtotal * invoice.taxPct) / 100);
-  const total = subtotal + tax;
+  const { subtotal, taxTotal, total } = invoice;
 
   return (
     <article
@@ -47,7 +45,7 @@ export function InvoicePreviewCard({
           <div className="flex size-14 items-center justify-center rounded-xl bg-(--accent) text-22 font-black text-white">
             RK
           </div>
-          <h2 className="mt-3 text-title font-black text-ink">Raj Kumar Trading</h2>
+          <h2 className="mt-3 text-title font-black text-ink">{invoice.issuerName}</h2>
           <address className="not-italic text-caption leading-relaxed text-ink-3">
             Sector 14, Gurugram, Haryana 122001
             <br />
@@ -76,7 +74,7 @@ export function InvoicePreviewCard({
         <InvoicePreviewMetaCell
           label="Issued"
           primary={formatInvoiceDate(invoice.isoDate)}
-          secondary={`By ${invoice.issuerName}`}
+          secondary={invoice.issuerName ? `By ${invoice.issuerName}` : undefined}
           primaryDateTime={invoice.isoDate}
         />
         <InvoicePreviewMetaCell
@@ -142,16 +140,16 @@ export function InvoicePreviewCard({
         <div className="w-full min-mobile:max-w-65">
           <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
             <span>Subtotal</span>
-            <span className="tabular">{formatRupees(subtotal)}</span>
+            <span className="tabular">{formatPaise(subtotal)}</span>
           </div>
           <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
-            <span>GST · {invoice.taxPct}%</span>
-            <span className="tabular">{formatRupees(tax)}</span>
+            <span>Tax</span>
+            <span className="tabular">{formatPaise(taxTotal)}</span>
           </div>
           <hr className="my-2 border-t border-border" />
           <div className="flex items-baseline justify-between">
             <span className="text-body-sm font-black text-ink">Total</span>
-            <span className="tabular text-money-sm font-black text-ink">{formatRupees(total)}</span>
+            <span className="tabular text-money-sm font-black text-ink">{formatPaise(total)}</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { Topbar } from "@/components/ui/custom/topbar";
 import { TopbarNotifications } from "@/components/ui/custom/topbar-notifications";
@@ -8,7 +8,8 @@ import { InvoiceDetailHeader } from "@/components/invoices/invoice-detail-header
 import { InvoiceDetailMobileFooter } from "@/components/invoices/invoice-detail-mobile-footer";
 import { InvoicePreviewCard } from "@/components/invoices/invoice-preview-card";
 import { InvoiceStatusTipCard } from "@/components/invoices/invoice-status-tip-card";
-import { findInvoiceDetail } from "@/lib/constants";
+import { getInvoiceDetail } from "@/lib/data/invoice";
+import { mapInvoiceDetailRow } from "@/lib/invoice/map-invoice-detail-row";
 import { getBusinessTemplate } from "@/lib/data/business";
 
 interface InvoiceDetailContainerProps {
@@ -16,12 +17,14 @@ interface InvoiceDetailContainerProps {
 }
 
 export async function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps) {
-  const [invoice, template] = await Promise.all([
-    Promise.resolve(findInvoiceDetail(id)),
-    getBusinessTemplate(),
-  ]);
+  const [row, template] = await Promise.all([getInvoiceDetail(id), getBusinessTemplate()]);
 
-  if (!invoice) notFound();
+  const result = mapInvoiceDetailRow(row);
+
+  if (result.kind === "not-found") notFound();
+  if (result.kind === "redirect-edit") redirect(`/invoices/${id}/edit`);
+
+  const invoice = result.detail;
 
   return (
     <div className="flex flex-1 flex-col">

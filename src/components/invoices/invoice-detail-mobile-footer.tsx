@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 
-import { Bell, Check, Edit, Loader2, WhatsApp } from "@/components/icons";
+import { Ban, Bell, Check, Edit, Loader2, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
 import { brandToast } from "@/components/ui/custom/brand-toast";
@@ -27,6 +27,7 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
   const status = invoice.status;
   const isPaid = status === "paid";
   const isDraft = status === "draft";
+  const isCancelled = status === "cancelled";
 
   function handleIssue() {
     startIssueTransition(async () => {
@@ -40,6 +41,21 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         sub: `Invoice ${result.data.number} is now live.`,
       });
     });
+  }
+
+  if (isCancelled) {
+    return (
+      <footer
+        aria-label="Invoice status"
+        className="fixed bottom-0 left-0 right-0 z-20 flex items-center gap-2 border-t border-border bg-card px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] shadow-sheet min-mobile:hidden"
+      >
+        <div className="flex flex-1 items-center gap-2 rounded-lg bg-muted px-4 py-3 text-body-sm text-muted-foreground">
+          <Ban className="size-4 shrink-0" aria-hidden />
+          <span>Cancelled</span>
+        </div>
+        <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+      </footer>
+    );
   }
 
   if (isPaid) {

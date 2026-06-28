@@ -1,5 +1,5 @@
 import type { InvoiceLineItem } from "@/lib/types";
-import { formatRupees } from "@/lib/utils";
+import { formatPaise } from "@/lib/utils";
 
 interface InvoicePreviewItemRowProps {
   item: InvoiceLineItem;
@@ -16,10 +16,10 @@ export function InvoicePreviewItemRow({ item }: InvoicePreviewItemRowProps) {
         {item.qty}
       </td>
       <td className="tabular border-b border-border px-3.5 py-3.5 text-right text-body-sm font-bold text-ink-2">
-        {formatRupees(item.unitPrice)}
+        {formatPaise(item.unitPrice)}
       </td>
       <td className="tabular border-b border-border px-3.5 py-3.5 text-right text-body-sm font-semibold text-ink">
-        {formatRupees(lineTotal)}
+        {formatPaise(lineTotal)}
       </td>
     </tr>
   );
