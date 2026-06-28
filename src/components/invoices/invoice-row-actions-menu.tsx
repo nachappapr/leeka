@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -22,6 +22,7 @@ import {
 import type { Invoice } from "@/lib/types";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
+import { duplicateInvoice } from "@/app/(app)/invoices/actions";
 import { invoiceRowActions, type ActionDescriptor } from "@/lib/invoice/invoice-row-actions";
 import { clientEnv } from "@/lib/env.client";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,7 @@ function descriptorItemClass(d: ActionDescriptor): string {
 }
 
 export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
+  const [, startTransition] = useTransition();
   const [sendOpen, setSendOpen] = useState(false);
   const pendingSendRef = useRef(false);
   const hintId = `row-actions-hint-${invoice.id.replace(/[^a-z0-9]/gi, "")}`;
@@ -106,11 +108,32 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
     }
   }
 
+  function handleDuplicate() {
+    const uuid = invoice.invoiceUuid;
+    if (!uuid) {
+      brandToast.error({ title: "Couldn't duplicate invoice" });
+      return;
+    }
+    startTransition(async () => {
+      const result = await duplicateInvoice({ invoiceId: uuid });
+      if (!result.ok) {
+        brandToast.error({ title: "Couldn't duplicate invoice", sub: result.error });
+        return;
+      }
+      brandToast.success({
+        title: "Invoice duplicated",
+        sub: "A new draft is ready to edit.",
+      });
+    });
+  }
+
   function dispatchAction(d: ActionDescriptor) {
     if (d.id === "whatsapp") {
       pendingSendRef.current = true;
     } else if (d.id === "copyLink") {
       void handleCopyLink();
+    } else if (d.id === "duplicate") {
+      handleDuplicate();
     }
   }
 
