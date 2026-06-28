@@ -169,6 +169,7 @@ function mapRpcRowToInvoice(row: {
   created_at: string;
   total: number;
   status: DbStatus;
+  public_token: string | null;
 }): Invoice {
   const validStatuses = new Set<string>([
     "draft",
@@ -183,6 +184,7 @@ function mapRpcRowToInvoice(row: {
   return {
     id: displayId,
     invoiceUuid: row.id,
+    publicToken: row.public_token ?? undefined,
     customer: row.customer_name ?? "",
     city: row.customer_city ?? "",
     isoDate: row.issue_date,

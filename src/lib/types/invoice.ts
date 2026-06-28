@@ -4,6 +4,8 @@ export interface Invoice {
   id: string;
   /** The Postgres UUID of the invoice row. Populated when coming from real DB data; absent for synthetic (new draft) and legacy mock rows. */
   invoiceUuid?: string;
+  /** Public share token for the hosted pay page. Populated for real DB rows where a token exists; absent for synthetic/mock rows and null DB values. */
+  publicToken?: string;
   customer: string;
   city: string;
   isoDate: string;

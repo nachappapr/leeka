@@ -20,8 +20,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/primitives/dropdown-menu";
 import type { Invoice } from "@/lib/types";
+import { brandToast } from "@/components/ui/custom/brand-toast";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
 import { invoiceRowActions, type ActionDescriptor } from "@/lib/invoice/invoice-row-actions";
+import { clientEnv } from "@/lib/env.client";
 import { cn } from "@/lib/utils";
 
 interface InvoiceRowActionsMenuProps {
@@ -87,6 +89,31 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
     }
   }
 
+  // URL built synchronously — no server round-trip before clipboard write preserves transient activation
+  async function handleCopyLink() {
+    const token = invoice.publicToken;
+    if (!token) {
+      brandToast.error({ title: "Pay link unavailable" });
+      return;
+    }
+    const appBase = clientEnv.NEXT_PUBLIC_APP_URL ?? clientEnv.NEXT_PUBLIC_SUPABASE_URL;
+    const url = `${appBase}/pay/${token}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      brandToast.success({ title: "Pay link copied" });
+    } catch {
+      brandToast.error({ title: "Couldn't copy pay link" });
+    }
+  }
+
+  function dispatchAction(d: ActionDescriptor) {
+    if (d.id === "whatsapp") {
+      pendingSendRef.current = true;
+    } else if (d.id === "copyLink") {
+      void handleCopyLink();
+    }
+  }
+
   function renderDescriptor(d: ActionDescriptor) {
     const Icon = descriptorIcon(d.id);
     const disabled = !d.enabled;
@@ -105,13 +132,7 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
             <Link href={`/invoices/${invoice.id.replace("#", "")}/edit`} />
           ) : undefined
         }
-        onClick={
-          d.id === "whatsapp" && !disabled
-            ? () => {
-                pendingSendRef.current = true;
-              }
-            : undefined
-        }
+        onClick={!disabled ? () => dispatchAction(d) : undefined}
         className={descriptorItemClass(d)}
       >
         <Icon className={descriptorIconClass(d)} aria-hidden />

@@ -925,6 +925,7 @@ export type Database = {
           id: string;
           issue_date: string;
           number: string;
+          public_token: string | null;
           status: Database["public"]["Enums"]["invoice_status"];
           total: number;
         }[];
