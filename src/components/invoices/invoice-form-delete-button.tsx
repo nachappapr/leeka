@@ -11,7 +11,9 @@ interface InvoiceFormDeleteButtonProps {
 }
 
 export function fireDeleteInvoiceToast(invoiceId: string, onConfirm: () => void) {
+  const toastId = `delete-invoice-${invoiceId}`;
   brandToast.warn({
+    id: toastId,
     title: "Delete this invoice?",
     sub: `${invoiceId} · This can’t be undone.`,
     duration: Infinity,
@@ -27,6 +29,7 @@ export function fireDeleteInvoiceToast(invoiceId: string, onConfirm: () => void)
       },
     ],
   });
+  return toastId;
 }
 
 export function InvoiceFormDeleteButton({ onDelete }: InvoiceFormDeleteButtonProps) {

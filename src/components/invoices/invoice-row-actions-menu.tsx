@@ -143,14 +143,14 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
       brandToast.error({ title: "Couldn't delete invoice" });
       return;
     }
-    fireDeleteInvoiceToast(invoice.id, () => {
+    const toastId = fireDeleteInvoiceToast(invoice.id, () => {
       startTransition(async () => {
         const result = await deleteInvoice({ invoiceId: uuid });
         if (!result.ok) {
-          brandToast.error({ title: "Couldn't delete invoice", sub: result.error });
+          brandToast.error({ id: toastId, title: "Couldn't delete invoice", sub: result.error });
           return;
         }
-        brandToast.success({ title: "Draft deleted" });
+        brandToast.success({ id: toastId, title: "Draft deleted" });
       });
     });
   }
