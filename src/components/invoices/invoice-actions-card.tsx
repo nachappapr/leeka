@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Card } from "@/components/ui/custom/card";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
-import type { Invoice } from "@/lib/types";
+import type { InvoiceDetail } from "@/lib/types/invoice";
 import { InvoiceActionsCancelled } from "./invoice-actions-cancelled";
 import { InvoiceActionsDraft } from "./invoice-actions-draft";
 import { InvoiceActionsOpen } from "./invoice-actions-open";
@@ -12,7 +12,7 @@ import { InvoiceActionsPaid } from "./invoice-actions-paid";
 import { ReminderChannelsModal } from "./reminder-channels-modal";
 
 interface InvoiceActionsCardProps {
-  invoice: Invoice;
+  invoice: InvoiceDetail;
 }
 
 export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
@@ -33,7 +33,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           {isCancelled ? (
             <InvoiceActionsCancelled />
           ) : isPaid ? (
-            <InvoiceActionsPaid onSend={() => setSendOpen(true)} />
+            <InvoiceActionsPaid invoice={invoice} onSend={() => setSendOpen(true)} />
           ) : isDraft ? (
             <InvoiceActionsDraft
               invoiceId={invoiceId}
@@ -42,8 +42,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
             />
           ) : (
             <InvoiceActionsOpen
-              invoiceId={invoiceId}
-              invoiceUuid={invoice.invoiceUuid}
+              invoice={invoice}
               isOverdue={isOverdue}
               onSend={() => setReminderOpen(true)}
             />

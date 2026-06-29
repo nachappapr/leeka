@@ -41,6 +41,8 @@ function buildKindAndLabel(
       return { kind: "paid", label: "Marked paid" };
     case "overdue":
       return { kind: "overdue", label: "Marked overdue" };
+    case "unpaid":
+      return { kind: "unpaid", label: "Marked unpaid" };
     default:
       return { kind: "other", label: humanize(type) };
   }

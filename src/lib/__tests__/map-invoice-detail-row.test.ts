@@ -23,6 +23,7 @@ function makeRow(overrides: Partial<InvoiceDetailRow> = {}): InvoiceDetailRow {
     sgst: 12500,
     igst: 0,
     round_off: 0,
+    viewed_at: null,
     businesses: { name: "Raj Kumar Trading" },
     customers: { name: "Mehta Store", city: "Mumbai" },
     invoice_line_items: [
@@ -38,6 +39,7 @@ function makeRow(overrides: Partial<InvoiceDetailRow> = {}): InvoiceDetailRow {
       },
     ],
     invoice_events: [],
+    payments: [],
     ...overrides,
   };
 }

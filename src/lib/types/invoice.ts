@@ -1,6 +1,7 @@
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
+import type { UnpaidDestination } from "@/lib/invoice/compute-unpaid-destination";
 
-export type ActivityKind = "sent" | "viewed" | "reminder" | "paid" | "overdue" | "other";
+export type ActivityKind = "sent" | "viewed" | "reminder" | "paid" | "overdue" | "unpaid" | "other";
 
 export interface InvoiceActivityItem {
   id: string;
@@ -58,6 +59,10 @@ export interface InvoiceDetail extends Invoice {
   issuerName: string;
   notes?: string;
   activity: ReadonlyArray<InvoiceActivityItem>;
+  /** True when no payment has a non-manual source — gates the "Mark unpaid" action. */
+  reversible: boolean;
+  /** Server-computed destination status if the invoice is marked unpaid — mirrors the RPC rule. */
+  unpaidDestination: UnpaidDestination;
 }
 
 /**

@@ -4,6 +4,10 @@ import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 import type { Database } from "@/lib/types/database";
 import { formatPaise } from "@/lib/utils";
 import { mapActivityTimeline } from "@/lib/invoice/map-activity-event";
+import {
+  computeUnpaidDestination,
+  computeReversible,
+} from "@/lib/invoice/compute-unpaid-destination";
 
 type DbStatus = Database["public"]["Enums"]["invoice_status"];
 
@@ -34,6 +38,10 @@ function dbStatusToStatusPill(status: Exclude<DbStatus, "draft">): StatusPillSta
 export function mapInvoiceDetailRow(row: InvoiceDetailRow | null): MapInvoiceDetailResult {
   if (!row) return { kind: "not-found" };
   if (row.status === "draft") return { kind: "redirect-edit" };
+
+  const todayIst = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(
+    new Date(),
+  );
 
   const businessRaw = row.businesses;
   const customerRaw = row.customers;
@@ -74,6 +82,8 @@ export function mapInvoiceDetailRow(row: InvoiceDetailRow | null): MapInvoiceDet
     issuerName: businessRaw?.name ?? "",
     notes: row.notes ?? undefined,
     activity: mapActivityTimeline(row.invoice_events),
+    reversible: computeReversible(row.payments),
+    unpaidDestination: computeUnpaidDestination(row.due_date, row.viewed_at, todayIst),
   };
 
   return { kind: "ok", detail };

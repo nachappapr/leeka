@@ -30,6 +30,8 @@ function toTone(type: string, channel: string | null): NotificationTone {
   switch (type) {
     case "paid":
       return "paid";
+    case "unpaid":
+      return "overdue";
     case "viewed":
       return "info";
     case "reminder_sent":
@@ -43,6 +45,8 @@ function toVerb(type: string): string {
   switch (type) {
     case "paid":
       return "paid invoice";
+    case "unpaid":
+      return "marked unpaid";
     case "viewed":
       return "viewed invoice";
     case "reminder_sent":

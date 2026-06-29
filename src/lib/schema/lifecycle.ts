@@ -19,6 +19,20 @@ export const MarkInvoicePaidSchema = z.object({
 export type MarkInvoicePaidInput = z.infer<typeof MarkInvoicePaidSchema>;
 
 /**
+ * Server Action input schema for issue #18 markInvoiceUnpaid.
+ *
+ * - invoiceId: UUID of the paid invoice to reverse
+ *
+ * businessId is derived server-side from the session's membership; the RPC
+ * (mark_invoice_unpaid) is the real authorization + manual-only boundary.
+ */
+export const MarkInvoiceUnpaidSchema = z.object({
+  invoiceId: z.uuid("Invalid invoice ID"),
+});
+
+export type MarkInvoiceUnpaidInput = z.infer<typeof MarkInvoiceUnpaidSchema>;
+
+/**
  * Server Action input schema for AP-19 cancelInvoice.
  *
  * - invoiceId: UUID of the invoice to cancel

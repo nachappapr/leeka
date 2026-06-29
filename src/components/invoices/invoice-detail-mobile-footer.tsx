@@ -1,21 +1,23 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import Link from "next/link";
 
 import { Ban, Bell, Check, Edit, Loader2, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
+import { MarkPaidModal } from "@/components/ui/custom/mark-paid-modal";
+import { MarkUnpaidModal } from "@/components/ui/custom/mark-unpaid-modal";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { issueInvoice } from "@/app/(app)/invoices/actions";
 import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import { cn } from "@/lib/utils";
-import type { Invoice } from "@/lib/types";
+import type { InvoiceDetail } from "@/lib/types/invoice";
 import { InvoiceDetailMobileSheet } from "./invoice-detail-mobile-sheet";
 import { ReminderChannelsModal } from "./reminder-channels-modal";
 
 interface InvoiceDetailMobileFooterProps {
-  invoice: Invoice;
+  invoice: InvoiceDetail;
 }
 
 // Sticky bottom action bar on mobile. Sits directly at the bottom of the
@@ -23,6 +25,10 @@ interface InvoiceDetailMobileFooterProps {
 export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooterProps) {
   const [sendOpen, setSendOpen] = useState(false);
   const [reminderOpen, setReminderOpen] = useState(false);
+  const [markUnpaidOpen, setMarkUnpaidOpen] = useState(false);
+  const [markPaidOpen, setMarkPaidOpen] = useState(false);
+  const moreActionsRef = useRef<HTMLButtonElement>(null);
+  const markPaidTriggerRef = useRef<HTMLButtonElement>(null);
   const [issuePending, startIssueTransition] = useTransition();
   const invoiceId = invoice.id;
   const status = invoice.status;
@@ -80,15 +86,26 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           Send receipt
         </PillButton>
         <InvoiceDetailMobileSheet
+          triggerRef={moreActionsRef}
           invoiceId={invoiceId}
           invoiceUuid={invoice.invoiceUuid}
           status={status}
+          reversible={invoice.reversible}
+          onMarkUnpaid={() => setMarkUnpaidOpen(true)}
         />
         <SendChannelsModal
           invoice={invoice}
           invoiceUuid={invoice.invoiceUuid ?? ""}
           open={sendOpen}
           onOpenChange={setSendOpen}
+        />
+        <MarkUnpaidModal
+          invoice={invoice}
+          invoiceUuid={invoice.invoiceUuid ?? ""}
+          destination={invoice.unpaidDestination}
+          open={markUnpaidOpen}
+          onOpenChange={setMarkUnpaidOpen}
+          finalFocus={moreActionsRef}
         />
       </footer>
     );
@@ -156,7 +173,14 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         <Bell aria-hidden />
         Remind
       </PillButton>
-      <PillButton tone="primary" size="md" className="flex-1 rounded-lg!">
+      <PillButton
+        ref={markPaidTriggerRef}
+        type="button"
+        tone="primary"
+        size="md"
+        className="flex-1 rounded-lg!"
+        onClick={() => setMarkPaidOpen(true)}
+      >
         <Check strokeWidth={2.4} aria-hidden />
         Mark paid
       </PillButton>
@@ -170,6 +194,13 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         invoiceUuid={invoice.invoiceUuid ?? ""}
         open={reminderOpen}
         onOpenChange={setReminderOpen}
+      />
+      <MarkPaidModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={markPaidOpen}
+        onOpenChange={setMarkPaidOpen}
+        finalFocus={markPaidTriggerRef}
       />
     </footer>
   );

@@ -963,6 +963,13 @@ export type Database = {
           status: Database["public"]["Enums"]["invoice_status"];
         }[];
       };
+      mark_invoice_unpaid: {
+        Args: { p_business_id: string; p_invoice_id: string };
+        Returns: {
+          invoice_id: string;
+          status: Database["public"]["Enums"]["invoice_status"];
+        }[];
+      };
       mark_message_status: {
         Args: { p_provider_msg_id: string; p_status: string };
         Returns: Json;

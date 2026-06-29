@@ -113,6 +113,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-15",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -146,6 +148,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-13",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -179,6 +183,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-11",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -212,6 +218,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-09",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -245,6 +253,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-07",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -278,6 +288,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-04",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -311,6 +323,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-01",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
   {
@@ -344,6 +358,8 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-05-28",
     issuerName: ISSUER,
+    reversible: true,
+    unpaidDestination: "overdue",
     activity: [],
   },
 ];

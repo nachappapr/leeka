@@ -13,6 +13,15 @@ export type MarkInvoicePaidResult =
   | { ok: true; data: MarkInvoicePaidData }
   | { ok: false; error: string };
 
+export interface MarkInvoiceUnpaidData {
+  invoiceId: string;
+  status: InvoiceStatus;
+}
+
+export type MarkInvoiceUnpaidResult =
+  | { ok: true; data: MarkInvoiceUnpaidData }
+  | { ok: false; error: string };
+
 export interface CancelInvoiceData {
   invoiceId: string;
   status: InvoiceStatus;

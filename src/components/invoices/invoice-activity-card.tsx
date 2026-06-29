@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Bell, Check, Clock, Eye, Info, Mail } from "@/components/icons";
+import { Bell, Check, Clock, Eye, Info, Mail, RotateCcw } from "@/components/icons";
 import { WhatsApp } from "@/components/icons";
 import { Card } from "@/components/ui/custom/card";
 import { cn } from "@/lib/utils";
@@ -43,6 +43,8 @@ function resolvePresentation(item: InvoiceActivityItem): IconPresentation {
       return { Icon: Bell, iconBg: "bg-coral-soft", iconColor: "text-coral-press" };
     case "paid":
       return { Icon: Check, iconBg: "bg-paid-soft", iconColor: "text-paid-ink" };
+    case "unpaid":
+      return { Icon: RotateCcw, iconBg: "bg-overdue-soft", iconColor: "text-overdue-ink" };
     case "overdue":
       return { Icon: Clock, iconBg: "bg-overdue-soft", iconColor: "text-overdue-ink" };
     default:

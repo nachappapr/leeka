@@ -7,6 +7,7 @@ import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import { RecordPaymentSchema } from "@/lib/schema/payment";
 import {
   MarkInvoicePaidSchema,
+  MarkInvoiceUnpaidSchema,
   CancelInvoiceSchema,
   DuplicateInvoiceSchema,
   DeleteInvoiceSchema,
@@ -26,6 +27,7 @@ import type { SaveDraftResult } from "@/lib/types/invoice";
 import type { RecordPaymentResult } from "@/lib/types/payment";
 import type {
   MarkInvoicePaidResult,
+  MarkInvoiceUnpaidResult,
   CancelInvoiceResult,
   DuplicateInvoiceResult,
   DeleteInvoiceResult,
@@ -472,6 +474,78 @@ export async function markInvoicePaid(payload: unknown): Promise<MarkInvoicePaid
       amountPaid: data.amount_paid,
       status: data.status,
       paidAt: data.paid_at,
+    },
+  };
+}
+
+// ── markInvoiceUnpaid ─────────────────────────────────────────────────────────
+
+function mapMarkInvoiceUnpaidError(message: unknown): string {
+  const msg: string = typeof message === "string" ? message : "";
+  if (msg.includes("not a member")) return "You are not a member of this business";
+  if (msg.includes("invoice not found")) return "Invoice not found";
+  if (msg.includes("not paid")) return "This invoice is not marked as paid";
+  if (msg.includes("gateway payment"))
+    return "This payment was confirmed by a gateway and cannot be undone from the app";
+  return "Failed to mark invoice as unpaid. Please try again.";
+}
+
+/**
+ * markInvoiceUnpaid — issue #18 Server Action.
+ *
+ * Reverses a manually-recorded payment: deletes the manual payment row(s),
+ * zeroes amount_paid/paid_at, and rejoins the lifecycle at the status reality
+ * dictates (overdue / viewed / sent) — recomputed by the RPC, never restored
+ * from a stored prior status. The mark_invoice_unpaid RPC is the security and
+ * manual-only boundary (rejects non-paid status and any gateway payment under a
+ * FOR UPDATE lock); the disabled button is UX only.
+ *
+ * businessId is looked up server-side from the caller's session membership.
+ */
+export async function markInvoiceUnpaid(payload: unknown): Promise<MarkInvoiceUnpaidResult> {
+  const parsed = MarkInvoiceUnpaidSchema.safeParse(payload);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Invalid invoice data",
+    };
+  }
+
+  const { invoiceId } = parsed.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data, error } = await supabase
+    .rpc("mark_invoice_unpaid", {
+      p_business_id: businessId,
+      p_invoice_id: invoiceId,
+    })
+    .single();
+
+  if (error) {
+    logger.error({ err: { code: error.code } }, "markInvoiceUnpaid: RPC failed");
+    return { ok: false, error: mapMarkInvoiceUnpaidError(error.message) };
+  }
+
+  revalidateBusiness(businessId);
+
+  return {
+    ok: true,
+    data: {
+      invoiceId: data.invoice_id,
+      status: data.status,
     },
   };
 }

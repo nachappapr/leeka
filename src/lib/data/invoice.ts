@@ -175,7 +175,9 @@ export async function getInvoiceDetail(uuid: string) {
       businesses ( name ),
       customers ( name, city ),
       invoice_line_items ( position, name, qty, unit_price, gst_rate, discount, line_subtotal, hsn_sac ),
-      invoice_events ( id, type, channel, created_at )
+      invoice_events ( id, type, channel, created_at ),
+      payments ( source ),
+      viewed_at
     `,
     )
     .eq("id", uuid)
