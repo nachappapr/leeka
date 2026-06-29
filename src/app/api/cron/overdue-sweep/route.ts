@@ -1,5 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import logger from "@/lib/logger";
 import type { SweepOverdueRow } from "@/lib/types/lifecycle";
 
@@ -43,6 +44,12 @@ async function runSweep(request: Request): Promise<Response> {
     { swept_count: row.swept_count, invoice_ids: row.invoice_ids },
     "overdue-sweep: completed",
   );
+
+  // Invalidate cache for each business whose invoices transitioned to overdue.
+  // Scoped to affected businesses only — no invalidation when nothing swept.
+  for (const businessId of row.business_ids) {
+    revalidateBusiness(businessId);
+  }
 
   return Response.json({ ok: true, swept: row.swept_count });
 }

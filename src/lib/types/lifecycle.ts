@@ -43,4 +43,5 @@ export type DeleteInvoiceResult =
 export interface SweepOverdueRow {
   swept_count: number;
   invoice_ids: string[];
+  business_ids: string[];
 }
