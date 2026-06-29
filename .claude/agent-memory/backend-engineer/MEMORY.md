@@ -26,3 +26,4 @@
 - [AP-46 Razorpay billing](project_ap46_razorpay_billing.md) — subscriptions+billing_events tables, apply_subscription_event RPC, webhook route, createSubscription SA; businesses has NO updated_at column; bare-hex Razorpay sig (no sha256= prefix)
 - [business_type column](project_business_type.md) — nullable business_type on businesses, 6-arg create_business RPC, BusinessSchema zod enum, Zod v4 param syntax { error } not { required_error }
 - [Cache invalidation invoices](project_cache_invalidation_invoices.md) — list_invoices_page+invoice_status_counts→DEFINER, revalidateBusiness helper, webhook businessId gap (FOLLOW-UP)
+- [AP-17 payments source + paid event](project_ap17_payments_source_paid_event.md) — payments.source column, mark_invoice_paid emits paid event in both paths; duplicate event deviation from pre-existing trg_emit_paid_invoice_event trigger (FOLLOW-UP)
