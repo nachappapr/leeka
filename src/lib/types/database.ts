@@ -651,6 +651,7 @@ export type Database = {
           provider_ref: string | null;
           recorded_by: string | null;
           reference: string | null;
+          source: string;
         };
         Insert: {
           amount: number;
@@ -663,6 +664,7 @@ export type Database = {
           provider_ref?: string | null;
           recorded_by?: string | null;
           reference?: string | null;
+          source?: string;
         };
         Update: {
           amount?: number;
@@ -675,6 +677,7 @@ export type Database = {
           provider_ref?: string | null;
           recorded_by?: string | null;
           reference?: string | null;
+          source?: string;
         };
         Relationships: [
           {
@@ -938,7 +941,7 @@ export type Database = {
           id: string;
           issue_date: string;
           number: string;
-          public_token: string | null;
+          public_token: string;
           status: Database["public"]["Enums"]["invoice_status"];
           total: number;
         }[];
