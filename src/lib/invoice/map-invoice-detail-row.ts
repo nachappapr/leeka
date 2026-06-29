@@ -3,6 +3,7 @@ import type { InvoiceDetail } from "@/lib/types/invoice";
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 import type { Database } from "@/lib/types/database";
 import { formatPaise } from "@/lib/utils";
+import { mapActivityTimeline } from "@/lib/invoice/map-activity-event";
 
 type DbStatus = Database["public"]["Enums"]["invoice_status"];
 
@@ -72,6 +73,7 @@ export function mapInvoiceDetailRow(row: InvoiceDetailRow | null): MapInvoiceDet
     dueIsoDate: row.due_date ?? row.issue_date,
     issuerName: businessRaw?.name ?? "",
     notes: row.notes ?? undefined,
+    activity: mapActivityTimeline(row.invoice_events),
   };
 
   return { kind: "ok", detail };

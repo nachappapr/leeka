@@ -48,7 +48,7 @@ export async function InvoiceDetailContainer({ id }: InvoiceDetailContainerProps
             <div className="max-mobile:hidden">
               <InvoiceActionsCard invoice={invoice} />
             </div>
-            <InvoiceActivityCard />
+            <InvoiceActivityCard activity={invoice.activity} />
             <InvoiceStatusTipCard status={invoice.status} />
           </div>
         </div>

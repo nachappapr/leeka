@@ -1,72 +1,95 @@
 import * as React from "react";
 
-import { Eye, Plus, WhatsApp } from "@/components/icons";
+import { Bell, Check, Clock, Eye, Info, Mail } from "@/components/icons";
+import { WhatsApp } from "@/components/icons";
 import { Card } from "@/components/ui/custom/card";
+import { cn } from "@/lib/utils";
+import type { InvoiceActivityItem } from "@/lib/types/invoice";
 
-interface ActivityEntry {
-  icon: React.ReactNode;
-  iconBg: string;
-  iconColor: string;
-  title: string;
-  meta: string;
-  isoDateTime: string;
+function formatEventTime(isoDateTime: string): string {
+  if (!isoDateTime) return "";
+  const date = new Date(isoDateTime);
+  if (isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  }).format(date);
 }
 
-// Static activity timeline — replace with real data once the activity feed
-// API ships.
-const ENTRIES: ReadonlyArray<ActivityEntry> = [
-  {
-    icon: <WhatsApp aria-hidden />,
-    iconBg: "bg-whatsapp-soft",
-    iconColor: "text-whatsapp-icon",
-    title: "Sent on WhatsApp",
-    meta: "Today, 11:24 AM",
-    isoDateTime: "2026-05-26T11:24",
-  },
-  {
-    icon: <Eye className="size-4.5" aria-hidden />,
-    iconBg: "bg-info-soft",
-    iconColor: "text-info",
-    title: "Viewed by customer",
-    meta: "Today, 12:08 PM",
-    isoDateTime: "2026-05-26T12:08",
-  },
-  {
-    icon: <Plus className="size-4.5" aria-hidden />,
-    iconBg: "bg-coral-soft",
-    iconColor: "text-coral-press",
-    title: "Invoice created",
-    meta: "Today, 11:21 AM",
-    isoDateTime: "2026-05-26T11:21",
-  },
-];
+type IconPresentation = {
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  iconBg: string;
+  iconColor: string;
+};
 
-function TimelineRow({ entry }: { entry: ActivityEntry }) {
+function resolvePresentation(item: InvoiceActivityItem): IconPresentation {
+  if (item.channel === "whatsapp" && (item.kind === "sent" || item.kind === "viewed")) {
+    return { Icon: WhatsApp, iconBg: "bg-whatsapp-soft", iconColor: "text-whatsapp-icon" };
+  }
+  if (item.channel === "email" && (item.kind === "sent" || item.kind === "viewed")) {
+    return { Icon: Mail, iconBg: "bg-info-soft", iconColor: "text-info" };
+  }
+  switch (item.kind) {
+    case "sent":
+      return { Icon: Mail, iconBg: "bg-info-soft", iconColor: "text-info" };
+    case "viewed":
+      return { Icon: Eye, iconBg: "bg-info-soft", iconColor: "text-info" };
+    case "reminder":
+      return { Icon: Bell, iconBg: "bg-coral-soft", iconColor: "text-coral-press" };
+    case "paid":
+      return { Icon: Check, iconBg: "bg-paid-soft", iconColor: "text-paid-ink" };
+    case "overdue":
+      return { Icon: Clock, iconBg: "bg-overdue-soft", iconColor: "text-overdue-ink" };
+    default:
+      return { Icon: Info, iconBg: "bg-draft-soft", iconColor: "text-draft-ink" };
+  }
+}
+
+function TimelineRow({ item }: { item: InvoiceActivityItem }) {
+  const { Icon, iconBg, iconColor } = resolvePresentation(item);
+  const displayTime = formatEventTime(item.isoDateTime);
   return (
     <li className="flex items-start gap-3 border-b border-border py-2.5 last:border-b-0">
       <div
-        className={`flex size-9 shrink-0 items-center justify-center rounded-nav-item ${entry.iconBg} ${entry.iconColor}`}
+        className={cn(
+          "flex size-9 shrink-0 items-center justify-center rounded-nav-item",
+          iconBg,
+          iconColor,
+        )}
       >
-        {entry.icon}
+        <Icon className="size-4.5" aria-hidden />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-body-sm font-bold text-ink">{entry.title}</div>
-        <time dateTime={entry.isoDateTime} className="text-label text-ink-3">
-          {entry.meta}
+        <div className="text-body-sm font-bold text-ink">{item.label}</div>
+        <time dateTime={item.isoDateTime} className="text-label text-ink-3">
+          {displayTime}
         </time>
       </div>
     </li>
   );
 }
 
-export function InvoiceActivityCard() {
+interface InvoiceActivityCardProps {
+  activity: ReadonlyArray<InvoiceActivityItem>;
+}
+
+export function InvoiceActivityCard({ activity }: InvoiceActivityCardProps) {
   return (
     <Card title="Activity" headingLevel={3}>
-      <ol aria-label="Invoice activity" className="px-6 py-1">
-        {ENTRIES.map((entry) => (
-          <TimelineRow key={entry.title} entry={entry} />
-        ))}
-      </ol>
+      {activity.length === 0 ? (
+        <p className="px-6 py-5 text-body-sm text-ink-3">No activity yet</p>
+      ) : (
+        <ol aria-label="Invoice activity" className="px-6 py-1">
+          {activity.map((item) => (
+            <TimelineRow key={item.id} item={item} />
+          ))}
+        </ol>
+      )}
     </Card>
   );
 }

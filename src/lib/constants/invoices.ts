@@ -113,6 +113,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-15",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[1],
@@ -145,6 +146,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-13",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[2],
@@ -177,6 +179,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-11",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[3],
@@ -209,6 +212,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-09",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[4],
@@ -241,6 +245,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-07",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[5],
@@ -273,6 +278,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-04",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[6],
@@ -305,6 +311,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-06-01",
     issuerName: ISSUER,
+    activity: [],
   },
   {
     ...INVOICES[7],
@@ -337,6 +344,7 @@ export const INVOICE_DETAILS: ReadonlyArray<InvoiceDetail> = [
     roundOff: 0,
     dueIsoDate: "2026-05-28",
     issuerName: ISSUER,
+    activity: [],
   },
 ];
 

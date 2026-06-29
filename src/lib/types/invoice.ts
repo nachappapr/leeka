@@ -1,5 +1,15 @@
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 
+export type ActivityKind = "sent" | "viewed" | "reminder" | "paid" | "overdue" | "other";
+
+export interface InvoiceActivityItem {
+  id: string;
+  kind: ActivityKind;
+  label: string;
+  channel: "whatsapp" | "email" | null;
+  isoDateTime: string;
+}
+
 export interface Invoice {
   id: string;
   /** The Postgres UUID of the invoice row. Populated when coming from real DB data; absent for synthetic (new draft) and legacy mock rows. */
@@ -47,6 +57,7 @@ export interface InvoiceDetail extends Invoice {
   dueIsoDate: string;
   issuerName: string;
   notes?: string;
+  activity: ReadonlyArray<InvoiceActivityItem>;
 }
 
 /**

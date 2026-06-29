@@ -37,6 +37,7 @@ function makeRow(overrides: Partial<InvoiceDetailRow> = {}): InvoiceDetailRow {
         hsn_sac: null,
       },
     ],
+    invoice_events: [],
     ...overrides,
   };
 }
