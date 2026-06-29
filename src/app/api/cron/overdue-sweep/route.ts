@@ -47,6 +47,12 @@ async function runSweep(request: Request): Promise<Response> {
 
   // Invalidate cache for each business whose invoices transitioned to overdue.
   // Scoped to affected businesses only — no invalidation when nothing swept.
+  //
+  // Deliberately does NOT invalidate the public pay page's `pay-${token}` tag
+  // (see issue #15): that read tolerates up to 60s of stale status via its
+  // cacheLife revalidate. The window is bounded, status-only, and the payment
+  // flow itself is unaffected — not worth threading per-token invalidation
+  // through the RPC, the type, and this loop.
   for (const businessId of row.business_ids) {
     revalidateBusiness(businessId);
   }
