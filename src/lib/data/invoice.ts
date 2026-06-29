@@ -166,9 +166,15 @@ export async function getInvoiceDetail(uuid: string) {
       tax_total,
       total,
       public_token,
+      gst_enabled,
+      is_interstate,
+      cgst,
+      sgst,
+      igst,
+      round_off,
       businesses ( name ),
       customers ( name, city ),
-      invoice_line_items ( position, name, qty, unit_price )
+      invoice_line_items ( position, name, qty, unit_price, gst_rate, discount, line_subtotal, hsn_sac )
     `,
     )
     .eq("id", uuid)

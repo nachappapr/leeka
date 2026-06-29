@@ -6,20 +6,25 @@ interface InvoicePreviewItemRowProps {
 }
 
 export function InvoicePreviewItemRow({ item }: InvoicePreviewItemRowProps) {
-  const lineTotal = item.qty * item.unitPrice;
   return (
     <tr>
       <td className="border-b border-border px-3.5 py-3.5 text-body-sm font-medium text-ink">
-        {item.name}
+        <div>{item.name}</div>
+        <div className="text-caption text-ink-3">{item.gstRate}% GST</div>
       </td>
       <td className="tabular border-b border-border px-3.5 py-3.5 text-right text-body-sm font-bold text-ink-2">
         {item.qty}
       </td>
-      <td className="tabular border-b border-border px-3.5 py-3.5 text-right text-body-sm font-bold text-ink-2">
-        {formatPaise(item.unitPrice)}
+      <td className="border-b border-border px-3.5 py-3.5 text-right text-body-sm font-bold text-ink-2">
+        <div className="tabular">{formatPaise(item.unitPrice)}</div>
+        {item.discount > 0 && (
+          <div className="tabular text-caption text-ink-3">
+            Discount: -{formatPaise(item.discount)}
+          </div>
+        )}
       </td>
       <td className="tabular border-b border-border px-3.5 py-3.5 text-right text-body-sm font-semibold text-ink">
-        {formatPaise(lineTotal)}
+        {formatPaise(item.lineSubtotal)}
       </td>
     </tr>
   );

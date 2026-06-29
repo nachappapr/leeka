@@ -38,7 +38,15 @@ export function mapInvoiceDetailRow(row: InvoiceDetailRow | null): MapInvoiceDet
   const customerRaw = row.customers;
   const items = [...(row.invoice_line_items ?? [])]
     .sort((a, b) => a.position - b.position)
-    .map((it) => ({ name: it.name, qty: it.qty, unitPrice: it.unit_price }));
+    .map((it) => ({
+      name: it.name,
+      qty: it.qty,
+      unitPrice: it.unit_price,
+      gstRate: it.gst_rate,
+      discount: it.discount,
+      lineSubtotal: it.line_subtotal,
+      hsnSac: it.hsn_sac ?? undefined,
+    }));
 
   const displayId = row.number ? `#${row.number}` : `#${row.id.slice(0, 8).toUpperCase()}`;
 
@@ -55,6 +63,12 @@ export function mapInvoiceDetailRow(row: InvoiceDetailRow | null): MapInvoiceDet
     subtotal: row.subtotal,
     taxTotal: row.tax_total,
     total: row.total,
+    gstEnabled: row.gst_enabled,
+    isInterstate: row.is_interstate,
+    cgst: row.cgst,
+    sgst: row.sgst,
+    igst: row.igst,
+    roundOff: row.round_off,
     dueIsoDate: row.due_date ?? row.issue_date,
     issuerName: businessRaw?.name ?? "",
     notes: row.notes ?? undefined,

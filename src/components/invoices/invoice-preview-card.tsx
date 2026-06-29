@@ -31,7 +31,7 @@ export function InvoicePreviewCard({
   accentColor = "#F46A39",
   footerMessage = "Thank you for your business!",
 }: InvoicePreviewCardProps) {
-  const { subtotal, taxTotal, total } = invoice;
+  const { subtotal, total, gstEnabled, isInterstate, cgst, sgst, igst, roundOff } = invoice;
 
   return (
     <article
@@ -138,14 +138,36 @@ export function InvoicePreviewCard({
       {/* Totals */}
       <div className="mt-6 min-mobile:flex min-mobile:justify-end">
         <div className="w-full min-mobile:max-w-65">
-          <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
-            <span>Subtotal</span>
-            <span className="tabular">{formatPaise(subtotal)}</span>
-          </div>
-          <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
-            <span>Tax</span>
-            <span className="tabular">{formatPaise(taxTotal)}</span>
-          </div>
+          <dl>
+            <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
+              <dt>Subtotal</dt>
+              <dd className="tabular">{formatPaise(subtotal)}</dd>
+            </div>
+            {gstEnabled && !isInterstate && (
+              <>
+                <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
+                  <dt>CGST</dt>
+                  <dd className="tabular">{formatPaise(cgst)}</dd>
+                </div>
+                <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
+                  <dt>SGST</dt>
+                  <dd className="tabular">{formatPaise(sgst)}</dd>
+                </div>
+              </>
+            )}
+            {gstEnabled && isInterstate && (
+              <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
+                <dt>IGST</dt>
+                <dd className="tabular">{formatPaise(igst)}</dd>
+              </div>
+            )}
+            {roundOff !== 0 && (
+              <div className="flex items-center justify-between py-1 text-body-sm text-ink-2">
+                <dt>Round off</dt>
+                <dd className="tabular">{formatPaise(roundOff)}</dd>
+              </div>
+            )}
+          </dl>
           <hr className="my-2 border-t border-border" />
           <div className="flex items-baseline justify-between">
             <span className="text-body-sm font-black text-ink">Total</span>

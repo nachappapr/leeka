@@ -23,19 +23,27 @@ export interface InvoiceFilterChip {
 export interface InvoiceLineItem {
   name: string;
   qty: number;
-  unitPrice: number; // rupees as integer
+  unitPrice: number; // paise
+  gstRate: number; // percent, e.g. 18.00
+  discount: number; // paise
+  lineSubtotal: number; // paise — stored value, never recomputed
+  hsnSac?: string; // null DB values become undefined
 }
 
 export interface InvoiceDetail extends Invoice {
   items: ReadonlyArray<InvoiceLineItem>;
-  /** Optional GST percentage label — present in legacy/mock data; real rows use stored taxTotal. */
-  taxPct?: number;
   /** Authoritative stored subtotal in paise. */
   subtotal: number;
   /** Authoritative stored tax total in paise. */
   taxTotal: number;
   /** Authoritative stored total in paise. */
   total: number;
+  gstEnabled: boolean;
+  isInterstate: boolean;
+  cgst: number; // paise
+  sgst: number; // paise
+  igst: number; // paise
+  roundOff: number; // paise
   dueIsoDate: string;
   issuerName: string;
   notes?: string;
