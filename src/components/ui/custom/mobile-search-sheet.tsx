@@ -8,6 +8,7 @@ import { Search, XIcon, ChevronRight, Receipt, Users } from "@/components/icons"
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import { StatusPill } from "@/components/ui/custom/status-pill";
 import { JUMP_ITEMS } from "@/lib/constants/search";
+import { invoiceRowHref } from "@/lib/invoice/invoice-detail-href";
 import { cn, initials, loadRecentSearches, saveRecentSearches } from "@/lib/utils";
 import { searchAction } from "@/app/(app)/search/actions";
 import type {
@@ -175,9 +176,8 @@ export function MobileSearchSheet({ open, onClose }: MobileSearchSheetProps) {
   };
 
   const openInvoice = (inv: SearchInvoiceHit) => {
-    const navId = inv.number ?? inv.invoiceUuid;
-    recordRecent({ label: inv.customerName ?? inv.id, type: "invoice", id: navId });
-    router.push(`/invoices/${encodeURIComponent(navId)}`);
+    recordRecent({ label: inv.customerName ?? inv.id, type: "invoice", id: inv.invoiceUuid });
+    router.push(invoiceRowHref(inv));
     onClose();
   };
   const openCustomer = (cust: SearchCustomerHit) => {

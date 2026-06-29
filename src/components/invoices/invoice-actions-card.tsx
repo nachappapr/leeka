@@ -43,6 +43,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           ) : (
             <InvoiceActionsOpen
               invoiceId={invoiceId}
+              invoiceUuid={invoice.invoiceUuid}
               isOverdue={isOverdue}
               onSend={() => setReminderOpen(true)}
             />

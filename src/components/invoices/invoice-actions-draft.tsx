@@ -7,6 +7,7 @@ import { Check, Download, Edit, Loader2, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { issueInvoice } from "@/app/(app)/invoices/actions";
+import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import { cn } from "@/lib/utils";
 
 interface InvoiceActionsDraftProps {
@@ -61,7 +62,7 @@ export function InvoiceActionsDraft({ invoiceId, invoiceUuid, onSend }: InvoiceA
       </PillButton>
       <div className="grid grid-cols-2 gap-2">
         <Link
-          href={`/invoices/${invoiceId.replace("#", "")}/edit`}
+          href={invoiceEditHref({ id: invoiceId, invoiceUuid })}
           aria-label="Edit invoice"
           className={cn(pillButtonVariants({ tone: "outline", size: "md" }), "w-full")}
         >

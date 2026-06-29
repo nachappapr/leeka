@@ -27,6 +27,7 @@ import { duplicateInvoice, deleteInvoice, cancelInvoice } from "@/app/(app)/invo
 import { fireDeleteInvoiceToast } from "@/components/invoices/invoice-form-delete-button";
 import { fireCancelInvoiceToast } from "@/components/invoices/invoice-cancel-toast";
 import { invoiceRowActions, type ActionDescriptor } from "@/lib/invoice/invoice-row-actions";
+import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import { clientEnv } from "@/lib/env.client";
 import { cn } from "@/lib/utils";
 
@@ -200,11 +201,7 @@ export function InvoiceRowActionsMenu({ invoice }: InvoiceRowActionsMenuProps) {
         title={itemHint}
         aria-describedby={itemHint ? itemHintId : undefined}
         variant={d.variant === "destructive" ? "destructive" : "default"}
-        render={
-          d.id === "edit" && d.enabled ? (
-            <Link href={`/invoices/${invoice.id.replace("#", "")}/edit`} />
-          ) : undefined
-        }
+        render={d.id === "edit" && d.enabled ? <Link href={invoiceEditHref(invoice)} /> : undefined}
         onClick={!disabled ? () => dispatchAction(d) : undefined}
         className={descriptorItemClass(d)}
       >

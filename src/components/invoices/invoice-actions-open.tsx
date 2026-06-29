@@ -2,15 +2,22 @@ import Link from "next/link";
 
 import { Check, Download, Edit, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
+import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import { cn } from "@/lib/utils";
 
 interface InvoiceActionsOpenProps {
   invoiceId: string;
+  invoiceUuid?: string;
   isOverdue: boolean;
   onSend: () => void;
 }
 
-export function InvoiceActionsOpen({ invoiceId, isOverdue, onSend }: InvoiceActionsOpenProps) {
+export function InvoiceActionsOpen({
+  invoiceId,
+  invoiceUuid,
+  isOverdue,
+  onSend,
+}: InvoiceActionsOpenProps) {
   return (
     <>
       <PillButton tone="primary" size="md" className="w-full">
@@ -23,7 +30,8 @@ export function InvoiceActionsOpen({ invoiceId, isOverdue, onSend }: InvoiceActi
       </PillButton>
       <div className="grid grid-cols-2 gap-2">
         <Link
-          href={`/invoices/${invoiceId.replace("#", "")}/edit`}
+          href={invoiceEditHref({ id: invoiceId, invoiceUuid })}
+          aria-label="Edit invoice"
           className={cn(pillButtonVariants({ tone: "outline", size: "md" }))}
         >
           <Edit aria-hidden />

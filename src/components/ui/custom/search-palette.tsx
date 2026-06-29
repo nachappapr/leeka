@@ -7,6 +7,7 @@ import { Search } from "@/components/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/primitives/avatar";
 import { StatusPill } from "@/components/ui/custom/status-pill";
 import { searchAction } from "@/app/(app)/search/actions";
+import { invoiceRowHref } from "@/lib/invoice/invoice-detail-href";
 import { cn, initials } from "@/lib/utils";
 import type { SearchInvoiceHit, SearchCustomerHit } from "@/lib/types/search";
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
@@ -118,9 +119,7 @@ export function SearchPalette() {
 
   const choose = (entry: (typeof flat)[number]) => {
     if (entry.kind === "invoice") {
-      const inv = entry.item as SearchInvoiceHit;
-      const navId = inv.number ?? inv.invoiceUuid;
-      router.push(`/invoices/${encodeURIComponent(navId)}`);
+      router.push(invoiceRowHref(entry.item));
     } else {
       router.push("/customers");
     }

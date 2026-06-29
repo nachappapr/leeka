@@ -8,6 +8,7 @@ import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-butt
 import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { issueInvoice } from "@/app/(app)/invoices/actions";
+import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import { cn } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
 import { InvoiceDetailMobileSheet } from "./invoice-detail-mobile-sheet";
@@ -53,7 +54,11 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           <Ban className="size-4 shrink-0" aria-hidden />
           <span>Cancelled</span>
         </div>
-        <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+        <InvoiceDetailMobileSheet
+          invoiceId={invoiceId}
+          invoiceUuid={invoice.invoiceUuid}
+          status={status}
+        />
       </footer>
     );
   }
@@ -74,7 +79,11 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           <WhatsApp aria-hidden />
           Send receipt
         </PillButton>
-        <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+        <InvoiceDetailMobileSheet
+          invoiceId={invoiceId}
+          invoiceUuid={invoice.invoiceUuid}
+          status={status}
+        />
         <SendChannelsModal
           invoice={invoice}
           invoiceUuid={invoice.invoiceUuid ?? ""}
@@ -92,7 +101,7 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         className="fixed bottom-0 left-0 right-0 z-20 flex items-center gap-2 border-t border-border bg-card px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] shadow-sheet min-mobile:hidden"
       >
         <Link
-          href={`/invoices/${invoiceId.replace("#", "")}/edit`}
+          href={invoiceEditHref(invoice)}
           aria-label="Edit invoice"
           className={cn(pillButtonVariants({ tone: "outline", size: "md" }), "flex-1 rounded-lg!")}
         >
@@ -120,7 +129,11 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
             </>
           )}
         </PillButton>
-        <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+        <InvoiceDetailMobileSheet
+          invoiceId={invoiceId}
+          invoiceUuid={invoice.invoiceUuid}
+          status={status}
+        />
         <p role="status" aria-atomic="true" className="sr-only">
           {issuePending ? "Issuing invoice…" : " "}
         </p>
@@ -147,7 +160,11 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
         <Check strokeWidth={2.4} aria-hidden />
         Mark paid
       </PillButton>
-      <InvoiceDetailMobileSheet invoiceId={invoiceId} status={status} />
+      <InvoiceDetailMobileSheet
+        invoiceId={invoiceId}
+        invoiceUuid={invoice.invoiceUuid}
+        status={status}
+      />
       <ReminderChannelsModal
         invoice={invoice}
         invoiceUuid={invoice.invoiceUuid ?? ""}

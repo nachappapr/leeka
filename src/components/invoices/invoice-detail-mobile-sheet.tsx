@@ -5,10 +5,12 @@ import type React from "react";
 
 import { Clock, Copy, Download, Edit, MoreHorizontal, Share, Trash2 } from "@/components/icons";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/primitives/sheet";
+import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
 
 interface InvoiceDetailMobileSheetProps {
   invoiceId: string;
+  invoiceUuid?: string;
   status: StatusPillStatus;
 }
 
@@ -18,12 +20,16 @@ interface SheetAction {
   href?: string;
 }
 
-function getActions(invoiceId: string, status: StatusPillStatus): SheetAction[] {
+function getActions(
+  invoiceId: string,
+  invoiceUuid: string | undefined,
+  status: StatusPillStatus,
+): SheetAction[] {
   const base: SheetAction[] = [
     {
       icon: <Edit className="size-4.5" aria-hidden />,
       label: "Edit invoice",
-      href: `/invoices/${invoiceId.replace("#", "")}/edit`,
+      href: invoiceEditHref({ id: invoiceId, invoiceUuid }),
     },
     { icon: <Download className="size-4.5" aria-hidden />, label: "Download PDF" },
     { icon: <Share className="size-4.5" aria-hidden />, label: "Share link" },
@@ -40,8 +46,12 @@ const ACTION_CLASS =
 const ICON_CLASS =
   "flex size-9 shrink-0 items-center justify-center rounded-nav-item bg-background text-ink-2";
 
-export function InvoiceDetailMobileSheet({ invoiceId, status }: InvoiceDetailMobileSheetProps) {
-  const actions = getActions(invoiceId, status);
+export function InvoiceDetailMobileSheet({
+  invoiceId,
+  invoiceUuid,
+  status,
+}: InvoiceDetailMobileSheetProps) {
+  const actions = getActions(invoiceId, invoiceUuid, status);
 
   return (
     <Sheet>

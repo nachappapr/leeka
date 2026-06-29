@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/custom/data-table";
 import { formatInvoiceDate } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
-import { invoiceDetailHref } from "@/lib/invoice/invoice-detail-href";
+import { invoiceRowHref } from "@/lib/invoice/invoice-detail-href";
 
 interface CustomerInvoicesCardProps {
   customerName: string;
@@ -59,7 +59,7 @@ export function CustomerInvoicesCard({ customerName, invoices }: CustomerInvoice
                     <DataCell className="pl-6">
                       {/* Stretched link covers the full row */}
                       <Link
-                        href={invoiceDetailHref(inv)}
+                        href={invoiceRowHref(inv)}
                         className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-coral-press focus-visible:after:ring-inset"
                       >
                         <span className="text-body-sm font-semibold text-ink">{inv.id}</span>
@@ -92,7 +92,7 @@ export function CustomerInvoicesCard({ customerName, invoices }: CustomerInvoice
               return (
                 <li key={inv.id} className="border-t border-border first:border-t-0">
                   <Link
-                    href={invoiceDetailHref(inv)}
+                    href={invoiceRowHref(inv)}
                     className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-coral/5 active:bg-coral/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-press focus-visible:ring-inset"
                   >
                     <Avatar className="size-9 shrink-0 bg-coral-soft">

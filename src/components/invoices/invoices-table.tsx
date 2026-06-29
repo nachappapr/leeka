@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Invoice } from "@/lib/types";
 import { invoiceColumns } from "./invoices-columns";
-import { invoiceDetailHref } from "@/lib/invoice/invoice-detail-href";
+import { invoiceRowHref } from "@/lib/invoice/invoice-detail-href";
 
 interface InvoicesTableProps {
   invoices: ReadonlyArray<Invoice>;
@@ -144,7 +144,7 @@ export function InvoicesTable({
         </DataHeader>
         <DataBody>
           {table.getRowModel().rows.map((row) => {
-            const detailHref = invoiceDetailHref(row.original);
+            const detailHref = invoiceRowHref(row.original);
             return (
               <DataRow
                 key={row.id}
