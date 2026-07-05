@@ -97,7 +97,7 @@ function buildCopyLink(status: InvoiceStatus): ActionDescriptor {
     case "draft":
       return { ...base, enabled: false, hint: "No payment link yet — issue the invoice first" };
     case "paid":
-      return { ...base, enabled: false, hint: "This invoice is paid — its link is closed" };
+      return { ...base, enabled: true, label: "Copy receipt link" };
     case "cancelled":
       return { ...base, enabled: false, hint: "This invoice is cancelled — its link is dead" };
   }

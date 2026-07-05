@@ -34,6 +34,35 @@ describe("mapActivityEvent — email.dispatched", () => {
   });
 });
 
+describe("mapActivityEvent — receipt.dispatched", () => {
+  it("null channel → kind sent, label Receipt sent, channel null", () => {
+    const item = mapActivityEvent(makeEvent("receipt.dispatched", { channel: null }));
+    expect(item.kind).toBe<ActivityKind>("sent");
+    expect(item.label).toBe("Receipt sent");
+    expect(item.channel).toBeNull();
+  });
+
+  it("whatsapp channel → kind sent, label Receipt sent on WhatsApp, channel whatsapp", () => {
+    const item = mapActivityEvent(makeEvent("receipt.dispatched", { channel: "whatsapp" }));
+    expect(item.kind).toBe<ActivityKind>("sent");
+    expect(item.label).toBe("Receipt sent on WhatsApp");
+    expect(item.channel).toBe("whatsapp");
+  });
+
+  it("email channel → kind sent, label Receipt sent via email, channel email", () => {
+    const item = mapActivityEvent(makeEvent("receipt.dispatched", { channel: "email" }));
+    expect(item.kind).toBe<ActivityKind>("sent");
+    expect(item.label).toBe("Receipt sent via email");
+    expect(item.channel).toBe("email");
+  });
+
+  it("whatsapp receipt label is distinct from whatsapp.dispatched label", () => {
+    const receipt = mapActivityEvent(makeEvent("receipt.dispatched", { channel: "whatsapp" }));
+    const invoice = mapActivityEvent(makeEvent("whatsapp.dispatched", { channel: "whatsapp" }));
+    expect(receipt.label).not.toBe(invoice.label);
+  });
+});
+
 describe("mapActivityEvent — viewed", () => {
   it("null channel → Viewed by customer", () => {
     const item = mapActivityEvent(makeEvent("viewed", { channel: null }));

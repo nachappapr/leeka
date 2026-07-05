@@ -15,8 +15,14 @@ import {
 import { FetchInvoicesPageStatusSchema, FetchInvoicesPageCursorSchema } from "@/lib/schema/invoice";
 import { computeTotals } from "@/lib/invoice/compute-totals";
 import logger from "@/lib/logger";
-import { serverEnv, isWhatsAppConfigured, isEmailConfigured } from "@/lib/env.server";
-import { sendWhatsAppInvoice } from "@/lib/whatsapp/send";
+import {
+  serverEnv,
+  isWhatsAppConfigured,
+  isEmailConfigured,
+  isWhatsAppReceiptConfigured,
+} from "@/lib/env.server";
+import { sendWhatsAppInvoice, sendWhatsAppReceipt } from "@/lib/whatsapp/send";
+import { formatPaise } from "@/lib/utils/format-currency";
 import { sendEmailInvoice } from "@/lib/email/send";
 import {
   listInvoicesPage,
@@ -36,6 +42,7 @@ import type {
   SendInvoiceResult,
   SendInvoiceEmailResult,
   SendReminderResult,
+  SendReceiptResult,
 } from "@/lib/types/send";
 import type {
   InvoicePage,
@@ -1345,6 +1352,194 @@ export async function sendReminder(payload: unknown): Promise<SendReminderResult
   }
   const customerName = customer?.name ?? "Customer";
   return dispatchReminderEmail({ ...dispatchBase, recipientEmail, customerName });
+}
+
+// ── sendReceipt ───────────────────────────────────────────────────────────────
+
+const SendReceiptInputSchema = z.object({
+  invoiceId: z.string().uuid("Invalid invoice ID"),
+});
+
+interface InvoiceForReceipt {
+  id: string;
+  number: string | null;
+  status: string;
+  public_token: string | null;
+  total: number;
+  amount_paid: number;
+  customer_id: string | null;
+  customers: { phone: string | null; name: string } | null;
+}
+
+interface ReceiptDispatchParams {
+  supabase: Awaited<ReturnType<typeof createClient>>;
+  businessId: string;
+  invoiceId: string;
+  phone: string;
+  invoiceNumber: string;
+  amount: string;
+  receiptUrl: string;
+}
+
+async function dispatchReceiptWhatsApp(params: ReceiptDispatchParams): Promise<SendReceiptResult> {
+  const { supabase, businessId, invoiceId, phone, invoiceNumber, amount, receiptUrl } = params;
+
+  const sendResult = await sendWhatsAppReceipt({
+    recipientPhone: phone,
+    invoiceNumber,
+    amount,
+    receiptUrl,
+  });
+
+  const outcome = sendResult.ok ? "sent" : "failed";
+  const providerMsgId = sendResult.ok ? sendResult.providerMsgId : null;
+  const logError = sendResult.ok ? null : sendResult.error;
+
+  const messageLogId = await writeDispatchLog({
+    supabase,
+    businessId,
+    invoiceId,
+    channel: "whatsapp",
+    outcome,
+    providerMsgId,
+    logError,
+    eventType: "receipt.dispatched",
+  });
+
+  if (!sendResult.ok) {
+    return { ok: false, error: `WhatsApp receipt send failed: ${sendResult.error}` };
+  }
+
+  return { ok: true, data: { invoiceId, messageLogId, outcome: "sent" } };
+}
+
+/**
+ * sendReceipt — Issue #19 Server Action (WhatsApp receipt dispatch).
+ *
+ * Sends a past-tense payment-confirmation WhatsApp message to the invoice's
+ * customer after the invoice has been paid. Uses a DISTINCT receipt template
+ * (WHATSAPP_RECEIPT_TEMPLATE_NAME) — never the pay-link template — because
+ * the message is a receipt confirmation, not a payment request.
+ *
+ * Binding decisions:
+ * - Only paid invoices can receive a receipt (status guard; honest-receipt principle).
+ * - DOES NOT touch invoices.status or any lifecycle field — dispatch logging only.
+ * - ENV-GATED: when receipt credentials are absent the live POST is skipped;
+ *   a 'skipped' message_log row is written and { ok:true, data:{ skipped:true } }
+ *   is returned — this is the expected dev/CI path today.
+ * - Requires public_token (invoice must be issued); /pay/[token] serves as the
+ *   receipt page for paid invoices.
+ * - invoice_events.type = "receipt.dispatched" (channel "whatsapp").
+ * - No revalidateBusiness — dispatch logging only (matches sendInvoice precedent).
+ */
+export async function sendReceipt(invoiceId: unknown): Promise<SendReceiptResult> {
+  const parsed = SendReceiptInputSchema.safeParse({ invoiceId });
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid invoice ID" };
+  }
+
+  const uuid = parsed.data.invoiceId;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { data: invoiceRow, error: invoiceErr } = await supabase
+    .from("invoices")
+    .select(
+      "id, number, status, public_token, total, amount_paid, customer_id, customers(phone, name)",
+    )
+    .eq("id", uuid)
+    .eq("business_id", businessId)
+    .single();
+
+  if (invoiceErr || !invoiceRow) {
+    if (invoiceErr && invoiceErr.code !== "PGRST116") {
+      logger.error({ err: { code: invoiceErr.code } }, "sendReceipt: invoice fetch failed");
+    }
+    return { ok: false, error: "Invoice not found" };
+  }
+
+  const invoice = invoiceRow as unknown as InvoiceForReceipt;
+
+  if (!invoice.public_token) {
+    return {
+      ok: false,
+      error: "Invoice has not been issued yet — issue it before sending a receipt",
+    };
+  }
+
+  if (invoice.status !== "paid") {
+    return { ok: false, error: "Only paid invoices can have a receipt sent" };
+  }
+
+  const customer = Array.isArray(invoice.customers) ? invoice.customers[0] : invoice.customers;
+  const phone = customer?.phone ?? null;
+
+  if (!phone) {
+    return { ok: false, error: "Customer has no phone number on file" };
+  }
+
+  /*
+   * Build the absolute receipt URL. Prefer NEXT_PUBLIC_APP_URL (the deployed app
+   * origin, e.g. https://app.arthapatra.in). Falls back to NEXT_PUBLIC_SUPABASE_URL
+   * in local dev. The /pay/[token] route serves as the receipt view for paid invoices.
+   */
+  const appBase = serverEnv.NEXT_PUBLIC_APP_URL ?? serverEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const receiptUrl = `${appBase}/pay/${invoice.public_token}`;
+  const invoiceNumber = invoice.number ?? uuid;
+  const amount = formatPaise(invoice.total);
+
+  // ── ENV GATE ──────────────────────────────────────────────────────────────
+  //
+  // Skip the live Cloud API call when receipt WABA credentials are not yet
+  // provisioned. The 'skipped' log row lets operators see dispatch attempts;
+  // the non-alarming ok:true result lets the UI show a notice without treating
+  // it as an error. This is the expected path in dev/CI today.
+  if (!isWhatsAppReceiptConfigured()) {
+    logger.info(
+      { invoiceId: uuid },
+      "sendReceipt: WhatsApp receipt not configured — skipping dispatch",
+    );
+
+    const messageLogId = await writeDispatchLog({
+      supabase,
+      businessId,
+      invoiceId: uuid,
+      channel: "whatsapp",
+      outcome: "skipped",
+      providerMsgId: null,
+      logError: "WhatsApp receipt not configured",
+      eventType: "receipt.dispatched",
+    });
+
+    return {
+      ok: true,
+      data: { invoiceId: uuid, messageLogId, outcome: "skipped", skipped: true },
+    };
+  }
+
+  // ── Live dispatch via WhatsApp Cloud API ──────────────────────────────────
+
+  return dispatchReceiptWhatsApp({
+    supabase,
+    businessId,
+    invoiceId: uuid,
+    phone,
+    invoiceNumber,
+    amount,
+    receiptUrl,
+  });
 }
 
 // ── Pagination read-path actions ──────────────────────────────────────────────

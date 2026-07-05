@@ -110,7 +110,7 @@ export async function PayContainer({ token }: PayContainerProps) {
           />
 
           {amountDue <= 0 ? (
-            <PayPaidState />
+            <PayPaidState amountPaid={invoice.amount_paid} invoiceNumber={invoice.invoice_number} />
           ) : hasUpi && upiIntent && upiQrSvg ? (
             <PayUpiCard
               upiIntent={upiIntent}

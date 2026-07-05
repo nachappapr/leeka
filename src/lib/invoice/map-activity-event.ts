@@ -37,6 +37,10 @@ function buildKindAndLabel(
       if (channel === "whatsapp") return { kind: "reminder", label: "Reminder sent on WhatsApp" };
       if (channel === "email") return { kind: "reminder", label: "Reminder sent via email" };
       return { kind: "reminder", label: "Reminder sent" };
+    case "receipt.dispatched":
+      if (channel === "whatsapp") return { kind: "sent", label: "Receipt sent on WhatsApp" };
+      if (channel === "email") return { kind: "sent", label: "Receipt sent via email" };
+      return { kind: "sent", label: "Receipt sent" };
     case "paid":
       return { kind: "paid", label: "Marked paid" };
     case "overdue":

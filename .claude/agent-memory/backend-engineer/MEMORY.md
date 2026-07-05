@@ -27,3 +27,4 @@
 - [business_type column](project_business_type.md) — nullable business_type on businesses, 6-arg create_business RPC, BusinessSchema zod enum, Zod v4 param syntax { error } not { required_error }
 - [Cache invalidation invoices](project_cache_invalidation_invoices.md) — list_invoices_page+invoice_status_counts→DEFINER, revalidateBusiness helper, webhook businessId gap (FOLLOW-UP)
 - [AP-17 payments source + paid event](project_ap17_payments_source_paid_event.md) — payments.source column, mark_invoice_paid emits paid event in both paths; duplicate event deviation from pre-existing trg_emit_paid_invoice_event trigger (FOLLOW-UP)
+- [Issue #19 Unit 1 sendReceipt](project_issue19_send_receipt.md) — sendWhatsAppReceipt builder (distinct receipt template), isWhatsAppReceiptConfigured, sendReceipt SA, receipt.dispatched event type, formatPaise amount param

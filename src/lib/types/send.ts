@@ -39,3 +39,15 @@ export interface SendReminderData {
 export type SendReminderResult =
   | { ok: true; data: SendReminderData }
   | { ok: false; error: string };
+
+export type ReceiptOutcome = "sent" | "failed" | "skipped";
+
+export interface SendReceiptData {
+  invoiceId: string;
+  messageLogId: string;
+  outcome: ReceiptOutcome;
+  /** True when WhatsApp receipt credentials are not yet configured (dev/CI path). */
+  skipped?: boolean;
+}
+
+export type SendReceiptResult = { ok: true; data: SendReceiptData } | { ok: false; error: string };

@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import { Ban, Bell, Check, Edit, Loader2, WhatsApp } from "@/components/icons";
 import { PillButton, pillButtonVariants } from "@/components/ui/custom/pill-button";
-import { SendChannelsModal } from "@/components/ui/custom/send-channels-modal";
 import { MarkPaidModal } from "@/components/ui/custom/mark-paid-modal";
 import { MarkUnpaidModal } from "@/components/ui/custom/mark-unpaid-modal";
 import { brandToast } from "@/components/ui/custom/brand-toast";
@@ -14,6 +13,7 @@ import { invoiceEditHref } from "@/lib/invoice/invoice-detail-href";
 import { cn } from "@/lib/utils";
 import type { InvoiceDetail } from "@/lib/types/invoice";
 import { InvoiceDetailMobileSheet } from "./invoice-detail-mobile-sheet";
+import { ReceiptChannelsModal } from "./receipt-channels-modal";
 import { ReminderChannelsModal } from "./reminder-channels-modal";
 
 interface InvoiceDetailMobileFooterProps {
@@ -23,7 +23,7 @@ interface InvoiceDetailMobileFooterProps {
 // Sticky bottom action bar on mobile. Sits directly at the bottom of the
 // viewport — MobileTabBar is removed from invoice detail pages.
 export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooterProps) {
-  const [sendOpen, setSendOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const [reminderOpen, setReminderOpen] = useState(false);
   const [markUnpaidOpen, setMarkUnpaidOpen] = useState(false);
   const [markPaidOpen, setMarkPaidOpen] = useState(false);
@@ -80,7 +80,7 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           tone="whatsapp"
           size="md"
           className="flex-1 rounded-lg!"
-          onClick={() => setSendOpen(true)}
+          onClick={() => setReceiptOpen(true)}
         >
           <WhatsApp aria-hidden />
           Send receipt
@@ -93,11 +93,11 @@ export function InvoiceDetailMobileFooter({ invoice }: InvoiceDetailMobileFooter
           reversible={invoice.reversible}
           onMarkUnpaid={() => setMarkUnpaidOpen(true)}
         />
-        <SendChannelsModal
+        <ReceiptChannelsModal
           invoice={invoice}
           invoiceUuid={invoice.invoiceUuid ?? ""}
-          open={sendOpen}
-          onOpenChange={setSendOpen}
+          open={receiptOpen}
+          onOpenChange={setReceiptOpen}
         />
         <MarkUnpaidModal
           invoice={invoice}

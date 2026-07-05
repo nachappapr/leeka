@@ -9,6 +9,7 @@ import { InvoiceActionsCancelled } from "./invoice-actions-cancelled";
 import { InvoiceActionsDraft } from "./invoice-actions-draft";
 import { InvoiceActionsOpen } from "./invoice-actions-open";
 import { InvoiceActionsPaid } from "./invoice-actions-paid";
+import { ReceiptChannelsModal } from "./receipt-channels-modal";
 import { ReminderChannelsModal } from "./reminder-channels-modal";
 
 interface InvoiceActionsCardProps {
@@ -17,6 +18,7 @@ interface InvoiceActionsCardProps {
 
 export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
   const [sendOpen, setSendOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const [reminderOpen, setReminderOpen] = useState(false);
 
   const status = invoice.status;
@@ -33,7 +35,7 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
           {isCancelled ? (
             <InvoiceActionsCancelled />
           ) : isPaid ? (
-            <InvoiceActionsPaid invoice={invoice} onSend={() => setSendOpen(true)} />
+            <InvoiceActionsPaid invoice={invoice} onSend={() => setReceiptOpen(true)} />
           ) : isDraft ? (
             <InvoiceActionsDraft
               invoiceId={invoiceId}
@@ -60,6 +62,12 @@ export function InvoiceActionsCard({ invoice }: InvoiceActionsCardProps) {
         invoiceUuid={invoice.invoiceUuid ?? ""}
         open={reminderOpen}
         onOpenChange={setReminderOpen}
+      />
+      <ReceiptChannelsModal
+        invoice={invoice}
+        invoiceUuid={invoice.invoiceUuid ?? ""}
+        open={receiptOpen}
+        onOpenChange={setReceiptOpen}
       />
     </>
   );

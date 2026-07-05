@@ -24,6 +24,10 @@ const serverSchema = z.object({
   WHATSAPP_PHONE_NUMBER_ID: z.string().min(1).optional(),
   WHATSAPP_ACCESS_TOKEN: z.string().min(1).optional(),
   WHATSAPP_TEMPLATE_NAME: z.string().min(1).optional(),
+  // Separate receipt template — MUST be registered as a distinct WABA template from
+  // WHATSAPP_TEMPLATE_NAME (the pay-link template). Using the same template for both
+  // pay-link and receipt sends conflates payment request with receipt confirmation.
+  WHATSAPP_RECEIPT_TEMPLATE_NAME: z.string().min(1).optional(),
   WHATSAPP_API_VERSION: z.string().min(1).optional(),
   // AP-26: WhatsApp webhook secrets — both optional so the server starts without
   // them. isWhatsAppWebhookConfigured() gates signature verification at call-time.
@@ -75,6 +79,7 @@ export const serverEnv = parseEnv(serverSchema, {
   WHATSAPP_PHONE_NUMBER_ID: process.env.WHATSAPP_PHONE_NUMBER_ID,
   WHATSAPP_ACCESS_TOKEN: process.env.WHATSAPP_ACCESS_TOKEN,
   WHATSAPP_TEMPLATE_NAME: process.env.WHATSAPP_TEMPLATE_NAME,
+  WHATSAPP_RECEIPT_TEMPLATE_NAME: process.env.WHATSAPP_RECEIPT_TEMPLATE_NAME,
   WHATSAPP_API_VERSION: process.env.WHATSAPP_API_VERSION,
   WHATSAPP_APP_SECRET: process.env.WHATSAPP_APP_SECRET,
   WHATSAPP_WEBHOOK_VERIFY_TOKEN: process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN,
@@ -99,6 +104,23 @@ export function isWhatsAppConfigured(): boolean {
     serverEnv.WHATSAPP_PHONE_NUMBER_ID &&
     serverEnv.WHATSAPP_ACCESS_TOKEN &&
     serverEnv.WHATSAPP_TEMPLATE_NAME,
+  );
+}
+
+/**
+ * Returns true when all three required WhatsApp receipt credentials are present:
+ * WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN, and WHATSAPP_RECEIPT_TEMPLATE_NAME.
+ *
+ * Intentionally checks WHATSAPP_RECEIPT_TEMPLATE_NAME — never WHATSAPP_TEMPLATE_NAME
+ * (the pay-link template). The receipt template must be a distinct WABA-approved
+ * template with past-tense thank-you copy. When false, sendReceipt skips the live
+ * HTTP call and records a 'skipped' message_log row instead.
+ */
+export function isWhatsAppReceiptConfigured(): boolean {
+  return Boolean(
+    serverEnv.WHATSAPP_PHONE_NUMBER_ID &&
+    serverEnv.WHATSAPP_ACCESS_TOKEN &&
+    serverEnv.WHATSAPP_RECEIPT_TEMPLATE_NAME,
   );
 }
 

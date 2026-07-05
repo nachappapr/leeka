@@ -294,10 +294,13 @@ describe("invoiceRowActions — paid", () => {
     expect(d.hint).toBe("Already paid — nothing left to collect");
   });
 
-  it("copyLink: disabled, link closed hint", () => {
+  it("copyLink: enabled, receipt link label, no hint", () => {
     const d = find(descriptors, "copyLink");
-    expect(d.enabled).toBe(false);
-    expect(d.hint).toBe("This invoice is paid — its link is closed");
+    expect(d.enabled).toBe(true);
+    expect(d.label).toBe("Copy receipt link");
+    expect(d.intent).toBe("copyLink");
+    expect(d.variant).toBe("default");
+    expect(d.hint).toBeUndefined();
   });
 
   it("edit: disabled, duplicate hint", () => {
