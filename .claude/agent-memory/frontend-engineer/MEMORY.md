@@ -8,3 +8,5 @@
 - [AP-42 keyset pagination](project-ap42-keyset-pagination.md) — SC+client island pattern, resolveBusinessId location, RPC→Invoice mapping, controlled desktopFilter, deviations
 - [AP-45 Free vs Pro gating](project-ap45-plan-gating.md) — isPro() threaded as boolean prop from SC to context, export lock, cap error via brandToast, issueInvoice wired
 - [Issue #29 customer detail cache-tag](project-ap29-customer-detail-cache-tag.md) — stale `any` casts removed (Database type already covered tables); customers/invoices tag split; formatRupees paise quirk flagged not fixed
+- [Issue #30 customer soft delete (FE half)](project-issue30-customer-soft-delete.md) — `.is("deleted_at", null)` filters in customer.ts; CustomerEditTrigger.handleDelete async-wraps deleteCustomerAction; fire-and-forget chain through sheet/modal confirmed safe (promise owned by the async leaf)
+- [Issue #30 a11y follow-up](project-issue30-a11y-followup.md) — Base UI nested-dialog registration is React-context (JSX descendant), not DOM; async delete-confirm Promise<boolean> chain w/ isDeleting busy-state; brandToast error role="alert"

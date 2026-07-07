@@ -23,3 +23,5 @@
 - [stateCode silent null-overwrite on partial save](project-statecode-silent-erase.md) — AP-36: stateCode absent from form but included in update payload as null; every save erases DB state_code; High data-integrity
 - [Concurrent-lane scope bleed](project-concurrent-lane-scope-bleed.md) — parallel AP units share one worktree; sibling-lane files appear in the reviewed diff; flag as Medium #13, PASS the in-scope surfaces on their own merits
 - [revalidateBusiness centralized tags](project-revalidate-business-centralized-tags.md) — single helper invalidates dashboard+invoices+customers tags; listCustomersPage mirrors listInvoicesPage's businessId-outside-cache-boundary pattern exactly (accepted, issue #28)
+- [returns boolean sidesteps 42702](project-returns-boolean-sidesteps-42702.md) — mutation RPCs (delete/toggle) returning scalar boolean instead of RETURNS TABLE have no OUT-columns to qualify; don't flag #5 for these
+- [Redundant refresh before push](project-redundant-refresh-before-push.md) — router.refresh() then router.push() to a different route wastes a round-trip when the action already updateTag's; Medium #3, not Critical (issue #30 delete flow)
