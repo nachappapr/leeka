@@ -160,6 +160,7 @@ export type Database = {
           business_id: string;
           city: string | null;
           created_at: string | null;
+          deleted_at: string | null;
           email: string | null;
           gstin: string | null;
           id: string;
@@ -174,6 +175,7 @@ export type Database = {
           business_id: string;
           city?: string | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           email?: string | null;
           gstin?: string | null;
           id?: string;
@@ -188,6 +190,7 @@ export type Database = {
           business_id?: string;
           city?: string | null;
           created_at?: string | null;
+          deleted_at?: string | null;
           email?: string | null;
           gstin?: string | null;
           id?: string;
@@ -869,6 +872,10 @@ export type Database = {
         Returns: string;
       };
       dashboard_summary: { Args: { p_business_id: string }; Returns: Json };
+      delete_customer: {
+        Args: { p_business_id: string; p_customer_id: string };
+        Returns: boolean;
+      };
       delete_invoice: {
         Args: { p_business_id: string; p_invoice_id: string };
         Returns: {

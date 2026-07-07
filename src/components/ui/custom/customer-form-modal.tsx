@@ -32,7 +32,7 @@ interface CustomerFormModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (payload: CustomerSavePayload) => Promise<{ ok: boolean; error?: string }>;
-  onDelete?: (customer: Customer) => void;
+  onDelete?: (customer: Customer) => Promise<boolean>;
   finalFocusRef?: React.RefObject<HTMLElement | null>;
 }
 
@@ -341,9 +341,16 @@ export function CustomerFormModal({
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  function handleDelete(customer: Customer) {
-    onDelete?.(customer);
-    onOpenChange(false);
+  async function handleDelete(customer: Customer): Promise<boolean> {
+    try {
+      const ok = (await onDelete?.(customer)) ?? false;
+      if (ok) {
+        onOpenChange(false);
+      }
+      return ok;
+    } catch {
+      return false;
+    }
   }
 
   const eyebrow = isEdit ? "Edit customer" : "New customer";
@@ -354,38 +361,37 @@ export function CustomerFormModal({
   const saveLabel = isEdit ? "Save changes" : "Save customer";
 
   return (
-    <>
-      <Modal open={open} onOpenChange={onOpenChange}>
-        <ModalContent initialFocus={nameRef} finalFocus={finalFocusRef ?? undefined}>
-          <CustomerFormBody
-            key={isEdit ? (initial?.id ?? "edit") : "add"}
-            isEdit={isEdit}
-            initial={initial}
-            nameRef={nameRef}
-            deleteButtonRef={deleteButtonRef}
-            onOpenChange={onOpenChange}
-            onSave={onSave}
-            onConfirmDelete={() => setConfirmOpen(true)}
-            saveLabel={saveLabel}
-            eyebrow={eyebrow}
-            title={title}
-            subtitle={subtitle}
-          />
-        </ModalContent>
-      </Modal>
-
-      {isEdit && initial && (
-        <CustomerDeleteSheet
-          open={confirmOpen}
-          onOpenChange={setConfirmOpen}
-          customer={initial}
-          finalFocusRef={deleteButtonRef}
-          onDelete={(c) => {
-            handleDelete(c);
-            setConfirmOpen(false);
-          }}
+    <Modal open={open} onOpenChange={onOpenChange}>
+      <ModalContent initialFocus={nameRef} finalFocus={finalFocusRef ?? undefined}>
+        <CustomerFormBody
+          key={isEdit ? (initial?.id ?? "edit") : "add"}
+          isEdit={isEdit}
+          initial={initial}
+          nameRef={nameRef}
+          deleteButtonRef={deleteButtonRef}
+          onOpenChange={onOpenChange}
+          onSave={onSave}
+          onConfirmDelete={() => setConfirmOpen(true)}
+          saveLabel={saveLabel}
+          eyebrow={eyebrow}
+          title={title}
+          subtitle={subtitle}
         />
-      )}
-    </>
+
+        {/* Rendered as a JSX descendant of Modal (not a sibling) so Base UI
+            registers it as a nested dialog: Escape closes only the topmost
+            sheet, and focus-restore ordering is owned by the dialog stack
+            instead of racing two independent finalFocus calls. */}
+        {isEdit && initial && (
+          <CustomerDeleteSheet
+            open={confirmOpen}
+            onOpenChange={setConfirmOpen}
+            customer={initial}
+            finalFocusRef={deleteButtonRef}
+            onDelete={handleDelete}
+          />
+        )}
+      </ModalContent>
+    </Modal>
   );
 }

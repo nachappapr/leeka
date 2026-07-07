@@ -6,7 +6,7 @@ import { Edit } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { CustomerFormModal } from "@/components/ui/custom/customer-form-modal";
 import { brandToast } from "@/components/ui/custom/brand-toast";
-import { upsertCustomerAction } from "@/app/(app)/customers/actions";
+import { upsertCustomerAction, deleteCustomerAction } from "@/app/(app)/customers/actions";
 import type { Customer, CustomerSavePayload } from "@/lib/types";
 
 interface CustomerEditTriggerProps {
@@ -35,10 +35,22 @@ export function CustomerEditTrigger({
     return result;
   }
 
-  function handleDelete(c: Customer) {
-    onDelete?.(c);
-    router.refresh();
-    router.push("/customers");
+  async function handleDelete(c: Customer): Promise<boolean> {
+    let result;
+    try {
+      result = await deleteCustomerAction(c.id);
+    } catch {
+      brandToast.error({ title: "Couldn't delete customer. Please try again." });
+      return false;
+    }
+    if (result.ok) {
+      brandToast.success({ title: "Customer deleted" });
+      onDelete?.(c);
+      router.push("/customers");
+      return true;
+    }
+    brandToast.error({ title: result.error });
+    return false;
   }
 
   return (

@@ -185,3 +185,56 @@ export async function fetchCustomersPage(
   const page = await listCustomersPage({ businessId, cursor, limit: 25 });
   return { ok: true, page };
 }
+
+// ── deleteCustomerAction ───────────────────────────────────────────────────────
+
+const DeleteCustomerIdSchema = z.string().uuid("Invalid customer ID");
+
+export type DeleteCustomerResult = { ok: true } | { ok: false; error: string };
+
+/**
+ * deleteCustomerAction — issue #30 backend half.
+ *
+ * Soft-deletes a customer (sets deleted_at) scoped to the caller's business.
+ * The delete_customer RPC is the business-scoped + membership-guarded boundary;
+ * this action only validates input, resolves the caller's business, and
+ * invalidates the customers/dashboard/invoices cache tags on success.
+ */
+export async function deleteCustomerAction(customerId: string): Promise<DeleteCustomerResult> {
+  const parsed = DeleteCustomerIdSchema.safeParse(customerId);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid customer ID" };
+  }
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated" };
+  }
+
+  const businessId = await getBusinessId(supabase, user.id);
+  if (!businessId) {
+    return { ok: false, error: "No business found for this account" };
+  }
+
+  const { error } = await supabase.rpc("delete_customer", {
+    p_business_id: businessId,
+    p_customer_id: parsed.data,
+  });
+
+  if (error) {
+    logger.error(
+      { err: { code: error.code }, userId: user.id },
+      "deleteCustomerAction: RPC failed",
+    );
+    return { ok: false, error: "Failed to delete customer. Please try again." };
+  }
+
+  revalidateBusiness(businessId);
+
+  return { ok: true };
+}

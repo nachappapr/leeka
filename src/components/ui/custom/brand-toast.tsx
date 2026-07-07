@@ -52,6 +52,7 @@ function BrandToastBody({ kind, title, sub, actions, toastId }: BrandToastBodyPr
 
   return (
     <div
+      role={kind === "error" ? "alert" : undefined}
       className={cn(
         "w-full rounded-lg bg-ink p-4 text-card shadow-float",
         "grid items-start gap-y-2.5",

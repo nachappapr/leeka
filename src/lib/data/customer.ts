@@ -105,7 +105,8 @@ export async function businessHasCustomers({
   const { count, error } = await supabase
     .from("customers")
     .select("id", { count: "exact", head: true })
-    .eq("business_id", businessId);
+    .eq("business_id", businessId)
+    .is("deleted_at", null);
 
   if (error) {
     if (!isAbortError(error)) {
@@ -137,6 +138,7 @@ export async function getCustomerDetail({ businessId, id }: GetCustomerDetailArg
     .select("id, name, phone, email, gstin, billing_address, city, created_at")
     .eq("id", id)
     .eq("business_id", businessId)
+    .is("deleted_at", null)
     .single();
 
   if (error) {
