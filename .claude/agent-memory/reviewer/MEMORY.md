@@ -22,3 +22,4 @@
 - [eslint-disable for no-img-element not sanctioned](project-eslint-disable-img-element.md) — use next/image with unoptimized prop; disable comment is High code-quality violation; only CSS-var exception is allowed
 - [stateCode silent null-overwrite on partial save](project-statecode-silent-erase.md) — AP-36: stateCode absent from form but included in update payload as null; every save erases DB state_code; High data-integrity
 - [Concurrent-lane scope bleed](project-concurrent-lane-scope-bleed.md) — parallel AP units share one worktree; sibling-lane files appear in the reviewed diff; flag as Medium #13, PASS the in-scope surfaces on their own merits
+- [revalidateBusiness centralized tags](project-revalidate-business-centralized-tags.md) — single helper invalidates dashboard+invoices+customers tags; listCustomersPage mirrors listInvoicesPage's businessId-outside-cache-boundary pattern exactly (accepted, issue #28)
