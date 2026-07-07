@@ -8,7 +8,7 @@ import { resolveBusinessId } from "@/lib/data/invoice";
 import type { Customer } from "@/lib/types/customer";
 import type { CustomerPage, CustomerPageCursor } from "@/lib/types/customer";
 import { cacheLife, cacheTag } from "next/cache";
-import { dashboardTag } from "@/lib/constants/cache-tags";
+import { dashboardTag, customersTag } from "@/lib/constants/cache-tags";
 
 interface ListCustomersPageArgs {
   businessId: string;
@@ -52,7 +52,11 @@ export async function listCustomersPage({
   cursor,
   limit = 25,
 }: ListCustomersPageArgs): Promise<CustomerPage> {
-  const supabase = await createClient();
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(customersTag(businessId));
+
+  const supabase = createAdminClient();
 
   const args = {
     p_business_id: businessId,
@@ -94,7 +98,7 @@ export async function businessHasCustomers({
 }): Promise<boolean> {
   "use cache";
   cacheLife("minutes");
-  cacheTag(dashboardTag(businessId));
+  cacheTag(dashboardTag(businessId), customersTag(businessId));
 
   const supabase = createAdminClient();
 

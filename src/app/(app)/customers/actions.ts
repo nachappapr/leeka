@@ -1,12 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { CustomerSchema } from "@/lib/schema/customer";
 import logger from "@/lib/logger";
 import { listCustomersPage } from "@/lib/data/customer";
 import { resolveBusinessId } from "@/lib/data/invoice";
+import { revalidateBusiness } from "@/lib/cache/revalidate-business";
 import type { CustomerSavePayload, SelectedCustomer } from "@/lib/types";
 import type { CustomerPage, CustomerPageCursor } from "@/lib/types/customer";
 
@@ -96,11 +96,7 @@ export async function upsertCustomerAction(
     return { ok: false, error: "Failed to save customer. Please try again." };
   }
 
-  revalidatePath("/customers");
-  revalidatePath("/dashboard");
-  if (payload.id) {
-    revalidatePath(`/customers/${payload.id}`);
-  }
+  revalidateBusiness(businessId);
 
   return {
     ok: true,

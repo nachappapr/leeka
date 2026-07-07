@@ -24,6 +24,22 @@ export function CustomersListClient({ initialRows, initialNextCursor }: Customer
   const prevHasMoreRef = useRef(initialNextCursor !== null);
   const loadMoreInFlightRef = useRef(false);
 
+  // Resync from server props when the route re-renders with fresh data (e.g.
+  // after creating a customer + cache-tag invalidation). useState only reads
+  // its initializer on mount, so without this the first page stays pinned to
+  // the snapshot taken on first mount. initialRows only changes identity on a
+  // server render — client-side load-more mutates state without touching it,
+  // so this never clobbers an in-progress pagination. This is the React
+  // "adjust state during render when a prop changes" pattern (no effect).
+  const [serverRows, setServerRows] = useState(initialRows);
+
+  if (initialRows !== serverRows) {
+    setServerRows(initialRows);
+    setCustomers(initialRows);
+    setCursor(initialNextCursor);
+    setHasMore(initialNextCursor !== null);
+  }
+
   const handleLoadMore = useCallback(() => {
     if (!hasMore || !cursor) return;
     loadMoreInFlightRef.current = true;
