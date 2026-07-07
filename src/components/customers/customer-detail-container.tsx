@@ -8,6 +8,8 @@ import { CustomerContactCard } from "@/components/customers/customer-contact-car
 import { CustomerStatTile } from "@/components/customers/customer-stat-tile";
 import { CustomerInvoicesCard } from "@/components/customers/customer-invoices-card";
 import { createClient } from "@/lib/supabase/server";
+import { resolveBusinessId } from "@/lib/data/invoice";
+import { getCustomerDetail, listCustomerInvoices } from "@/lib/data/customer";
 import type { Customer } from "@/lib/types";
 import type { Invoice } from "@/lib/types";
 import type { StatusPillStatus } from "@/components/ui/custom/status-pill";
@@ -25,48 +27,13 @@ function formatRupees(rupees: number): string {
 export async function CustomerDetailContainer({ id }: CustomerDetailContainerProps) {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) notFound();
-
-  const { data: member } = await supabase
-    .from("business_members")
-    .select("business_id")
-    .eq("user_id", user.id)
-    .single();
-
-  const businessId = member?.business_id;
+  const businessId = await resolveBusinessId(supabase);
   if (!businessId) notFound();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: customerRow } = await (supabase as any)
-    .from("customers")
-    .select("*")
-    .eq("id", id)
-    .eq("business_id", businessId)
-    .single();
-
+  const customerRow = await getCustomerDetail({ businessId, id });
   if (!customerRow) notFound();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: invoiceRows } = await (supabase as any)
-    .from("invoices")
-    .select("id, number, status, issue_date, total, amount_paid, customer_id")
-    .eq("customer_id", id)
-    .eq("business_id", businessId)
-    .order("issue_date", { ascending: false });
-
-  const rows = (invoiceRows ?? []) as Array<{
-    id: string;
-    number: string | null;
-    status: string;
-    issue_date: string;
-    total: number;
-    amount_paid: number;
-    customer_id: string;
-  }>;
+  const rows = await listCustomerInvoices({ businessId, customerId: id });
 
   const outstandingRupees = rows
     .filter((r) => OPEN_STATUSES.includes(r.status))
