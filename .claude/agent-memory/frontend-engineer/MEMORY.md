@@ -7,3 +7,4 @@
 - [AP-43 bundle budget](project-ap43-bundle-budget.md) — Turbopack vs webpack analyzer distinction, measured chunk sizes, pre-existing invoice.ts type error outside scope
 - [AP-42 keyset pagination](project-ap42-keyset-pagination.md) — SC+client island pattern, resolveBusinessId location, RPC→Invoice mapping, controlled desktopFilter, deviations
 - [AP-45 Free vs Pro gating](project-ap45-plan-gating.md) — isPro() threaded as boolean prop from SC to context, export lock, cap error via brandToast, issueInvoice wired
+- [Issue #29 customer detail cache-tag](project-ap29-customer-detail-cache-tag.md) — stale `any` casts removed (Database type already covered tables); customers/invoices tag split; formatRupees paise quirk flagged not fixed
