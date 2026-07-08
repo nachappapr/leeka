@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import { isAbortError } from "@/lib/supabase/is-abort-error";
 import logger from "@/lib/logger";
 
 export type Plan = "free" | "pro";
@@ -42,7 +43,9 @@ export async function getPlan(businessId?: string): Promise<Plan> {
     .single();
 
   if (error) {
-    logger.error({ err: { code: error.code, message: error.message } }, "getPlan: lookup failed");
+    if (!isAbortError(error)) {
+      logger.error({ err: { code: error.code, message: error.message } }, "getPlan: lookup failed");
+    }
     return "free";
   }
 
