@@ -14,6 +14,7 @@ interface ListCustomersPageArgs {
   businessId: string;
   cursor: CustomerPageCursor | null;
   limit?: number;
+  query?: string;
 }
 
 function mapRpcRowToCustomer(row: {
@@ -51,6 +52,7 @@ export async function listCustomersPage({
   businessId,
   cursor,
   limit = 25,
+  query,
 }: ListCustomersPageArgs): Promise<CustomerPage> {
   "use cache";
   cacheLife("minutes");
@@ -62,6 +64,7 @@ export async function listCustomersPage({
     p_business_id: businessId,
     p_limit: limit,
     ...(cursor ? { p_cursor_name: cursor.name, p_cursor_id: cursor.id } : {}),
+    ...(query ? { p_query: query } : {}),
   };
 
   const { data, error } = await supabase.rpc("list_customers_page", args);
@@ -89,6 +92,43 @@ export async function fetchCustomersFirstPage(limit = 25): Promise<CustomerPage>
   const businessId = await resolveBusinessId(supabase);
   if (!businessId) return { rows: [], nextCursor: null };
   return listCustomersPage({ businessId, cursor: null, limit });
+}
+
+export async function countCustomers({
+  businessId,
+}: {
+  businessId: string;
+}): Promise<number | null> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(customersTag(businessId));
+
+  const supabase = createAdminClient();
+
+  const { count, error } = await supabase
+    .from("customers")
+    .select("id", { count: "exact", head: true })
+    .eq("business_id", businessId)
+    .is("deleted_at", null);
+
+  if (error) {
+    if (!isAbortError(error)) {
+      logger.error(
+        { err: { code: error.code, message: error.message } },
+        "countCustomers: query failed",
+      );
+    }
+    return null;
+  }
+
+  return count ?? 0;
+}
+
+export async function fetchCustomersCount(): Promise<number | null> {
+  const supabase = await createClient();
+  const businessId = await resolveBusinessId(supabase);
+  if (!businessId) return null;
+  return countCustomers({ businessId });
 }
 
 export async function businessHasCustomers({

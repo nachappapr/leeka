@@ -175,14 +175,33 @@ export type FetchCustomersPageResult =
   | { ok: true; page: CustomerPage }
   | { ok: false; error: string };
 
+const MAX_SEARCH_QUERY_LENGTH = 100;
+
+// Same z.string().max(N) shape as SearchQuerySchema above, extended for this
+// action's live-search semantics: trimmed, and an empty/overlong/missing
+// query all collapse to "no query" (browse mode) rather than a hard error —
+// there's no submit button here to surface a rejection against.
+const PaginationQuerySchema = z.string().trim().max(MAX_SEARCH_QUERY_LENGTH).optional();
+
+function normalizeSearchQuery(query: string | undefined): string | undefined {
+  const parsed = PaginationQuerySchema.safeParse(query);
+  return parsed.success && parsed.data ? parsed.data : undefined;
+}
+
 export async function fetchCustomersPage(
   cursor: CustomerPageCursor | null,
+  query?: string,
 ): Promise<FetchCustomersPageResult> {
   const supabase = await createClient();
   const businessId = await resolveBusinessId(supabase);
   if (!businessId) return { ok: false, error: "Not authenticated" };
 
-  const page = await listCustomersPage({ businessId, cursor, limit: 25 });
+  const page = await listCustomersPage({
+    businessId,
+    cursor,
+    limit: 25,
+    query: normalizeSearchQuery(query),
+  });
   return { ok: true, page };
 }
 

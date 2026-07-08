@@ -6,11 +6,29 @@ import type { Customer } from "@/lib/types";
 
 interface CustomersMobileListProps {
   customers: ReadonlyArray<Customer>;
+  activeQuery?: string | null;
+  isLoading?: boolean;
 }
 
-export function CustomersMobileList({ customers }: CustomersMobileListProps) {
+export function CustomersMobileList({
+  customers,
+  activeQuery,
+  isLoading,
+}: CustomersMobileListProps) {
+  if (customers.length === 0 && activeQuery) {
+    return (
+      <p aria-busy={isLoading || undefined} className="py-12 text-center text-body-sm text-ink-3">
+        No customers match &ldquo;{activeQuery}&rdquo;
+      </p>
+    );
+  }
+
   return (
-    <ul aria-label="Customers" className="flex flex-col gap-3 min-mobile:hidden">
+    <ul
+      aria-label="Customers"
+      aria-busy={isLoading || undefined}
+      className="flex flex-col gap-3 min-mobile:hidden"
+    >
       {customers.map((cust) => {
         const initials = cust.name
           .split(" ")

@@ -6,10 +6,13 @@ import { EmptyTableState } from "@/components/ui/custom/empty-table-state";
 import { CustomersPageHeader } from "@/components/customers/customers-page-header";
 import { CustomerAddTrigger } from "@/components/customers/customer-add-trigger";
 import { CustomersListClient } from "@/components/customers/customers-list-client";
-import { fetchCustomersFirstPage } from "@/lib/data/customer";
+import { fetchCustomersFirstPage, fetchCustomersCount } from "@/lib/data/customer";
 
 export async function CustomersContainer() {
-  const firstPage = await fetchCustomersFirstPage(25);
+  const [firstPage, totalCount] = await Promise.all([
+    fetchCustomersFirstPage(25),
+    fetchCustomersCount(),
+  ]);
   const hasCustomers = firstPage.rows.length > 0 || firstPage.nextCursor !== null;
 
   return (
@@ -22,11 +25,15 @@ export async function CustomersContainer() {
       <div className="flex flex-1 flex-col gap-5 p-7 max-mobile:gap-3.5 max-mobile:p-4 max-mobile:pb-24">
         {hasCustomers ? (
           <>
-            <CustomersPageHeader totalCount={firstPage.rows.length} totalOutstanding={null} />
+            <CustomersPageHeader
+              totalCount={totalCount ?? firstPage.rows.length}
+              totalOutstanding={null}
+            />
             <Card>
               <CustomersListClient
                 initialRows={firstPage.rows}
                 initialNextCursor={firstPage.nextCursor}
+                totalCount={totalCount ?? undefined}
               />
             </Card>
           </>
