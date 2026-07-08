@@ -28,3 +28,4 @@
 - [SECURITY DEFINER + use-cache RPC pattern](project-security-definer-use-cache-rpc-pattern.md) — INVOKER→DEFINER migration for RPCs read via admin client in "use cache" is OK when grants are service_role-only and businessId is pre-verified server-side; not an automatic Critical #3/#4
 - [Customers pager parity — clean precedent](project-customers-pager-parity-clean.md) — TablePager extraction + countCustomers/customersTag wiring reviewed clean; raw `<button>` in TablePager predates the unit, don't flag fresh
 - [Customer search staleness races](project-customers-search-staleness-races.md) — FAIL (High x2): effect-deferred requestId invalidation races an in-flight fetch resolving mid-resync; fetchWithActiveQuery has no guard when dispatched during browse mode
+- [Issue #31 soft-delete writes — clean](project-issue31-soft-delete-writes-clean.md) — PASS; byte-diff method for verifying reproduced RPC bodies; int4/integer are the same signature, not drift
