@@ -920,6 +920,7 @@ export type Database = {
           p_cursor_id?: string;
           p_cursor_name?: string;
           p_limit?: number;
+          p_query?: string;
         };
         Returns: {
           billing_address: string;
