@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { Locale } from "@/lib/i18n/locale";
 
 export type SettingsSectionId =
   | "business"
@@ -16,7 +17,7 @@ export interface SettingsSectionDef {
 }
 
 export interface LanguageOption {
-  id: string;
+  id: Locale;
   label: string;
   sub: string;
   lang?: string;

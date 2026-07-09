@@ -41,10 +41,7 @@ export const SETTINGS_ACCENT_LABELS: Readonly<Record<string, string>> = {
 export const SETTINGS_LANGUAGES: ReadonlyArray<LanguageOption> = [
   { id: "en", label: "English", sub: "English" },
   { id: "hi", label: "हिंदी", sub: "Hindi", lang: "hi" },
-  { id: "ta", label: "தமிழ்", sub: "Tamil", lang: "ta" },
-  { id: "mr", label: "मराठी", sub: "Marathi", lang: "mr" },
-  { id: "bn", label: "বাংলা", sub: "Bengali", lang: "bn" },
-  { id: "gu", label: "ગુજરાતી", sub: "Gujarati", lang: "gu" },
+  { id: "kn", label: "ಕನ್ನಡ", sub: "Kannada", lang: "kn" },
 ];
 
 export const SETTINGS_NOTIFICATION_TOGGLES: ReadonlyArray<{
