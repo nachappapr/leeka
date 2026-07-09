@@ -11,31 +11,17 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { ReportsMonthPoint } from "@/lib/types/reports";
+import { formatPaiseAxisTick, formatPaiseFull, shapeChartSeries } from "@/lib/reports/chart-format";
 
 interface ReportsChartProps {
   months: ReportsMonthPoint[];
-}
-
-function formatMonthLabel(yyyyMM: string): string {
-  const [year, month] = yyyyMM.split("-");
-  const date = new Date(Number(year), Number(month) - 1, 1);
-  return date.toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
-}
-
-function formatPaiseTooltip(paise: number): string {
-  const rupees = paise / 100;
-  return `₹${rupees.toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
 
 const REVENUE_COLOR = "var(--color-chart-1)";
 const RECEIVED_COLOR = "var(--color-chart-2)";
 
 export function ReportsChart({ months }: ReportsChartProps) {
-  const data = months.map((m) => ({
-    name: formatMonthLabel(m.month),
-    Revenue: m.revenue,
-    Received: m.received,
-  }));
+  const data = shapeChartSeries(months);
 
   return (
     <div className="w-full">
@@ -44,13 +30,13 @@ export function ReportsChart({ months }: ReportsChartProps) {
           <BarChart data={data} margin={{ top: 4, right: 4, left: 8, bottom: 0 }} barGap={2}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-line)" />
             <XAxis
-              dataKey="name"
+              dataKey="label"
               tick={{ fontSize: 11, fill: "var(--color-ink-3)", fontFamily: "inherit" }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tickFormatter={(v: number) => (v === 0 ? "0" : `₹${(v / 100 / 1000).toFixed(0)}k`)}
+              tickFormatter={formatPaiseAxisTick}
               tick={{ fontSize: 11, fill: "var(--color-ink-3)", fontFamily: "inherit" }}
               axisLine={false}
               tickLine={false}
@@ -59,7 +45,7 @@ export function ReportsChart({ months }: ReportsChartProps) {
             <Tooltip
               animationDuration={0}
               formatter={(value, name) => [
-                typeof value === "number" ? formatPaiseTooltip(value) : String(value),
+                typeof value === "number" ? formatPaiseFull(value) : String(value),
                 String(name),
               ]}
               contentStyle={{
@@ -75,8 +61,20 @@ export function ReportsChart({ months }: ReportsChartProps) {
             <Legend
               wrapperStyle={{ fontSize: 13, fontFamily: "inherit", color: "var(--color-ink-2)" }}
             />
-            <Bar dataKey="Revenue" fill={REVENUE_COLOR} radius={[3, 3, 0, 0]} maxBarSize={28} />
-            <Bar dataKey="Received" fill={RECEIVED_COLOR} radius={[3, 3, 0, 0]} maxBarSize={28} />
+            <Bar
+              dataKey="revenue"
+              name="Revenue"
+              fill={REVENUE_COLOR}
+              radius={[3, 3, 0, 0]}
+              maxBarSize={28}
+            />
+            <Bar
+              dataKey="received"
+              name="Received"
+              fill={RECEIVED_COLOR}
+              radius={[3, 3, 0, 0]}
+              maxBarSize={28}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
