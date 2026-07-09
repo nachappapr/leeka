@@ -29,3 +29,4 @@
 - [Customers pager parity — clean precedent](project-customers-pager-parity-clean.md) — TablePager extraction + countCustomers/customersTag wiring reviewed clean; raw `<button>` in TablePager predates the unit, don't flag fresh
 - [Customer search staleness races](project-customers-search-staleness-races.md) — FAIL (High x2): effect-deferred requestId invalidation races an in-flight fetch resolving mid-resync; fetchWithActiveQuery has no guard when dispatched during browse mode
 - [Issue #31 soft-delete writes — clean](project-issue31-soft-delete-writes-clean.md) — PASS; byte-diff method for verifying reproduced RPC bodies; int4/integer are the same signature, not drift
+- [Reports chart restyle #39 — clean](project-reports-chart-restyle-issue39-clean.md) — PASS; skeletons duplicating Card classes is accepted precedent; presentational children of a 'use client' parent need no directive; h-108/h-92 etc are canonical Tailwind v4 scale, not arbitrary

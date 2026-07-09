@@ -7,6 +7,21 @@ export interface ReportsChartDatum {
   received: number;
 }
 
+export interface ChartSeriesDef {
+  key: "revenue" | "received";
+  name: string;
+}
+
+/**
+ * Chart series in back-to-front visual stacking order: Revenue is the back
+ * (whole) bar, Received overlaps in front (part-of-whole). The bars, legend,
+ * and tooltip all render from this list so their order can never diverge.
+ */
+export const CHART_SERIES: readonly ChartSeriesDef[] = [
+  { key: "revenue", name: "Revenue" },
+  { key: "received", name: "Received" },
+];
+
 /** Format a `YYYY-MM` month key as a short en-IN chart label, e.g. "Jul 26". */
 export function formatChartMonthLabel(yyyyMM: string): string {
   const [year, month] = yyyyMM.split("-");

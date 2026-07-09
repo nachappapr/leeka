@@ -1,10 +1,28 @@
 import { describe, it, expect } from "vitest";
 import {
+  CHART_SERIES,
   formatChartMonthLabel,
   formatPaiseAxisTick,
   formatPaiseFull,
   shapeChartSeries,
 } from "@/lib/reports/chart-format";
+
+describe("CHART_SERIES", () => {
+  it("lists series in back-to-front stacking order: Revenue behind, Received in front", () => {
+    expect(CHART_SERIES.map((s) => s.key)).toEqual(["revenue", "received"]);
+  });
+
+  it("carries the display names the legend and tooltip render", () => {
+    expect(CHART_SERIES.map((s) => s.name)).toEqual(["Revenue", "Received"]);
+  });
+
+  it("keys match the shaped series data fields", () => {
+    const [datum] = shapeChartSeries([{ month: "2026-07", revenue: 100, received: 50 }]);
+    for (const series of CHART_SERIES) {
+      expect(datum).toHaveProperty(series.key);
+    }
+  });
+});
 
 describe("formatChartMonthLabel", () => {
   it("formats YYYY-MM as short month + 2-digit year in en-IN", () => {
