@@ -3,10 +3,41 @@
 import * as React from "react";
 import { Trash2 } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
+import { brandToast } from "@/components/ui/custom/brand-toast";
+import type { Customer } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface CustomerFormDeleteButtonProps {
   onDelete: () => void;
+}
+
+// Result toasts (success/error) must reuse this id: the confirm toast is
+// duration:Infinity, and firing the result under a different id resurrects
+// the dismissed confirm (cf. the invoices delete flow).
+export function deleteCustomerToastId(customerId: string) {
+  return `delete-customer-${customerId}`;
+}
+
+export function fireDeleteCustomerToast(customer: Customer, onConfirm: () => void) {
+  const toastId = deleteCustomerToastId(customer.id);
+  brandToast.warn({
+    id: toastId,
+    title: "Delete this customer?",
+    sub: `${customer.name} · Past invoices stay in your records.`,
+    duration: Infinity,
+    actions: [
+      {
+        label: "Delete",
+        primary: true,
+        icon: <Trash2 className="size-3.5" aria-hidden />,
+        onClick: onConfirm,
+      },
+      {
+        label: "Cancel",
+      },
+    ],
+  });
+  return toastId;
 }
 
 export const CustomerFormDeleteButton = React.forwardRef<

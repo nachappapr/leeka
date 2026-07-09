@@ -61,7 +61,11 @@ function ModalContent({ className, children, ...props }: DialogPrimitive.Popup.P
           // Desktop enter/exit: scale + fade
           "data-starting-style:opacity-0 data-starting-style:scale-95",
           "data-ending-style:opacity-0 data-ending-style:scale-95",
-          "transition-[opacity,transform] duration-200 motion-reduce:transition-none",
+          // Base UI flags the popup while a nested dialog (e.g. the delete
+          // confirm sheet) is open; dim it since the child's own backdrop
+          // renders below this popup's z-index.
+          "data-nested-dialog-open:brightness-75",
+          "transition-[opacity,transform,filter] duration-200 motion-reduce:transition-none",
           // ── Mobile: bottom sheet ──────────────────────────────────────
           "max-mobile:left-0 max-mobile:right-0 max-mobile:bottom-0",
           "max-mobile:top-auto max-mobile:translate-x-0 max-mobile:translate-y-0",

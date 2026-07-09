@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Edit } from "@/components/icons";
 import { PillButton } from "@/components/ui/custom/pill-button";
 import { CustomerFormModal } from "@/components/ui/custom/customer-form-modal";
+import { deleteCustomerToastId } from "@/components/customers/customer-form-delete-button";
 import { brandToast } from "@/components/ui/custom/brand-toast";
 import { upsertCustomerAction, deleteCustomerAction } from "@/app/(app)/customers/actions";
 import type { Customer, CustomerSavePayload } from "@/lib/types";
@@ -36,20 +37,21 @@ export function CustomerEditTrigger({
   }
 
   async function handleDelete(c: Customer): Promise<boolean> {
+    const toastId = deleteCustomerToastId(c.id);
     let result;
     try {
       result = await deleteCustomerAction(c.id);
     } catch {
-      brandToast.error({ title: "Couldn't delete customer. Please try again." });
+      brandToast.error({ id: toastId, title: "Couldn't delete customer. Please try again." });
       return false;
     }
     if (result.ok) {
-      brandToast.success({ title: "Customer deleted" });
+      brandToast.success({ id: toastId, title: "Customer deleted" });
       onDelete?.(c);
       router.push("/customers");
       return true;
     }
-    brandToast.error({ title: result.error });
+    brandToast.error({ id: toastId, title: result.error });
     return false;
   }
 

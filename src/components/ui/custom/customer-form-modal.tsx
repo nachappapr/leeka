@@ -20,8 +20,12 @@ import {
 import { FieldLabel } from "@/components/ui/custom/field-label";
 import { InputField } from "@/components/ui/custom/input-field";
 import { PillButton } from "@/components/ui/custom/pill-button";
-import { CustomerFormDeleteButton } from "@/components/customers/customer-form-delete-button";
+import {
+  CustomerFormDeleteButton,
+  fireDeleteCustomerToast,
+} from "@/components/customers/customer-form-delete-button";
 import { CustomerDeleteSheet } from "@/components/customers/customer-delete-sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { CustomerSchema, type CustomerFormData } from "@/lib/schema/customer";
 import type { Customer, CustomerSavePayload } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -340,6 +344,7 @@ export function CustomerFormModal({
   const nameRef = useRef<HTMLInputElement>(null);
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   async function handleDelete(customer: Customer): Promise<boolean> {
     try {
@@ -351,6 +356,22 @@ export function CustomerFormModal({
     } catch {
       return false;
     }
+  }
+
+  // Mobile confirms in the nested bottom sheet; desktop mirrors the invoices
+  // delete flow (persistent confirm toast). The modal must close before the
+  // toast fires — its focus trap would keep keyboard users away from the
+  // toast actions.
+  function handleConfirmDelete() {
+    if (!initial) return;
+    if (isMobile) {
+      setConfirmOpen(true);
+      return;
+    }
+    onOpenChange(false);
+    fireDeleteCustomerToast(initial, () => {
+      void handleDelete(initial);
+    });
   }
 
   const eyebrow = isEdit ? "Edit customer" : "New customer";
@@ -371,7 +392,7 @@ export function CustomerFormModal({
           deleteButtonRef={deleteButtonRef}
           onOpenChange={onOpenChange}
           onSave={onSave}
-          onConfirmDelete={() => setConfirmOpen(true)}
+          onConfirmDelete={handleConfirmDelete}
           saveLabel={saveLabel}
           eyebrow={eyebrow}
           title={title}

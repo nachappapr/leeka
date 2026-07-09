@@ -55,7 +55,9 @@ export function CustomerDeleteSheet({
       <SheetContent
         side="bottom"
         showCloseButton={false}
-        className="rounded-t-2xl border-0 gap-0 bg-card p-0 pt-2"
+        // z-90 (the above-modal layer, cf. brand-select): this sheet opens nested
+        // inside CustomerFormModal, whose popup sits at z-81.
+        className="z-90 rounded-t-2xl border-0 gap-0 bg-card p-0 pt-2"
         aria-labelledby="cust-delete-title"
         aria-describedby="cust-delete-desc"
         finalFocus={finalFocusRef}
