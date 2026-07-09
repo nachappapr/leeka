@@ -50,8 +50,8 @@ export function ReportsSkeleton() {
           <MetricCardSkeleton />
         </div>
 
-        {/* Chart block — bare full-width, no card wrapper, matching the real layout */}
-        <div className="h-70 w-full rounded-xl">
+        {/* Chart block — card-framed, matching the real layout */}
+        <div className="h-108 w-full rounded-xl bg-card p-4 shadow-card max-mobile:h-78 max-mobile:p-3">
           <div className="flex h-full items-end gap-2">
             {BAR_HEIGHTS.map((h, i) => (
               <SkeletonBlock

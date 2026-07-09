@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { Card } from "@/components/ui/custom/card";
 import type { ReportsMonthPoint } from "@/lib/types/reports";
 import { formatPaiseAxisTick, formatPaiseFull, shapeChartSeries } from "@/lib/reports/chart-format";
 
@@ -24,20 +25,27 @@ export function ReportsChart({ months }: ReportsChartProps) {
   const data = shapeChartSeries(months);
 
   return (
-    <div className="w-full">
-      <div aria-hidden="true">
-        <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={data} margin={{ top: 4, right: 4, left: 8, bottom: 0 }} barGap={2}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-line)" />
+    <Card>
+      <div aria-hidden="true" className="h-100 p-4 max-mobile:h-72 max-mobile:p-3">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke="var(--color-line)" />
+            {/* Two x-axes over the same category band: each Bar centers in the full
+                band on its own axis, so Received overlaps in front of Revenue and a
+                revenue-only month still renders one centered bar. */}
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 11, fill: "var(--color-ink-3)", fontFamily: "inherit" }}
+              xAxisId="back"
+              tick={{ fontSize: 12, fill: "var(--color-ink-3)", fontFamily: "inherit" }}
+              tickMargin={8}
               axisLine={false}
               tickLine={false}
             />
+            <XAxis dataKey="label" xAxisId="front" hide />
             <YAxis
+              tickCount={4}
               tickFormatter={formatPaiseAxisTick}
-              tick={{ fontSize: 11, fill: "var(--color-ink-3)", fontFamily: "inherit" }}
+              tick={{ fontSize: 12, fill: "var(--color-ink-3)", fontFamily: "inherit" }}
               axisLine={false}
               tickLine={false}
               width={48}
@@ -64,20 +72,22 @@ export function ReportsChart({ months }: ReportsChartProps) {
             <Bar
               dataKey="revenue"
               name="Revenue"
+              xAxisId="back"
               fill={REVENUE_COLOR}
-              radius={[3, 3, 0, 0]}
+              radius={[4, 4, 0, 0]}
               maxBarSize={28}
             />
             <Bar
               dataKey="received"
               name="Received"
+              xAxisId="front"
               fill={RECEIVED_COLOR}
-              radius={[3, 3, 0, 0]}
-              maxBarSize={28}
+              radius={[4, 4, 0, 0]}
+              maxBarSize={14}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </Card>
   );
 }
