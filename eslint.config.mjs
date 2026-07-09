@@ -24,6 +24,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     ".claude/**",
     ".design-ref/**",
+    ".sandcastle/**",
   ]),
 
   // ── Tailwind correctness + design-token enforcement ──────────────────────
